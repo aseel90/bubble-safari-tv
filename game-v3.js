@@ -16,6 +16,61 @@ const ui={
 };
 
 function activeScreen(){return Object.values(screens).find(s=>s.classList.contains('screen-active'));}
+
+function installTvRuntimeHotfix(){
+  if(window.__bubbleTvRuntimeHotfix)return;
+  window.__bubbleTvRuntimeHotfix='2026-09-11.1';
+
+  const style=document.createElement('style');
+  style.textContent=`
+@media (min-aspect-ratio:4/3) and (max-height:820px){
+  .topbar{height:10vh;min-height:62px;padding:max(10px,1.7vh) 4.5vw}
+  .brand-mark{width:50px;height:50px}.brand-face{left:9px;top:17px;font-size:17px}
+  .brand-copy strong{font-size:clamp(18px,1.65vw,25px)}.brand-copy small{margin-top:4px;font-size:clamp(9px,.8vw,13px)}
+  .stage{padding:max(72px,10vh) 5vw max(24px,3.5vh)}
+  #homeScreen{grid-template-columns:minmax(0,.88fr) minmax(0,1.12fr);grid-template-rows:minmax(0,1fr) auto;grid-template-areas:'mascot copy' 'mascot actions';gap:1.2vh 4vw;padding:0 2vw;align-items:center}
+  #homeScreen .hero-copy{grid-area:copy;max-width:none;width:100%;align-self:end;justify-self:stretch}
+  #homeScreen .mascot-scene{grid-area:mascot;width:min(37vw,52vh,410px);align-self:center;justify-self:center}
+  #homeScreen .home-actions{grid-area:actions;position:static;right:auto;bottom:auto;transform:none;align-self:start;justify-self:start;display:flex;flex-wrap:wrap;gap:10px 14px;padding-top:1.6vh;max-width:100%}
+  #homeScreen .hero-copy h1{font-size:clamp(48px,5.2vw,72px);line-height:.98;letter-spacing:-2px}
+  #homeScreen .hero-copy p{margin-top:1.4vh;max-width:44vw;font-size:clamp(17px,1.55vw,22px);line-height:1.35}
+  #homeScreen .eyebrow{margin-bottom:1vh;padding:6px 13px;font-size:clamp(12px,1.05vw,16px)}
+  #homeScreen .primary-button{height:60px;min-width:250px;padding:0 28px;border-radius:21px;font-size:clamp(20px,1.55vw,25px)}
+  #homeScreen .remote-hint{min-height:44px;padding:7px 11px;font-size:clamp(11px,.95vw,14px);white-space:nowrap}
+}
+@media (min-aspect-ratio:16/10) and (max-height:650px){
+  .stage{padding-top:68px;padding-bottom:18px}#homeScreen{gap:6px 3vw}
+  #homeScreen .hero-copy h1{font-size:clamp(42px,5vw,62px)}#homeScreen .hero-copy p{margin-top:8px;font-size:clamp(15px,1.45vw,19px)}
+  #homeScreen .mascot-scene{width:min(34vw,49vh,330px)}#homeScreen .home-actions{padding-top:8px}
+  #homeScreen .primary-button{height:54px;min-width:230px}#homeScreen .remote-hint{min-height:40px}
+}`;
+  document.head.appendChild(style);
+
+  let lastActivate=0;
+  document.addEventListener('keydown',event=>{
+    const code=event.keyCode||event.which||0;
+    const key=event.key;
+    const ok=[13,23,66,96,109,160].includes(code)||['Enter','Select','Accept','NumpadEnter','GamepadA'].includes(key);
+    if(!ok)return;
+    const now=Date.now();
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    if(now-lastActivate<180)return;
+    lastActivate=now;
+    const active=activeScreen();
+    if(!active)return;
+    let target=document.activeElement;
+    if(!target||!target.matches?.('[data-focusable]')||!active.contains(target)){
+      target=active.querySelector('[data-autofocus][data-focusable]:not([disabled])')||active.querySelector('[data-focusable]:not([disabled])');
+    }
+    if(!target)return;
+    try{target.focus({preventScroll:true})}catch{target.focus()}
+    target.classList.add('tv-focus');
+    target.click();
+  },true);
+}
+
+installTvRuntimeHotfix();
 const tv=createTvNavigation({getActiveScreen:activeScreen,onBack:goBack});
 const voice=createVoice();
 const art=createArt();
