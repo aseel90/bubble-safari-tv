@@ -1,0 +1,21 @@
+{
+  "name": "Bubble Safari TV",
+  "short_name": "Bubble Safari",
+  "description": "لعبة تعليمية عربية للأطفال من 2 إلى 5 سنوات مصممة للتلفزيون والريموت.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#d8f2d2",
+  "theme_color": "#154f3d",
+  "lang": "ar",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "./favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
