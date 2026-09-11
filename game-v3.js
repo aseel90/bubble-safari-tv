@@ -1,7 +1,7 @@
 import { COLORS, SHAPES, NUMBERS, WORLDS, FEEDBACK } from './game-data.js';
 import { createTvNavigation } from './tv-nav.js';
 import { createVoiceEngine } from './voice.js';
-import { choiceArt, worldArt, uiArt } from './art.js';
+import { animalArt, choiceArt, worldArt, uiArt } from './art.js';
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -16,6 +16,7 @@ let tv;
 function hydrateStaticArt(){
   $$('[data-world-art]').forEach(el=>{el.innerHTML=worldArt(el.dataset.worldArt)});
   $$('[data-ui-art]').forEach(el=>{el.innerHTML=uiArt(el.dataset.uiArt)});
+  $$('[data-mascot-art]').forEach(el=>{el.innerHTML=animalArt(el.dataset.mascotArt)});
 }
 
 function showScreen(name){
