@@ -8,14 +8,14 @@
 .app-shell .hill-front{background:var(--hill-front)}
 .world-panel{width:min(1120px,88vw);padding:3.5vh 4vw}
 .world-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.35vw;direction:ltr}
-.world-card{direction:rtl;min-height:255px;border:3px solid rgba(255,255,255,.75);border-radius:32px;padding:24px 16px;background:rgba(255,255,255,.88);box-shadow:0 12px 28px rgba(39,90,69,.1);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:transform .18s ease,box-shadow .18s ease}
+.world-card{direction:rtl;min-height:255px;border:3px solid rgba(255,255,255,.78);border-radius:32px;padding:24px 16px;background:rgba(255,255,255,.88);box-shadow:0 12px 28px rgba(39,90,69,.1);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:transform .18s ease,box-shadow .18s ease}
 .world-card-jungle{background:linear-gradient(180deg,#f2fff0,#d9f2c6)}
 .world-card-farm{background:linear-gradient(180deg,#fff9e8,#f7e5ae)}
 .world-card-ocean{background:linear-gradient(180deg,#eefbff,#c9eff9)}
 .world-card-bubblecity{background:linear-gradient(180deg,#fff5fb,#eee3ff)}
 .world-card strong{font-size:clamp(21px,1.8vw,30px);color:var(--forest-deep)}
 .world-card small{font-size:clamp(13px,1vw,17px);font-weight:700;color:#5d7f71;text-align:center}
-.world-art{display:grid;place-items:center;width:clamp(74px,6vw,102px);height:clamp(74px,6vw,102px);filter:drop-shadow(0 8px 8px rgba(53,82,68,.12))}
+.world-art{display:grid;place-items:center;width:clamp(88px,7vw,120px);height:clamp(88px,7vw,120px);filter:drop-shadow(0 8px 8px rgba(53,82,68,.12))}
 .world-art .game-art{width:100%;height:100%}
 .world-card:focus,.world-card.tv-focus{transform:scale(1.055);box-shadow:var(--focus);z-index:10}
 .world-pill{min-width:165px}.world-pill strong{font-size:16px;white-space:nowrap}
