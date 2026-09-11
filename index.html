@@ -28,7 +28,7 @@
           <span class="brand-bubble brand-bubble-one"></span>
           <span class="brand-bubble brand-bubble-two"></span>
           <span class="brand-bubble brand-bubble-three"></span>
-          <span class="brand-face">●ᴗ●</span>
+          <span class="brand-face" data-ui-art="bubbleface"></span>
         </div>
         <div class="brand-copy">
           <strong>سفاري الفقاعات</strong>
@@ -54,19 +54,19 @@
 
         <div class="mascot-scene" aria-hidden="true">
           <div class="vine vine-one"></div><div class="vine vine-two"></div>
-          <div class="big-bubble mascot-bubble"><div class="lion-illustration"><div class="lion-mane"></div><div class="lion-ear ear-left"></div><div class="lion-ear ear-right"></div><div class="lion-face"><i class="lion-eye eye-left"></i><i class="lion-eye eye-right"></i><i class="lion-nose"></i><i class="lion-mouth"></i></div></div></div>
+          <div class="big-bubble mascot-bubble"><span class="mascot-art" data-mascot-art="lion"></span></div>
           <span class="mini-bubble mini-a"></span><span class="mini-bubble mini-b"></span><span class="mini-bubble mini-c"></span>
         </div>
 
         <div class="home-actions">
-          <button class="primary-button focusable" id="startButton" type="button" data-focusable><span>ابدأ اللعب</span><b aria-hidden="true">▶</b></button>
+          <button class="primary-button focusable" id="startButton" type="button" data-focusable><span>ابدأ اللعب</span><span class="primary-icon" data-ui-art="play" aria-hidden="true"></span></button>
           <p class="remote-hint"><span class="remote-key">OK</span> استخدم الأسهم وزر OK</p>
         </div>
       </section>
 
       <section class="screen" id="ageScreen" aria-labelledby="ageTitle">
         <div class="panel age-panel">
-          <button class="back-button focusable" id="ageBackButton" type="button" data-focusable aria-label="العودة">→</button>
+          <button class="back-button focusable" id="ageBackButton" type="button" data-focusable aria-label="العودة"><span class="back-icon" data-ui-art="back" aria-hidden="true"></span></button>
           <div class="panel-heading"><span class="eyebrow">اختر المستوى</span><h2 id="ageTitle">كم عمر الطفل؟</h2><p>سنضبط التحديات تلقائيًا.</p></div>
           <div class="age-grid">
             <button class="age-card focusable" type="button" data-age="2-3" data-focusable data-autofocus><span class="age-blob age-blob-green">2–3</span><strong>مستكشف صغير</strong><small>صور كبيرة + ألوان + أحجام</small></button>
@@ -77,7 +77,7 @@
 
       <section class="screen" id="worldScreen" aria-labelledby="worldTitle">
         <div class="panel world-panel">
-          <button class="back-button focusable" id="worldBackButton" type="button" data-focusable aria-label="العودة">→</button>
+          <button class="back-button focusable" id="worldBackButton" type="button" data-focusable aria-label="العودة"><span class="back-icon" data-ui-art="back" aria-hidden="true"></span></button>
           <div class="panel-heading"><span class="eyebrow">اختر المغامرة</span><h2 id="worldTitle">إلى أين نذهب؟</h2><p>كل عالم يغيّر الحيوانات والتحديات.</p></div>
           <div class="world-grid">
             <button class="world-card focusable world-card-jungle" data-world="jungle" data-focusable data-autofocus><span class="world-art" data-world-art="jungle"></span><strong>الغابة</strong><small>حيوانات برية وألوان</small></button>
@@ -91,7 +91,7 @@
       <section class="screen" id="gameScreen" aria-labelledby="questionText">
         <div class="game-layout">
           <div class="question-card">
-            <div class="guide-face" aria-hidden="true">●ᴗ●</div>
+            <div class="guide-face" data-ui-art="bubbleface" aria-hidden="true"></div>
             <div class="question-copy"><span id="questionKicker">اسمع جيدًا</span><div class="question-line"><h2 id="questionText">أين الأسد؟</h2><span id="questionVisual" class="question-visual hidden" aria-hidden="true"></span></div></div>
             <button class="replay-button focusable" id="replayButton" type="button" data-focusable aria-label="إعادة سماع السؤال"><span class="button-ui-art" data-ui-art="sound" aria-hidden="true"></span><span>اسمع مرة أخرى</span></button>
           </div>
@@ -104,8 +104,8 @@
           <div class="trophy-bubble" data-ui-art="trophy" aria-hidden="true"></div>
           <span class="eyebrow">أحسنت!</span><h2 id="finishTitle">أنهيت المغامرة</h2>
           <p>جمعت <strong id="finalStars">15</strong> نجمة!</p>
-          <div class="finish-stars" aria-hidden="true">★ ★ ★</div>
-          <button class="primary-button focusable" id="playAgainButton" type="button" data-focusable><span>العب مرة أخرى</span><b aria-hidden="true">↻</b></button>
+          <div class="finish-stars" aria-hidden="true"><span data-ui-art="star"></span><span data-ui-art="star"></span><span data-ui-art="star"></span></div>
+          <button class="primary-button focusable" id="playAgainButton" type="button" data-focusable><span>العب مرة أخرى</span><span class="primary-icon" data-ui-art="replay" aria-hidden="true"></span></button>
           <button class="secondary-button focusable" id="worldButton" type="button" data-focusable>اختر عالمًا آخر</button>
           <button class="secondary-button focusable" id="homeButton" type="button" data-focusable>العودة للرئيسية</button>
         </div>
