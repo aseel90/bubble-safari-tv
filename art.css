@@ -41,3 +41,25 @@
 .brand-mark{background:linear-gradient(180deg,#1e7659,#15513f)}
 .brand-face{font-family:Tahoma,Arial,sans-serif;text-shadow:0 2px 0 rgba(0,0,0,.12)}
 @keyframes lionBreathe{0%,100%{transform:scale(1) rotate(-1deg)}50%{transform:scale(1.025) rotate(1deg)}}
+
+
+/* v0.6 visual identity: one mascot language across the whole TV UI */
+.brand-face{inset:7px!important;left:auto!important;top:auto!important;display:grid!important;place-items:center;font-size:0!important;letter-spacing:0!important}
+.brand-face .game-art{width:100%;height:100%;filter:none}
+.mascot-art{position:absolute;inset:12%;display:grid;place-items:center;animation:mascotArtFloat 3.8s ease-in-out infinite;z-index:2}
+.mascot-art .game-art{width:100%;height:100%;filter:drop-shadow(0 18px 14px rgba(91,58,37,.18))}
+.primary-icon{width:38px;height:38px;display:grid;place-items:center;border-radius:50%;background:rgba(255,255,255,.16)}
+.primary-icon .game-art{width:30px;height:30px;filter:none}
+.back-icon{display:grid;place-items:center;width:31px;height:31px}
+.back-icon .game-art{width:100%;height:100%;filter:none}
+.finish-stars{display:flex;align-items:center;justify-content:center;gap:9px;letter-spacing:0!important}
+.finish-stars>span{display:grid;place-items:center;width:46px;height:46px}
+.finish-stars .game-art{width:100%;height:100%;filter:drop-shadow(0 5px 5px rgba(185,133,37,.18))}
+.guide-face .game-art{filter:none}
+.world-card.tv-focus .world-art,.world-card:focus .world-art{animation:worldArtHello .8s ease-in-out infinite alternate}
+.choice.tv-focus .choice-art,.choice:focus .choice-art{animation:choiceArtHello .75s ease-in-out infinite alternate}
+@keyframes mascotArtFloat{0%,100%{transform:translateY(0) rotate(-1deg) scale(1)}50%{transform:translateY(-7px) rotate(1deg) scale(1.025)}}
+@keyframes worldArtHello{from{transform:translateY(0) rotate(-1deg)}to{transform:translateY(-5px) rotate(1deg)}}
+@keyframes choiceArtHello{from{transform:translateY(0) scale(1)}to{transform:translateY(-4px) scale(1.025)}}
+@media (max-height:620px){.mascot-art{inset:13%}.primary-icon{width:32px;height:32px}.finish-stars>span{width:36px;height:36px}}
+@media (prefers-reduced-motion:reduce){.mascot-art,.world-card.tv-focus .world-art,.world-card:focus .world-art,.choice.tv-focus .choice-art,.choice:focus .choice-art{animation:none!important}}
