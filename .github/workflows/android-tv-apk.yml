@@ -60,20 +60,23 @@ jobs:
           AAPT="$ANDROID_HOME/build-tools/36.0.0/aapt"
           BADGING='android-tv/app/build/outputs/apk/debug/badging.txt'
           MANIFEST_TREE='android-tv/app/build/outputs/apk/debug/manifest-tree.txt'
+          APK_FILES='android-tv/app/build/outputs/apk/debug/apk-files.txt'
 
           test -s "$APK"
           "$AAPT" dump badging "$APK" | tee "$BADGING"
           "$AAPT" dump xmltree "$APK" AndroidManifest.xml > "$MANIFEST_TREE"
+          unzip -Z1 "$APK" > "$APK_FILES"
 
           grep -q "package: name='com.bubblesafari.tv'" "$BADGING"
           grep -q "uses-feature:'android.software.leanback'" "$BADGING"
           grep -q "uses-feature-not-required:'android.hardware.touchscreen'" "$BADGING"
+          grep -q "leanback-launchable-activity: name='com.bubblesafari.tv.MainActivity'" "$BADGING"
           grep -q 'android.intent.category.LEANBACK_LAUNCHER' "$MANIFEST_TREE"
 
-          unzip -l "$APK" | grep -q 'assets/index.html'
-          unzip -l "$APK" | grep -q 'assets/game-v3.js'
-          unzip -l "$APK" | grep -q 'assets/tv-nav.js'
-          unzip -l "$APK" | grep -q 'assets/audio/ui_start.wav'
+          grep -q '^assets/index.html$' "$APK_FILES"
+          grep -q '^assets/game-v3.js$' "$APK_FILES"
+          grep -q '^assets/tv-nav.js$' "$APK_FILES"
+          grep -q '^assets/audio/ui_start.wav$' "$APK_FILES"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
@@ -83,4 +86,5 @@ jobs:
             android-tv/app/build/outputs/apk/debug/app-debug.apk
             android-tv/app/build/outputs/apk/debug/badging.txt
             android-tv/app/build/outputs/apk/debug/manifest-tree.txt
+            android-tv/app/build/outputs/apk/debug/apk-files.txt
           if-no-files-found: error
