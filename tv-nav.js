@@ -1,4 +1,4 @@
-export const TV_NAV_VERSION = '1.2.1';
+export const TV_NAV_VERSION = '1.2.2';
 
 export function normalizeTvKey(event) {
   const code = event.keyCode || event.which || 0;
@@ -100,7 +100,10 @@ export function createTvNavigation({ getActiveScreen, onBack }) {
         }
       }
     }
-    if (key === 'Escape' || key === 'Backspace' || key === 'BrowserBack') onBack();
+    if (key === 'Escape' || key === 'Backspace' || key === 'BrowserBack') {
+      onBack();
+      setTimeout(ensureFocus, 30);
+    }
   }, { passive: false });
 
   document.addEventListener('focusin', event => {
