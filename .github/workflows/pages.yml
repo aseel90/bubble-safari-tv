@@ -20,6 +20,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -29,7 +30,7 @@ jobs:
         run: |
           set -euo pipefail
           rm -rf _site
-          mkdir -p _site/audio _site/updates
+          mkdir -p _site/audio _site/updates _site/downloads
           cp index.html styles.css art.css worlds.css polish-v08.css game-v3.js game-data.js tv-nav.js voice.js art.js scene-art.js service-worker.js manifest.webmanifest favicon.svg _site/
           cp -a audio/. _site/audio/
           (
@@ -46,6 +47,36 @@ jobs:
           print('OTA game version:', digest)
           print('OTA bundle bytes:', size)
           PY
+
+      - name: Java 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install SDK 36
+        run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0'
+
+      - name: Gradle 9.6
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '9.6.0'
+
+      - name: Build direct-download APK
+        run: gradle -p android-tv :app:assembleDebug --stacktrace
+
+      - name: Publish direct APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          APK='android-tv/app/build/outputs/apk/debug/app-debug.apk'
+          test -s "$APK"
+          cp "$APK" _site/downloads/bubble-safari-tv.apk
+          sha256sum _site/downloads/bubble-safari-tv.apk > _site/downloads/bubble-safari-tv.apk.sha256
+          stat -c 'Direct APK bytes: %s' _site/downloads/bubble-safari-tv.apk
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
