@@ -1,4 +1,4 @@
-export const TV_NAV_VERSION = '1.2.0';
+export const TV_NAV_VERSION = '1.2.1';
 
 export function normalizeTvKey(event) {
   const code = event.keyCode || event.which || 0;
@@ -67,6 +67,14 @@ export function createTvNavigation({ getActiveScreen, onBack }) {
     if (best) setFocus(best);
   }
 
+  function ensureFocus() {
+    const active = getActiveScreen();
+    if (!active) return;
+    const current = document.activeElement;
+    if (current && current.matches?.('[data-focusable]') && active.contains(current)) return;
+    focusFirst(active);
+  }
+
   document.addEventListener('keydown', event => {
     const key = normalizeTvKey(event);
 
@@ -80,6 +88,7 @@ export function createTvNavigation({ getActiveScreen, onBack }) {
       const el = document.activeElement;
       if (el && el.matches('[data-focusable]')) {
         el.click();
+        setTimeout(ensureFocus, 30);
       } else {
         const active = getActiveScreen();
         const fallback = active?.querySelector('[data-autofocus][data-focusable]:not([disabled])') ||
@@ -87,6 +96,7 @@ export function createTvNavigation({ getActiveScreen, onBack }) {
         if (fallback) {
           setFocus(fallback);
           fallback.click();
+          setTimeout(ensureFocus, 30);
         }
       }
     }
@@ -96,14 +106,6 @@ export function createTvNavigation({ getActiveScreen, onBack }) {
   document.addEventListener('focusin', event => {
     if (event.target.matches('[data-focusable]')) setFocus(event.target);
   });
-
-  function ensureFocus() {
-    const active = getActiveScreen();
-    if (!active) return;
-    const current = document.activeElement;
-    if (current && current.matches?.('[data-focusable]') && active.contains(current)) return;
-    focusFirst(active);
-  }
 
   window.addEventListener('pageshow', () => setTimeout(ensureFocus, 0));
   window.addEventListener('focus', () => setTimeout(ensureFocus, 0));
