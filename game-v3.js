@@ -11,7 +11,7 @@ const state={age:'2-3',world:'jungle',round:0,totalRounds:15,stars:0,streak:0,mu
 const voice=createVoiceEngine({isMuted:()=>state.muted});
 let tv;
 
-function showScreen(name){Object.entries(screens).forEach(([key,el])=>{el.classList.toggle('screen-active',key===name);el.setAttribute('aria-hidden',key===name?'false':'true')});hud.classList.toggle('hidden',name!=='game');requestAnimationFrame(()=>tv?.focusFirst(screens[name]))}
+function showScreen(name){Object.entries(screens).forEach(([key,el])=>{el.classList.toggle('screen-active',key===name);el.setAttribute('aria-hidden',key===name?'false':'true')});hud.classList.toggle('hidden',name!=='game');requestAnimationFrame(()=>{let selector=null;if(name==='home')selector='#startButton';if(name==='age')selector=`[data-age="${state.age}"]`;if(name==='world')selector=`[data-world="${state.world}"]`;if(name==='finish')selector='#playAgainButton';const preferred=selector?$(selector,screens[name]):null;if(preferred)tv?.setFocus(preferred);else tv?.focusFirst(screens[name])})}
 function handleBack(){voice.stop();state.locked=false;if(screens.game.classList.contains('screen-active'))return showScreen('world');if(screens.world.classList.contains('screen-active'))return showScreen('age');if(screens.age.classList.contains('screen-active')||screens.finish.classList.contains('screen-active'))showScreen('home')}
 tv=createTvNavigation({getActiveScreen:()=>$('.screen-active'),onBack:handleBack});
 
