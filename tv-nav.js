@@ -10,7 +10,7 @@ export function createTvNavigation({ getActiveScreen, onBack }) {
 
   function focusFirst(root) {
     if (!root) return;
-    const target = root.querySelector('[data-focusable]:not([disabled])');
+    const target = root.querySelector('[data-autofocus][data-focusable]:not([disabled])') || root.querySelector('[data-focusable]:not([disabled])');
     if (target) setFocus(target);
   }
 
