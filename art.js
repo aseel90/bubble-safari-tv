@@ -64,7 +64,11 @@ export function uiArt(name){
     medal:`<path d="M69 29 L91 83 L72 105 L45 42Z" fill="#78b8e8"/><path d="M131 29 L109 83 L128 105 L155 42Z" fill="#a28be4"/><circle cx="100" cy="122" r="48" fill="#ffd15f" stroke="#e6aa32" stroke-width="8"/><path d="M100 93 L110 114 L133 117 L116 133 L120 156 L100 145 L80 156 L84 133 L67 117 L90 114Z" fill="#fff4c4"/>`,
     trophy:`<path d="M66 42 H134 V88 Q134 126 100 138 Q66 126 66 88Z" fill="#ffd15f" stroke="#dc9d2f" stroke-width="8"/><path d="M66 57 H38 Q38 91 70 96 M134 57 H162 Q162 91 130 96" fill="none" stroke="#dc9d2f" stroke-width="10" stroke-linecap="round"/><rect x="91" y="135" width="18" height="25" rx="7" fill="#dc9d2f"/><rect x="69" y="157" width="62" height="17" rx="8" fill="#f2b948"/>`,
     sound:`<path d="M42 84 H72 L108 54 V146 L72 116 H42Z" fill="#315b50"/><path d="M126 78 Q147 100 126 122 M140 61 Q176 100 140 139" fill="none" stroke="#315b50" stroke-width="9" stroke-linecap="round"/>`,
-    muted:`<path d="M42 84 H72 L108 54 V146 L72 116 H42Z" fill="#315b50"/><path d="M126 78 L159 122 M159 78 L126 122" stroke="#d65b57" stroke-width="10" stroke-linecap="round"/>`
+    muted:`<path d="M42 84 H72 L108 54 V146 L72 116 H42Z" fill="#315b50"/><path d="M126 78 L159 122 M159 78 L126 122" stroke="#d65b57" stroke-width="10" stroke-linecap="round"/>`,
+    play:`<circle cx="100" cy="100" r="66" fill="#fff" opacity=".16"/><path d="M82 65 L140 100 L82 135Z" fill="#fff" stroke="#fff" stroke-width="8" stroke-linejoin="round"/>`,
+    back:`<path d="M74 52 L124 100 L74 148" fill="none" stroke="#315b50" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M120 100 H50" fill="none" stroke="#315b50" stroke-width="16" stroke-linecap="round"/>`,
+    replay:`<path d="M64 76 Q85 49 121 58 Q154 66 160 100 Q165 135 136 151 Q107 168 76 151 Q55 139 48 117" fill="none" stroke="#fff" stroke-width="13" stroke-linecap="round"/><path d="M64 76 L50 48 M64 76 L35 75" fill="none" stroke="#fff" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>`,
+    bubbleface:`<circle cx="100" cy="100" r="72" fill="#5fc9d8"/><ellipse cx="75" cy="71" rx="25" ry="14" fill="#fff" opacity=".3" transform="rotate(-20 75 71)"/>${eye(76,101,7)}${eye(124,101,7)}<path d="M79 126 Q100 145 121 126" fill="none" stroke="#315b50" stroke-width="7" stroke-linecap="round"/>${cheek(58,122,'#ffb4c0')}${cheek(142,122,'#ffb4c0')}`
   };
   return svg(map[name]||map.star);
 }
