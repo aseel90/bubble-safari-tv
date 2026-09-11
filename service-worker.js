@@ -1,4 +1,4 @@
-const CACHE = 'bubble-safari-v5';
+const CACHE = 'bubble-safari-v6';
 const CORE = [
   './', './index.html', './styles.css', './worlds.css', './game-v3.js',
   './game-data.js', './tv-nav.js', './voice.js', './manifest.webmanifest', './favicon.svg'

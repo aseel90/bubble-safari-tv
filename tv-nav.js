@@ -1,5 +1,20 @@
+export const TV_NAV_VERSION = '1.1.0';
+
+export function normalizeTvKey(event) {
+  const code = event.keyCode || event.which || 0;
+  let key = event.key;
+  if (code === 19 || code === 38) key = 'ArrowUp';
+  if (code === 20 || code === 40) key = 'ArrowDown';
+  if (code === 21 || code === 37) key = 'ArrowLeft';
+  if (code === 22 || code === 39) key = 'ArrowRight';
+  if (code === 23 || code === 66 || code === 13) key = 'Enter';
+  if (code === 4 || code === 27) key = 'BrowserBack';
+  return key;
+}
+
 export function createTvNavigation({ getActiveScreen, onBack }) {
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+  if (typeof window !== 'undefined') window.__bubbleTvNavVersion = TV_NAV_VERSION;
 
   function setFocus(el) {
     $$('.tv-focus').forEach(node => node.classList.remove('tv-focus'));
@@ -53,15 +68,7 @@ export function createTvNavigation({ getActiveScreen, onBack }) {
   }
 
   document.addEventListener('keydown', event => {
-    const code = event.keyCode || event.which || 0;
-    let key = event.key;
-    // Android TV / Google TV / standard browser keycodes.
-    if (code === 19 || code === 38) key = 'ArrowUp';
-    if (code === 20 || code === 40) key = 'ArrowDown';
-    if (code === 21 || code === 37) key = 'ArrowLeft';
-    if (code === 22 || code === 39) key = 'ArrowRight';
-    if (code === 23 || code === 66 || code === 13) key = 'Enter';
-    if (code === 4 || code === 27) key = 'BrowserBack';
+    const key = normalizeTvKey(event);
 
     const handled = ['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Enter',' ','Escape','Backspace','BrowserBack'];
     if (handled.includes(key)) event.preventDefault();
