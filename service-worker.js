@@ -1,4 +1,4 @@
-const CACHE = 'bubble-safari-v10';
+const CACHE = 'bubble-safari-v11';
 const CORE = [
   './', './index.html', './styles.css', './worlds.css', './game-v3.js',
   './game-data.js', './tv-nav.js', './voice.js', './manifest.webmanifest', './favicon.svg'
@@ -21,11 +21,9 @@ self.addEventListener('activate', event => {
 });
 
 async function cachePut(request, response) {
-  if (response?.ok && response.status === 200) {
-    try {
-      const cache = await caches.open(CACHE);
-      await cache.put(request, response.clone());
-    } catch {}
+  if (response?.ok && response.status !== 206) {
+    const cache = await caches.open(CACHE);
+    await cache.put(request, response.clone());
   }
   return response;
 }
@@ -39,23 +37,18 @@ self.addEventListener('fetch', event => {
 
   event.respondWith((async () => {
     const isAudio = url.pathname.includes('/audio/');
-    const isRange = request.headers.has('range');
 
     if (isAudio) {
-      const cachedAudio = await caches.match(request);
-      if (cachedAudio) return cachedAudio;
-
       try {
-        const response = await fetch(request);
-        if (isRange || response.status === 206) return response;
-        return await cachePut(request, response);
+        return await fetch(request);
       } catch {
-        return Response.error();
+        const cachedAudio = await caches.match(request);
+        return cachedAudio || Response.error();
       }
     }
 
     try {
-      return await cachePut(request, await fetch(request, { cache: 'no-store' }));
+      return await cachePut(request, await fetch(request));
     } catch {
       const cached = await caches.match(request);
       if (cached) return cached;

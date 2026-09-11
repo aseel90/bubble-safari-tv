@@ -1,7 +1,7 @@
 export function createVoiceEngine({ isMuted }) {
   let audioContext = null;
   let currentVoice = null;
-  const missingVoice = new Set();
+  let pendingVoice = null;
   const audioFile = key => `./audio/${key}.wav`;
 
   function ensureAudio() {
@@ -11,7 +11,7 @@ export function createVoiceEngine({ isMuted }) {
       if (!AudioCtx) return null;
       audioContext = new AudioCtx();
     }
-    if (audioContext.state === 'suspended') audioContext.resume();
+    if (audioContext.state === 'suspended') audioContext.resume().catch(() => {});
     return audioContext;
   }
 
@@ -53,52 +53,42 @@ export function createVoiceEngine({ isMuted }) {
       try { currentVoice.pause(); currentVoice.currentTime = 0; } catch {}
       currentVoice = null;
     }
-    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
   }
 
-  function fallback(text) {
-    if (isMuted() || !text || !('speechSynthesis' in window)) return;
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'ar-SA';
-    utterance.rate = .8;
-    utterance.pitch = 1.05;
-    utterance.volume = .95;
-    const voices = window.speechSynthesis.getVoices();
-    const arabic = voices.find(v => /^ar[-_]/i.test(v.lang));
-    if (arabic) utterance.voice = arabic;
-    window.speechSynthesis.speak(utterance);
-  }
-
-  function play(key, text) {
-    if (isMuted()) return;
+  function tryPlay(key) {
+    if (isMuted() || !key) return Promise.resolve(false);
     stop();
-    if (!key || missingVoice.has(key)) return fallback(text);
     const audio = new Audio(audioFile(key));
     currentVoice = audio;
     audio.preload = 'auto';
     audio.volume = .96;
-    let fellBack = false;
-    const fail = () => {
-      if (fellBack) return;
-      fellBack = true;
-      missingVoice.add(key);
+    return audio.play().then(() => {
+      pendingVoice = null;
+      fetch(audioFile(key)).catch(() => {});
+      audio.onended = () => { if (currentVoice === audio) currentVoice = null; };
+      return true;
+    }).catch(err => {
       if (currentVoice === audio) currentVoice = null;
-      fallback(text);
-    };
-    audio.onerror = fail;
-    const result = audio.play();
-    if (result?.then) {
-      result.then(() => {
-        // Warm a complete 200 response in the Service Worker cache. Media elements
-        // commonly use Range requests (206), which Cache API cannot store directly.
-        fetch(audioFile(key)).catch(() => {});
-      }).catch(fail);
-    } else if (result?.catch) {
-      result.catch(fail);
-    }
-    audio.onended = () => { if (currentVoice === audio) currentVoice = null; };
+      if (err?.name === 'NotAllowedError') pendingVoice = { key };
+      return false;
+    });
   }
+
+  function play(key) {
+    if (isMuted() || !key) return;
+    pendingVoice = { key };
+    tryPlay(key);
+  }
+
+  function retryPending() {
+    ensureAudio();
+    if (!pendingVoice || isMuted()) return;
+    const { key } = pendingVoice;
+    tryPlay(key);
+  }
+
+  document.addEventListener('keydown', retryPending, { capture: true });
+  document.addEventListener('pointerdown', retryPending, { capture: true });
 
   return { ensureAudio, success, wrong, stop, play };
 }
