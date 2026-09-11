@@ -130,4 +130,4 @@ $('#homeButton').addEventListener('click',()=>showScreen('home'));
 document.addEventListener('pointerdown',()=>voice.ensureAudio(),{once:true});
 
 hydrateStaticArt();updateSoundUi();setWorld('jungle');showScreen('home');
-if('serviceWorker'in navigator&&location.protocol!=='file:')window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}));
+if('serviceWorker'in navigator&&location.protocol!=='file:')window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js',{updateViaCache:'none'}).catch(()=>{}));
