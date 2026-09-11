@@ -25,3 +25,14 @@
 @media (max-width:1100px){.world-grid{grid-template-columns:repeat(2,1fr);gap:1.2vw}.world-card{min-height:180px;padding:12px}.world-art{width:64px;height:64px}.world-panel{padding-top:2vh;padding-bottom:2vh}}
 @media (max-height:620px){.world-panel{width:min(1050px,90vw);padding:2vh 3vw}.world-grid{grid-template-columns:repeat(4,1fr)}.world-card{min-height:170px}.world-art{width:58px;height:58px}.world-card strong{font-size:21px}.world-card small{font-size:12px}.world-pill{min-width:138px}.world-pill strong{font-size:14px}}
 @media (min-width:2500px){.topbar{padding-left:5vw;padding-right:5vw}.stage{padding-left:5vw;padding-right:5vw}.panel,.game-layout{transform:scale(1.04)}}
+
+
+/* v0.6 stronger world identities */
+.world-card{position:relative;overflow:hidden}
+.world-card::before{content:"";position:absolute;width:130px;height:130px;border-radius:50%;right:-42px;top:-48px;background:rgba(255,255,255,.28);box-shadow:-44px 56px 0 rgba(255,255,255,.12);pointer-events:none}
+.world-card::after{content:"";position:absolute;left:12%;right:12%;bottom:10px;height:9px;border-radius:50%;background:rgba(44,87,70,.06);filter:blur(6px);pointer-events:none}
+.world-card-jungle{border-color:rgba(114,184,102,.22)}
+.world-card-farm{border-color:rgba(221,174,83,.22)}
+.world-card-ocean{border-color:rgba(88,185,210,.22)}
+.world-card-bubblecity{border-color:rgba(171,139,226,.2)}
+.world-art,.world-card strong,.world-card small{position:relative;z-index:2}
