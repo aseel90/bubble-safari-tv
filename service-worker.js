@@ -1,4 +1,4 @@
-const CACHE = 'bubble-safari-v6';
+const CACHE = 'bubble-safari-v8';
 const CORE = [
   './', './index.html', './styles.css', './worlds.css', './game-v3.js',
   './game-data.js', './tv-nav.js', './voice.js', './manifest.webmanifest', './favicon.svg'
@@ -38,6 +38,7 @@ self.addEventListener('fetch', event => {
   event.respondWith((async () => {
     const isAudio = url.pathname.includes('/audio/');
 
+    // Voice files are immutable and can be cached aggressively after first use.
     if (isAudio) {
       const cachedAudio = await caches.match(request);
       if (cachedAudio) return cachedAudio;
@@ -48,8 +49,10 @@ self.addEventListener('fetch', event => {
       }
     }
 
+    // App code is always revalidated from the network first. `no-store` also
+    // bypasses Chromium's HTTP cache, preventing stale JS modules on Smart TVs.
     try {
-      return await cachePut(request, await fetch(request));
+      return await cachePut(request, await fetch(request, { cache: 'no-store' }));
     } catch {
       const cached = await caches.match(request);
       if (cached) return cached;
