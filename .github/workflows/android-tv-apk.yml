@@ -65,18 +65,32 @@ jobs:
           test -s "$APK"
           "$AAPT" dump badging "$APK" | tee "$BADGING"
           "$AAPT" dump xmltree "$APK" AndroidManifest.xml > "$MANIFEST_TREE"
-          unzip -Z1 "$APK" > "$APK_FILES"
 
-          grep -q "package: name='com.bubblesafari.tv'" "$BADGING"
-          grep -q "uses-feature:'android.software.leanback'" "$BADGING"
-          grep -q "uses-feature-not-required:'android.hardware.touchscreen'" "$BADGING"
-          grep -q "leanback-launchable-activity: name='com.bubblesafari.tv.MainActivity'" "$BADGING"
-          grep -q 'android.intent.category.LEANBACK_LAUNCHER' "$MANIFEST_TREE"
+          grep -Fq "package: name='com.bubblesafari.tv'" "$BADGING"
+          grep -Fq "uses-feature:'android.software.leanback'" "$BADGING"
+          grep -Fq "uses-feature-not-required: name='android.hardware.touchscreen'" "$BADGING"
+          grep -Fq "leanback-launchable-activity: name='com.bubblesafari.tv.MainActivity'" "$BADGING"
 
-          grep -q '^assets/index.html$' "$APK_FILES"
-          grep -q '^assets/game-v3.js$' "$APK_FILES"
-          grep -q '^assets/tv-nav.js$' "$APK_FILES"
-          grep -q '^assets/audio/ui_start.wav$' "$APK_FILES"
+          python3 - "$APK" "$APK_FILES" <<'PY'
+          import sys, zipfile
+          apk, listing_path = sys.argv[1], sys.argv[2]
+          required = {
+              'assets/index.html',
+              'assets/game-v3.js',
+              'assets/tv-nav.js',
+              'assets/audio/ui_start.wav',
+          }
+          with zipfile.ZipFile(apk) as zf:
+              names = set(zf.namelist())
+          with open(listing_path, 'w', encoding='utf-8') as f:
+              for name in sorted(names):
+                  f.write(name + '\n')
+          missing = sorted(required - names)
+          if missing:
+              print('Missing required APK assets:', *missing, sep='\n - ')
+              raise SystemExit(1)
+          print('Verified bundled game assets:', *sorted(required), sep='\n - ')
+          PY
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
