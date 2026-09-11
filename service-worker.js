@@ -1,7 +1,7 @@
-const CACHE = 'bubble-safari-v19';
+const CACHE = 'bubble-safari-v20';
 const CORE = [
   './', './index.html', './styles.css', './art.css', './worlds.css', './game-v3.js',
-  './game-data.js', './tv-nav.js', './voice.js', './art.js', './scene-art.js', './manifest.webmanifest', './favicon.svg'
+  './polish-v08.css', './game-data.js', './tv-nav.js', './voice.js', './art.js', './scene-art.js', './manifest.webmanifest', './favicon.svg'
 ];
 
 self.addEventListener('install', event => {

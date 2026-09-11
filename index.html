@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="./styles.css" />
   <link rel="stylesheet" href="./worlds.css" />
   <link rel="stylesheet" href="./art.css" />
+  <link rel="stylesheet" href="./polish-v08.css" />
   <title>سفاري الفقاعات | Bubble Safari</title>
 </head>
 <body>
@@ -41,6 +42,7 @@
         <div class="hud-pill world-pill" aria-label="العالم الحالي"><span id="worldIcon" class="mini-ui-art"></span><strong id="worldName">الغابة</strong></div>
         <div class="hud-pill" aria-label="النجوم"><span class="mini-ui-art" data-ui-art="star" aria-hidden="true"></span><strong id="starCount">0</strong></div>
         <div class="hud-pill" aria-label="التقدم"><span id="roundText">1 / 15</span></div>
+        <div class="hud-progress" id="progressMeter" role="progressbar" aria-label="تقدم المغامرة" aria-valuemin="1" aria-valuemax="15" aria-valuenow="1"><span class="hud-progress-track"><span id="progressFill"></span></span></div>
         <button class="icon-button focusable" id="soundButton" type="button" aria-label="تشغيل أو كتم الصوت" data-focusable><span id="soundIcon" class="mini-ui-art" aria-hidden="true"></span></button>
       </div>
     </header>
@@ -81,10 +83,10 @@
           <button class="back-button focusable" id="worldBackButton" type="button" data-focusable aria-label="العودة"><span class="back-icon" data-ui-art="back" aria-hidden="true"></span></button>
           <div class="panel-heading"><span class="eyebrow">اختر المغامرة</span><h2 id="worldTitle">إلى أين نذهب؟</h2><p>كل عالم يغيّر الحيوانات والتحديات.</p></div>
           <div class="world-grid">
-            <button class="world-card focusable world-card-jungle" data-world="jungle" data-focusable data-autofocus><span class="world-art" data-world-art="jungle"></span><strong>الغابة</strong><small>حيوانات برية وألوان</small></button>
-            <button class="world-card focusable world-card-farm" data-world="farm" data-focusable><span class="world-art" data-world-art="farm"></span><strong>المزرعة</strong><small>حيوانات لطيفة وأحجام</small></button>
-            <button class="world-card focusable world-card-ocean" data-world="ocean" data-focusable><span class="world-art" data-world-art="ocean"></span><strong>البحر</strong><small>مخلوقات البحر والأرقام</small></button>
-            <button class="world-card focusable world-card-bubblecity" data-world="bubblecity" data-focusable><span class="world-art" data-world-art="bubblecity"></span><strong>مدينة الفقاعات</strong><small>ألوان وأشكال وأرقام وألغاز</small></button>
+            <button type="button" class="world-card focusable world-card-jungle" data-world="jungle" data-focusable data-autofocus><span class="world-art" data-world-art="jungle"></span><strong>الغابة</strong><small>حيوانات برية وألوان</small></button>
+            <button type="button" class="world-card focusable world-card-farm" data-world="farm" data-focusable><span class="world-art" data-world-art="farm"></span><strong>المزرعة</strong><small>حيوانات لطيفة وأحجام</small></button>
+            <button type="button" class="world-card focusable world-card-ocean" data-world="ocean" data-focusable><span class="world-art" data-world-art="ocean"></span><strong>البحر</strong><small>مخلوقات البحر والأرقام</small></button>
+            <button type="button" class="world-card focusable world-card-bubblecity" data-world="bubblecity" data-focusable><span class="world-art" data-world-art="bubblecity"></span><strong>مدينة الفقاعات</strong><small>ألوان وأشكال وأرقام وألغاز</small></button>
           </div>
         </div>
       </section>

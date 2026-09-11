@@ -1,2 +1,4 @@
-Bubble Safari / سفاري الفقاعات — v0.4 polish workstream
-Voice sequencing, custom art, Bubble City, Arabic branding.
+Bubble Safari / سفاري الفقاعات — v0.8 TV polish
+Smart TV remote focus is stable across Home → Age → World → Game → Back.
+Current visual pass: world identity, gameplay focus, progress bar, lightweight TV-safe polish.
+Audio remains intentionally postponed while visual/gameplay work continues.
