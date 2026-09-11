@@ -1,4 +1,4 @@
-const CACHE = 'bubble-safari-v9';
+const CACHE = 'bubble-safari-v10';
 const CORE = [
   './', './index.html', './styles.css', './worlds.css', './game-v3.js',
   './game-data.js', './tv-nav.js', './voice.js', './manifest.webmanifest', './favicon.svg'
@@ -21,8 +21,6 @@ self.addEventListener('activate', event => {
 });
 
 async function cachePut(request, response) {
-  // Cache API rejects partial (206) responses. Never let a cache-write failure
-  // turn a perfectly valid network response into a failed media request.
   if (response?.ok && response.status === 200) {
     try {
       const cache = await caches.open(CACHE);
@@ -48,8 +46,6 @@ self.addEventListener('fetch', event => {
       if (cachedAudio) return cachedAudio;
 
       try {
-        // Media elements usually request byte ranges. Return 206 responses directly;
-        // a parallel full fetch from voice.js warms the offline cache safely.
         const response = await fetch(request);
         if (isRange || response.status === 206) return response;
         return await cachePut(request, response);
@@ -58,7 +54,6 @@ self.addEventListener('fetch', event => {
       }
     }
 
-    // Always revalidate app code and HTML so Smart TVs don't keep stale modules.
     try {
       return await cachePut(request, await fetch(request, { cache: 'no-store' }));
     } catch {
