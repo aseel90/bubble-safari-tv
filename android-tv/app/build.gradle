@@ -38,11 +38,9 @@ android {
         versionName '0.8.0-tv1'
     }
 
-    sourceSets {
-        main {
-            assets.srcDir(generatedWebAssets)
-        }
-    }
+    sourceSets.getByName('main').assets.directories.add(
+            generatedWebAssets.get().asFile.absolutePath
+    )
 
     buildTypes {
         debug {
