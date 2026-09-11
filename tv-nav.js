@@ -55,12 +55,13 @@ export function createTvNavigation({ getActiveScreen, onBack }) {
   document.addEventListener('keydown', event => {
     const code = event.keyCode || event.which || 0;
     let key = event.key;
-    if (code === 19) key = 'ArrowUp';
-    if (code === 20) key = 'ArrowDown';
-    if (code === 21) key = 'ArrowLeft';
-    if (code === 22) key = 'ArrowRight';
-    if (code === 23) key = 'Enter';
-    if (code === 4) key = 'BrowserBack';
+    // Android TV / Google TV / standard browser keycodes.
+    if (code === 19 || code === 38) key = 'ArrowUp';
+    if (code === 20 || code === 40) key = 'ArrowDown';
+    if (code === 21 || code === 37) key = 'ArrowLeft';
+    if (code === 22 || code === 39) key = 'ArrowRight';
+    if (code === 23 || code === 66 || code === 13) key = 'Enter';
+    if (code === 4 || code === 27) key = 'BrowserBack';
 
     const handled = ['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Enter',' ','Escape','Backspace','BrowserBack'];
     if (handled.includes(key)) event.preventDefault();
