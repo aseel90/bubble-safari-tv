@@ -1,4 +1,4 @@
-const CACHE = 'bubble-safari-v8';
+const CACHE = 'bubble-safari-v9';
 const CORE = [
   './', './index.html', './styles.css', './worlds.css', './game-v3.js',
   './game-data.js', './tv-nav.js', './voice.js', './manifest.webmanifest', './favicon.svg'
@@ -21,9 +21,13 @@ self.addEventListener('activate', event => {
 });
 
 async function cachePut(request, response) {
-  if (response?.ok) {
-    const cache = await caches.open(CACHE);
-    await cache.put(request, response.clone());
+  // Cache API rejects partial (206) responses. Never let a cache-write failure
+  // turn a perfectly valid network response into a failed media request.
+  if (response?.ok && response.status === 200) {
+    try {
+      const cache = await caches.open(CACHE);
+      await cache.put(request, response.clone());
+    } catch {}
   }
   return response;
 }
@@ -37,20 +41,24 @@ self.addEventListener('fetch', event => {
 
   event.respondWith((async () => {
     const isAudio = url.pathname.includes('/audio/');
+    const isRange = request.headers.has('range');
 
-    // Voice files are immutable and can be cached aggressively after first use.
     if (isAudio) {
       const cachedAudio = await caches.match(request);
       if (cachedAudio) return cachedAudio;
+
       try {
-        return await cachePut(request, await fetch(request));
+        // Media elements usually request byte ranges. Return 206 responses directly;
+        // a parallel full fetch from voice.js warms the offline cache safely.
+        const response = await fetch(request);
+        if (isRange || response.status === 206) return response;
+        return await cachePut(request, response);
       } catch {
         return Response.error();
       }
     }
 
-    // App code is always revalidated from the network first. `no-store` also
-    // bypasses Chromium's HTTP cache, preventing stale JS modules on Smart TVs.
+    // Always revalidate app code and HTML so Smart TVs don't keep stale modules.
     try {
       return await cachePut(request, await fetch(request, { cache: 'no-store' }));
     } catch {

@@ -88,7 +88,15 @@ export function createVoiceEngine({ isMuted }) {
     };
     audio.onerror = fail;
     const result = audio.play();
-    if (result?.catch) result.catch(fail);
+    if (result?.then) {
+      result.then(() => {
+        // Warm a complete 200 response in the Service Worker cache. Media elements
+        // commonly use Range requests (206), which Cache API cannot store directly.
+        fetch(audioFile(key)).catch(() => {});
+      }).catch(fail);
+    } else if (result?.catch) {
+      result.catch(fail);
+    }
     audio.onended = () => { if (currentVoice === audio) currentVoice = null; };
   }
 
