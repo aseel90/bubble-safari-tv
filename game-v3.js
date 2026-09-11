@@ -2,12 +2,13 @@ import { COLORS, SHAPES, NUMBERS, WORLDS, FEEDBACK } from './game-data.js';
 import { createTvNavigation } from './tv-nav.js';
 import { createVoiceEngine } from './voice.js';
 import { animalArt, choiceArt, worldArt, uiArt } from './art.js';
+import { sceneArt } from './scene-art.js';
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 const screens = { home:$('#homeScreen'), age:$('#ageScreen'), world:$('#worldScreen'), game:$('#gameScreen'), finish:$('#finishScreen') };
-const app=$('#app'), hud=$('#hud'), starCount=$('#starCount'), roundText=$('#roundText'), worldName=$('#worldName'), worldIcon=$('#worldIcon'), choicesEl=$('#choices'), questionText=$('#questionText'), questionKicker=$('#questionKicker'), questionVisual=$('#questionVisual'), replayButton=$('#replayButton'), soundButton=$('#soundButton'), soundIcon=$('#soundIcon'), feedback=$('#feedback'), feedbackTitle=$('#feedbackTitle'), feedbackSubtitle=$('#feedbackSubtitle'), feedbackIcon=$('#feedbackIcon'), confetti=$('#confetti'), finalStars=$('#finalStars');
+const app=$('#app'), worldDecor=$('#worldDecor'), hud=$('#hud'), starCount=$('#starCount'), roundText=$('#roundText'), worldName=$('#worldName'), worldIcon=$('#worldIcon'), choicesEl=$('#choices'), questionText=$('#questionText'), questionKicker=$('#questionKicker'), questionVisual=$('#questionVisual'), replayButton=$('#replayButton'), soundButton=$('#soundButton'), soundIcon=$('#soundIcon'), feedback=$('#feedback'), feedbackTitle=$('#feedbackTitle'), feedbackSubtitle=$('#feedbackSubtitle'), feedbackIcon=$('#feedbackIcon'), confetti=$('#confetti'), finalStars=$('#finalStars');
 
 const state={age:'2-3',world:'jungle',round:0,totalRounds:12,stars:0,streak:0,muted:localStorage.getItem('bubbleSafariMuted')==='1',currentQuestion:null,locked:false,typePlan:[],usedTargets:{},feedbackHistory:[],lastSize:null,flowId:0};
 const voice=createVoiceEngine({isMuted:()=>state.muted});
@@ -108,7 +109,7 @@ async function selectChoice(button,option){
   if(state.round>=state.totalRounds)finishGame();else{state.locked=false;renderQuestion()}
 }
 
-function setWorld(id){state.world=id;const world=WORLDS[id];app.classList.remove('world-jungle','world-farm','world-ocean','world-bubblecity','world-rainbow');app.classList.add(world.className);worldName.textContent=world.name;worldIcon.innerHTML=worldArt(world.art)}
+function setWorld(id){state.world=id;const world=WORLDS[id];app.classList.remove('world-jungle','world-farm','world-ocean','world-bubblecity','world-rainbow');app.classList.add(world.className);worldName.textContent=world.name;worldIcon.innerHTML=worldArt(world.art);if(worldDecor)worldDecor.innerHTML=sceneArt(world.art)}
 function startGame(worldId=state.world){state.flowId++;setWorld(worldId);state.round=0;state.totalRounds=state.age==='2-3'?12:15;state.stars=0;state.streak=0;state.locked=false;state.usedTargets={};state.feedbackHistory=[];state.lastSize=null;state.typePlan=buildTypePlan();starCount.textContent='0';const world=WORLDS[state.world];voice.preload([...world.animals.map(a=>a.audio),...COLORS.map(c=>c.audio),...SHAPES.map(s=>s.audio),...NUMBERS.map(n=>n.audio),'size_big','size_small','prompt_match','prompt_odd','feedback_tryagain',...FEEDBACK.map(f=>f.audio)]);showScreen('game');setTimeout(renderQuestion,180)}
 function finishGame(){state.flowId++;voice.stop();state.locked=false;finalStars.textContent=state.stars;showScreen('finish');voice.success(true);setTimeout(()=>voice.play('ui_finish'),220)}
 function updateSoundUi(){soundIcon.innerHTML=uiArt(state.muted?'muted':'sound');soundButton.setAttribute('aria-label',state.muted?'تشغيل الصوت':'كتم الصوت')}
