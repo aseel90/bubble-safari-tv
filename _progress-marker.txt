@@ -1,4 +1,13 @@
-Bubble Safari / سفاري الفقاعات — v0.8 TV polish
-Smart TV remote focus is stable across Home → Age → World → Game → Back.
-Current visual pass: world identity, gameplay focus, progress bar, lightweight TV-safe polish.
-Audio remains intentionally postponed while visual/gameplay work continues.
+Bubble Safari / سفاري الفقاعات — v0.8 TV stable candidate
+
+Current status:
+- Smart TV remote focus stable across Home → Age → World → Game → Back.
+- Ages: 2–3 = 12 rounds, 4–5 = 15 rounds.
+- Four worlds and seven challenge types are active.
+- TV visual polish, world identity and deterministic progress bar are active.
+- Static game assets use versioned Cache-First Service Worker v25 + modulepreload.
+- 960×540 and 1280×720 gameplay layouts tested without scroll/overflow; 1920×1080 baseline previously passed.
+- Missing postponed prompt audio requests were removed; match/odd replay is disabled until their audio is added.
+- Audio completion/compression remains intentionally postponed.
+
+Next: final live v25 console check, full-round smoke test, then Android TV packaging phase.
