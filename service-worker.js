@@ -1,17 +1,17 @@
-const CACHE = 'bubble-safari-v25';
+const CACHE = 'bubble-safari-v26';
 const CORE = [
   './', './index.html', './styles.css', './art.css', './worlds.css', './polish-v08.css',
   './game-v3.js', './game-data.js', './tv-nav.js', './voice.js', './art.js', './scene-art.js',
   './manifest.webmanifest', './favicon.svg'
 ];
+const CORE_NAMES = new Set(CORE.map(path => new URL(path, self.location.href).pathname));
 
 self.addEventListener('install', event => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE);
     await Promise.all(CORE.map(async path => {
       const response = await fetch(new Request(path, { cache: 'reload' }));
-      if (!response.ok || response.status !== 200) throw new Error(`Failed to cache ${path}: ${response.status}`);
-      await cache.put(path, response.clone());
+      if (response.ok && response.status === 200) await cache.put(path, response.clone());
     }));
     await self.skipWaiting();
   })());
@@ -25,8 +25,9 @@ self.addEventListener('activate', event => {
   );
 });
 
-async function cachePut(cache, request, response) {
+async function cachePut(request, response) {
   if (response?.ok && response.status === 200) {
+    const cache = await caches.open(CACHE);
     try { await cache.put(request, response.clone()); } catch {}
   }
   return response;
@@ -40,29 +41,28 @@ self.addEventListener('fetch', event => {
   if (url.origin !== self.location.origin) return;
 
   event.respondWith((async () => {
-    const cache = await caches.open(CACHE);
     const isAudio = url.pathname.includes('/audio/');
+    const isCoreAsset = CORE_NAMES.has(url.pathname);
 
-    if (isAudio) {
+    if (isAudio || isCoreAsset) {
+      const cached = await caches.match(request, { ignoreSearch: true });
+      if (cached) return cached;
       try {
-        const cachedAudio = await cache.match(request, { ignoreSearch: true });
-        if (cachedAudio && !request.headers.has('Range')) return cachedAudio;
         const response = await fetch(request);
-        if (!request.headers.has('Range') && response.status === 200) return cachePut(cache, request, response);
+        if (response.status === 200) return cachePut(request, response);
         return response;
       } catch {
-        return (await cache.match(request, { ignoreSearch: true })) || Response.error();
+        return Response.error();
       }
     }
 
-    const cached = await cache.match(request, { ignoreSearch: true });
-    if (cached) return cached;
-
     try {
       const response = await fetch(request, { cache: 'no-store' });
-      return cachePut(cache, request, response);
+      return cachePut(request, response);
     } catch {
-      if (request.mode === 'navigate') return (await cache.match('./index.html')) || Response.error();
+      const cached = await caches.match(request, { ignoreSearch: true });
+      if (cached) return cached;
+      if (request.mode === 'navigate') return (await caches.match('./index.html')) || Response.error();
       return Response.error();
     }
   })());

@@ -1,0 +1,68 @@
+plugins {
+    id 'com.android.application'
+}
+
+def webRoot = rootProject.projectDir.parentFile
+def generatedWebAssets = layout.buildDirectory.dir('generated/web-assets')
+
+tasks.register('syncWebAssets', Sync) {
+    from(webRoot) {
+        include 'index.html'
+        include 'styles.css'
+        include 'art.css'
+        include 'worlds.css'
+        include 'polish-v08.css'
+        include 'game-v3.js'
+        include 'game-data.js'
+        include 'tv-nav.js'
+        include 'voice.js'
+        include 'art.js'
+        include 'scene-art.js'
+        include 'service-worker.js'
+        include 'manifest.webmanifest'
+        include 'favicon.svg'
+        include 'audio/**'
+    }
+    into(generatedWebAssets)
+}
+
+android {
+    namespace 'com.bubblesafari.tv'
+    compileSdk 36
+
+    defaultConfig {
+        applicationId 'com.bubblesafari.tv'
+        minSdk 26
+        targetSdk 36
+        versionCode 1
+        versionName '0.8.0-tv1'
+    }
+
+    sourceSets {
+        main {
+            assets.srcDir(generatedWebAssets)
+        }
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+        }
+        release {
+            minifyEnabled false
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+tasks.named('preBuild').configure {
+    dependsOn(tasks.named('syncWebAssets'))
+}
+
+dependencies {
+    implementation 'androidx.webkit:webkit:1.17.0'
+}
