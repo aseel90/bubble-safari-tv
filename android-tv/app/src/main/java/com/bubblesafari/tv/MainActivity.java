@@ -1,6 +1,7 @@
 package com.bubblesafari.tv;
 
 import android.app.Activity;
+import android.content.pm.ApplicationInfo;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -73,7 +74,8 @@ public final class MainActivity extends Activity {
             settings.setSafeBrowsingEnabled(true);
         }
 
-        WebView.setWebContentsDebuggingEnabled(BuildConfig.DEBUG);
+        boolean debuggable = (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
+        WebView.setWebContentsDebuggingEnabled(debuggable);
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
