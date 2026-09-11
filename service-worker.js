@@ -1,15 +1,18 @@
-const CACHE = 'bubble-safari-v15';
+const CACHE = 'bubble-safari-v16';
 const CORE = [
   './', './index.html', './styles.css', './art.css', './worlds.css', './game-v3.js',
   './game-data.js', './tv-nav.js', './voice.js', './art.js', './scene-art.js', './manifest.webmanifest', './favicon.svg'
 ];
 
 self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE)
-      .then(cache => cache.addAll(CORE))
-      .then(() => self.skipWaiting())
-  );
+  event.waitUntil((async () => {
+    const cache = await caches.open(CACHE);
+    await Promise.all(CORE.map(async path => {
+      const response = await fetch(new Request(path, { cache: 'reload' }));
+      if (response.ok && response.status === 200) await cache.put(path, response.clone());
+    }));
+    await self.skipWaiting();
+  })());
 });
 
 self.addEventListener('activate', event => {
@@ -21,9 +24,9 @@ self.addEventListener('activate', event => {
 });
 
 async function cachePut(request, response) {
-  if (response?.ok && response.status !== 206) {
+  if (response?.ok && response.status === 200) {
     const cache = await caches.open(CACHE);
-    await cache.put(request, response.clone());
+    try { await cache.put(request, response.clone()); } catch {}
   }
   return response;
 }
@@ -40,21 +43,23 @@ self.addEventListener('fetch', event => {
 
     if (isAudio) {
       try {
-        return await fetch(request);
-      } catch {
         const cachedAudio = await caches.match(request);
-        return cachedAudio || Response.error();
+        if (cachedAudio && !request.headers.has('Range')) return cachedAudio;
+        const response = await fetch(request);
+        if (!request.headers.has('Range') && response.status === 200) return cachePut(request, response);
+        return response;
+      } catch {
+        return (await caches.match(request)) || Response.error();
       }
     }
 
     try {
-      return await cachePut(request, await fetch(request));
+      const response = await fetch(request, { cache: 'no-store' });
+      return cachePut(request, response);
     } catch {
       const cached = await caches.match(request);
       if (cached) return cached;
-      if (request.mode === 'navigate') {
-        return (await caches.match('./index.html')) || Response.error();
-      }
+      if (request.mode === 'navigate') return (await caches.match('./index.html')) || Response.error();
       return Response.error();
     }
   })());
