@@ -33,7 +33,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Java 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '17'
@@ -52,9 +52,35 @@ jobs:
       - name: Build debug APK
         run: gradle -p android-tv :app:assembleDebug --stacktrace
 
+      - name: Verify Android TV APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          APK='android-tv/app/build/outputs/apk/debug/app-debug.apk'
+          AAPT="$ANDROID_HOME/build-tools/36.0.0/aapt"
+          BADGING='android-tv/app/build/outputs/apk/debug/badging.txt'
+          MANIFEST_TREE='android-tv/app/build/outputs/apk/debug/manifest-tree.txt'
+
+          test -s "$APK"
+          "$AAPT" dump badging "$APK" | tee "$BADGING"
+          "$AAPT" dump xmltree "$APK" AndroidManifest.xml > "$MANIFEST_TREE"
+
+          grep -q "package: name='com.bubblesafari.tv'" "$BADGING"
+          grep -q "uses-feature:'android.software.leanback'" "$BADGING"
+          grep -q "uses-feature-not-required:'android.hardware.touchscreen'" "$BADGING"
+          grep -q 'android.intent.category.LEANBACK_LAUNCHER' "$MANIFEST_TREE"
+
+          unzip -l "$APK" | grep -q 'assets/index.html'
+          unzip -l "$APK" | grep -q 'assets/game-v3.js'
+          unzip -l "$APK" | grep -q 'assets/tv-nav.js'
+          unzip -l "$APK" | grep -q 'assets/audio/ui_start.wav'
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: bubble-safari-tv-debug-apk
-          path: android-tv/app/build/outputs/apk/debug/app-debug.apk
+          path: |
+            android-tv/app/build/outputs/apk/debug/app-debug.apk
+            android-tv/app/build/outputs/apk/debug/badging.txt
+            android-tv/app/build/outputs/apk/debug/manifest-tree.txt
           if-no-files-found: error
