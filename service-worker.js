@@ -1,7 +1,7 @@
-const CACHE = 'bubble-safari-v11';
+const CACHE = 'bubble-safari-v12';
 const CORE = [
   './', './index.html', './styles.css', './worlds.css', './game-v3.js',
-  './game-data.js', './tv-nav.js', './voice.js', './manifest.webmanifest', './favicon.svg'
+  './game-data.js', './tv-nav.js', './voice.js', './art.js', './manifest.webmanifest', './favicon.svg'
 ];
 
 self.addEventListener('install', event => {

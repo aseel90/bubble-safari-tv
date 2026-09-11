@@ -1,9 +1,9 @@
-/* Bubble Safari TV v0.3 — world selection + Smart TV safe areas */
+/* Bubble Safari TV v0.4 — world selection + Smart TV safe areas */
 .app-shell{--sky-top:#c9eff2;--sky-bottom:#e8f5ce;--hill-back:#8ecb6e;--hill-front:#65ad5b;background:linear-gradient(180deg,var(--sky-top) 0%,var(--sky-bottom) 58%,#b9dc80 100%)}
 .app-shell.world-jungle{--sky-top:#c9eff2;--sky-bottom:#e8f5ce;--hill-back:#8ecb6e;--hill-front:#65ad5b}
 .app-shell.world-farm{--sky-top:#dff2ff;--sky-bottom:#fff0c9;--hill-back:#9ed67a;--hill-front:#78bd63}
 .app-shell.world-ocean{--sky-top:#bfeaff;--sky-bottom:#d9f5ff;--hill-back:#69c7d8;--hill-front:#38a9c5}
-.app-shell.world-rainbow{--sky-top:#efe7ff;--sky-bottom:#fff3cf;--hill-back:#8fd3c8;--hill-front:#73bcae}
+.app-shell.world-bubblecity{--sky-top:#efe7ff;--sky-bottom:#fff3cf;--hill-back:#8fd3c8;--hill-front:#73bcae}
 .app-shell .hill-back{background:var(--hill-back)}
 .app-shell .hill-front{background:var(--hill-front)}
 .world-panel{width:min(1120px,88vw);padding:3.5vh 4vw}
@@ -12,16 +12,16 @@
 .world-card-jungle{background:linear-gradient(180deg,#f2fff0,#d9f2c6)}
 .world-card-farm{background:linear-gradient(180deg,#fff9e8,#f7e5ae)}
 .world-card-ocean{background:linear-gradient(180deg,#eefbff,#c9eff9)}
-.world-card-rainbow{background:linear-gradient(180deg,#fff5fb,#eee3ff)}
+.world-card-bubblecity{background:linear-gradient(180deg,#fff5fb,#eee3ff)}
 .world-card strong{font-size:clamp(21px,1.8vw,30px);color:var(--forest-deep)}
 .world-card small{font-size:clamp(13px,1vw,17px);font-weight:700;color:#5d7f71;text-align:center}
-.world-emoji{font-size:clamp(62px,6vw,95px);line-height:1;filter:drop-shadow(0 8px 8px rgba(53,82,68,.12))}
+.world-art{display:grid;place-items:center;width:clamp(74px,6vw,102px);height:clamp(74px,6vw,102px);filter:drop-shadow(0 8px 8px rgba(53,82,68,.12))}
+.world-art .game-art{width:100%;height:100%}
 .world-card:focus,.world-card.tv-focus{transform:scale(1.055);box-shadow:var(--focus);z-index:10}
-.world-pill{min-width:150px}.world-pill strong{font-size:16px;white-space:nowrap}
+.world-pill{min-width:165px}.world-pill strong{font-size:16px;white-space:nowrap}
 .choice-content{transition:transform .18s ease}
-.choice-size-symbol{line-height:1;transform:scale(var(--size-scale,1))}
 .finish-panel .secondary-button{height:56px}
 .tv-focus{scroll-margin:0}
-@media (max-width:1100px){.world-grid{grid-template-columns:repeat(2,1fr);gap:1.2vw}.world-card{min-height:180px;padding:12px}.world-emoji{font-size:54px}.world-panel{padding-top:2vh;padding-bottom:2vh}}
-@media (max-height:620px){.world-panel{width:min(1050px,90vw);padding:2vh 3vw}.world-grid{grid-template-columns:repeat(4,1fr)}.world-card{min-height:170px}.world-emoji{font-size:54px}.world-card strong{font-size:21px}.world-card small{font-size:12px}.world-pill{min-width:120px}.world-pill strong{display:none}}
+@media (max-width:1100px){.world-grid{grid-template-columns:repeat(2,1fr);gap:1.2vw}.world-card{min-height:180px;padding:12px}.world-art{width:64px;height:64px}.world-panel{padding-top:2vh;padding-bottom:2vh}}
+@media (max-height:620px){.world-panel{width:min(1050px,90vw);padding:2vh 3vw}.world-grid{grid-template-columns:repeat(4,1fr)}.world-card{min-height:170px}.world-art{width:58px;height:58px}.world-card strong{font-size:21px}.world-card small{font-size:12px}.world-pill{min-width:138px}.world-pill strong{font-size:14px}}
 @media (min-width:2500px){.topbar{padding-left:5vw;padding-right:5vw}.stage{padding-left:5vw;padding-right:5vw}.panel,.game-layout{transform:scale(1.04)}}
