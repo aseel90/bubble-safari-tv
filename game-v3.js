@@ -77,7 +77,7 @@ function renderQuestion(){
   questionText.textContent=state.currentQuestion.prompt;
   if(state.currentQuestion.reference){questionVisual.innerHTML=choiceArt(state.currentQuestion.reference.kind,state.currentQuestion.reference.id);questionVisual.classList.remove('hidden')}else{questionVisual.innerHTML='';questionVisual.classList.add('hidden')}
   roundText.textContent=`${state.round+1} / ${state.totalRounds}`;starCount.textContent=state.stars;
-  if(progressFill) progressFill.style.width=`${Math.max(6,((state.round+1)/state.totalRounds)*100)}%`;
+  if(progressFill) progressFill.style.transform=`scaleX(${Math.max(.06,(state.round+1)/state.totalRounds)})`;
   if(progressMeter){progressMeter.setAttribute('aria-valuemax',String(state.totalRounds));progressMeter.setAttribute('aria-valuenow',String(state.round+1));}
   choicesEl.innerHTML='';
   choicesEl.style.gridTemplateColumns=`repeat(${state.currentQuestion.options.length},minmax(0,1fr))`;
@@ -113,7 +113,7 @@ async function selectChoice(button,option){
 }
 
 function setWorld(id){state.world=id;const world=WORLDS[id];app.classList.remove('world-jungle','world-farm','world-ocean','world-bubblecity','world-rainbow');app.classList.add(world.className);worldName.textContent=world.name;worldIcon.innerHTML=worldArt(world.art);if(worldDecor)worldDecor.innerHTML=sceneArt(world.art)}
-function startGame(worldId=state.world){state.flowId++;setWorld(worldId);state.round=0;state.totalRounds=state.age==='2-3'?12:15;state.stars=0;state.streak=0;state.locked=false;state.usedTargets={};state.feedbackHistory=[];state.lastSize=null;state.typePlan=buildTypePlan();starCount.textContent='0';if(progressFill)progressFill.style.width='0%';const world=WORLDS[state.world];voice.preload([...world.animals.map(a=>a.audio),...COLORS.map(c=>c.audio),...SHAPES.map(s=>s.audio),...NUMBERS.map(n=>n.audio),'size_big','size_small','prompt_match','prompt_odd','feedback_tryagain',...FEEDBACK.map(f=>f.audio)]);showScreen('game');setTimeout(renderQuestion,180)}
+function startGame(worldId=state.world){state.flowId++;setWorld(worldId);state.round=0;state.totalRounds=state.age==='2-3'?12:15;state.stars=0;state.streak=0;state.locked=false;state.usedTargets={};state.feedbackHistory=[];state.lastSize=null;state.typePlan=buildTypePlan();starCount.textContent='0';if(progressFill)progressFill.style.transform='scaleX(0)';const world=WORLDS[state.world];voice.preload([...world.animals.map(a=>a.audio),...COLORS.map(c=>c.audio),...SHAPES.map(s=>s.audio),...NUMBERS.map(n=>n.audio),'size_big','size_small','prompt_match','prompt_odd','feedback_tryagain',...FEEDBACK.map(f=>f.audio)]);showScreen('game');setTimeout(renderQuestion,180)}
 function finishGame(){state.flowId++;voice.stop();state.locked=false;finalStars.textContent=state.stars;showScreen('finish');voice.success(true);setTimeout(()=>voice.play('ui_finish'),220)}
 function updateSoundUi(){soundIcon.innerHTML=uiArt(state.muted?'muted':'sound');soundButton.setAttribute('aria-label',state.muted?'تشغيل الصوت':'كتم الصوت')}
 
