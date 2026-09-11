@@ -67,7 +67,7 @@ jobs:
           "$AAPT" dump xmltree "$APK" AndroidManifest.xml > "$MANIFEST_TREE"
 
           grep -Fq "package: name='com.bubblesafari.tv'" "$BADGING"
-          grep -Fq "uses-feature:'android.software.leanback'" "$BADGING"
+          grep -Fq "uses-feature: name='android.software.leanback'" "$BADGING"
           grep -Fq "uses-feature-not-required: name='android.hardware.touchscreen'" "$BADGING"
           grep -Fq "leanback-launchable-activity: name='com.bubblesafari.tv.MainActivity'" "$BADGING"
 
