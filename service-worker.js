@@ -1,4 +1,4 @@
-const CACHE = 'bubble-safari-v20';
+const CACHE = 'bubble-safari-v21';
 const CORE = [
   './', './index.html', './styles.css', './art.css', './worlds.css', './game-v3.js',
   './polish-v08.css', './game-data.js', './tv-nav.js', './voice.js', './art.js', './scene-art.js', './manifest.webmanifest', './favicon.svg'
