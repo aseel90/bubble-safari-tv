@@ -1,13 +1,27 @@
-Bubble Safari / سفاري الفقاعات — v0.8 TV stable candidate
+Bubble Safari / سفاري الفقاعات — v0.8 + Android TV debug APK verified
 
-Current status:
-- Smart TV remote focus stable across Home → Age → World → Game → Back.
+Web status:
+- Smart TV remote focus stable across Home → Age → World → Game → Finish → Back.
 - Ages: 2–3 = 12 rounds, 4–5 = 15 rounds.
 - Four worlds and seven challenge types are active.
-- TV visual polish, world identity and deterministic progress bar are active.
-- Static game assets use versioned Cache-First Service Worker v25 + modulepreload.
-- 960×540 and 1280×720 gameplay layouts tested without scroll/overflow; 1920×1080 baseline previously passed.
-- Missing postponed prompt audio requests were removed; match/odd replay is disabled until their audio is added.
+- Full 15/15 smoke tests passed in Jungle and Farm with 15 stars.
+- Play Again, Choose Another World and Return Home passed with remote focus.
+- Final browser console: 0 errors, 0 exceptions.
+- 960×540 and 1280×720 gameplay layouts passed without scroll/overflow.
 - Audio completion/compression remains intentionally postponed.
 
-Next: final live v25 console check, full-round smoke test, then Android TV packaging phase.
+Android TV status:
+- Native Android TV WebView wrapper added under android-tv/.
+- Offline game assets are bundled into the APK at build time.
+- Package: com.bubblesafari.tv; version 0.8.0-tv1; minSdk 26; targetSdk 36.
+- LEANBACK_LAUNCHER, landscape, no touchscreen requirement, D-pad/OK/Back bridge implemented.
+- GitHub Actions Build debug APK: PASS.
+- APK metadata + bundled asset verification: PASS.
+- Upload artifact: PASS.
+- Verified APK source commit: 333d95f.
+- Verified artifact downloaded locally as bubble-safari-tv-debug-apk (1).zip.
+
+Next:
+- Install app-debug.apk on a real Xiaomi TV Stick.
+- Run full remote/audio/lifecycle QA on device.
+- Then create a signed release APK and finish/compress remaining Arabic audio.

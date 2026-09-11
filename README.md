@@ -27,8 +27,8 @@
 
 ### الأداء وOffline
 
-- المشروع Static بالكامل ولا يحتاج Build step.
-- ملفات الواجهة واللعبة الأساسية صغيرة جدًا، ويتم تحميل Modules بالتوازي عبر `modulepreload`.
+- نسخة الويب Static بالكامل ولا تحتاج Build step.
+- ملفات الواجهة واللعبة الأساسية صغيرة ويتم تحميل Modules بالتوازي عبر `modulepreload`.
 - Service Worker بإصدارات Cache واضحة ويستخدم Cache-First لملفات اللعبة الثابتة.
 - بعد أول تحميل، ملفات JavaScript/CSS الأساسية تعمل من الكاش مباشرة.
 - PWA + Offline cache لملفات اللعبة الأساسية.
@@ -37,7 +37,49 @@
 
 توجد حاليًا ملفات WAV عربية للحيوانات والألوان والأشكال والأرقام والأحجام وبعض رسائل التشجيع. العمل على الصوت لم يكتمل بعد وهو مؤجل لمرحلة لاحقة. أسئلة المطابقة و"العنصر المختلف" لا تطلب ملفات صوت غير موجودة حاليًا، لتجنب أخطاء 404 والتحميل غير الضروري.
 
-## تشغيل محلي
+## Android TV APK
+
+يوجد الآن Wrapper أصلي لـ Android TV داخل `android-tv/` ويضم اللعبة نفسها داخل الـAPK، لذلك اللعب لا يعتمد على GitHub Pages أو اتصال إنترنت بعد التثبيت.
+
+خصائص نسخة Android TV:
+
+- Package: `com.bubblesafari.tv`
+- Version: `0.8.0-tv1`
+- minSdk: 26
+- targetSdk / compileSdk: 36
+- Landscape + Immersive fullscreen.
+- `LEANBACK_LAUNCHER` وتطبيق مصنف كتطبيق TV حقيقي.
+- شاشة لمس غير مطلوبة.
+- دعم D-pad / OK / Back الأصلي عبر WebView.
+- أصول اللعبة وملفات الصوت الحالية مدمجة داخل APK.
+
+### بناء APK
+
+GitHub Actions workflow باسم **Android TV APK** يبني `app-debug.apk` ثم يفحص تلقائيًا:
+
+- package الصحيح.
+- Leanback support.
+- touchscreen غير مطلوب.
+- `MainActivity` قابلة للإطلاق من Android TV launcher.
+- وجود `index.html`, `game-v3.js`, `tv-nav.js` وملف صوت أساسي داخل APK.
+
+آخر APK تم بناؤه وفحصه بنجاح في commit `333d95f`.
+
+### تثبيت نسخة الاختبار
+
+نزّل Artifact باسم `bubble-safari-tv-debug-apk` من آخر Workflow ناجح ثم فك الضغط. ستجد `app-debug.apk`.
+
+بعد توصيل جهاز Android TV عبر ADB يمكنك تثبيته بـ:
+
+```bash
+adb install -r app-debug.apk
+```
+
+أو انقل `app-debug.apk` إلى Xiaomi TV Stick وثبته بعد السماح لتطبيق مدير الملفات بتثبيت التطبيقات غير المعروفة.
+
+> هذه Debug APK للاختبار على الجهاز الحقيقي. التوقيع النهائي/Release يأتي بعد اختبار Xiaomi TV Stick.
+
+## تشغيل نسخة الويب محليًا
 
 افتح المشروع عبر أي static web server، مثل:
 
@@ -49,11 +91,11 @@ python -m http.server 8080
 
 ## النشر
 
-المشروع منشور من فرع `main` على GitHub Pages. لا توجد خطوة Build مطلوبة.
+نسخة الويب منشورة من فرع `main` على GitHub Pages. Android TV APK يُبنى تلقائيًا عبر GitHub Actions عند تغيير ملفات اللعبة أو `android-tv/`.
 
 ## الخطوات القادمة
 
-1. إكمال ملفات الصوت العربية المتبقية ثم ضغطها لصيغة أخف مناسبة للتلفزيون.
-2. جولة QA كاملة لكل العوالم ونوعي العمر.
-3. تجهيز Android TV wrapper مع launcher icon/banner ودعم زر Back الأصلي.
-4. اختبار النسخة النهائية على Xiaomi TV Stick قبل التغليف النهائي.
+1. تثبيت Debug APK على Xiaomi TV Stick واختبار Home → Age → World → Game → Finish بالريموت الحقيقي.
+2. اختبار Back من كل شاشة، الصوت، الإيقاف/الاستئناف، وإعادة فتح التطبيق.
+3. بعد نجاح الجهاز الحقيقي: إنشاء Release APK موقّع.
+4. إكمال وضغط ملفات الصوت العربية المتبقية.
