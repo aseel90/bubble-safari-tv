@@ -25,6 +25,13 @@ jobs:
         with:
           ref: defold-native-prototype
 
+      - name: Prepare build log
+        shell: bash
+        run: |
+          mkdir -p defold-prototype/dist
+          rm -f defold-prototype/dist/bubble-safari-defold-prototype.apk defold-prototype/dist/SHA256SUMS.txt
+          printf 'Build UTC: %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > defold-prototype/dist/build.log
+
       - name: Set up Java 25
         uses: actions/setup-java@v4
         with:
@@ -37,41 +44,55 @@ jobs:
           sha1: stable
 
       - name: Generate representative native ocean art
+        id: art
         shell: bash
         run: |
-          python3 -m pip install --disable-pip-version-check --quiet pillow cairosvg arabic-reshaper python-bidi
-          python3 defold-prototype/tools/generate_native_art.py
+          set +e
+          python3 -m pip install --disable-pip-version-check --quiet pillow cairosvg arabic-reshaper python-bidi >> defold-prototype/dist/build.log 2>&1
+          status=$?
+          if [ "$status" -eq 0 ]; then
+            python3 defold-prototype/tools/generate_native_art.py >> defold-prototype/dist/build.log 2>&1
+            status=$?
+          fi
+          echo "exit_code=$status" >> "$GITHUB_OUTPUT"
+          exit 0
 
-      - name: Build native prototype APKs
+      - name: Build representative universal APK
         id: build
         shell: bash
         run: |
-          mkdir -p defold-prototype/dist
-          rm -f defold-prototype/dist/bubble-safari-defold-prototype.apk defold-prototype/dist/bubble-safari-defold-prototype-arm64.apk defold-prototype/dist/bubble-safari-defold-prototype-armv7.apk defold-prototype/dist/SHA256SUMS.txt
-          printf 'Build UTC: %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > defold-prototype/dist/build.log
-          build_one() {
-            local name="$1"; local archs="$2"; local out="defold-prototype/out/$name"
-            echo "=== BUILD $name architectures=$archs ===" >> defold-prototype/dist/build.log
-            rm -rf "$out"
-            if ! ARCHITECTURES="$archs" OUT_DIR="$GITHUB_WORKSPACE/$out" BOB_JAR="$BOB" bash ./defold-prototype/build_android.sh >> defold-prototype/dist/build.log 2>&1; then return 1; fi
-            local apk; apk="$(find "$out" -type f -name '*.apk' -print -quit)"; [ -n "$apk" ] || return 2
-            case "$name" in android-universal) cp "$apk" defold-prototype/dist/bubble-safari-defold-prototype.apk ;; android-arm64) cp "$apk" defold-prototype/dist/bubble-safari-defold-prototype-arm64.apk ;; android-armv7) cp "$apk" defold-prototype/dist/bubble-safari-defold-prototype-armv7.apk ;; esac
-          }
-          status=0; build_one android-universal 'armv7-android,arm64-android' || status=$?
-          if [ "$status" -eq 0 ]; then build_one android-arm64 'arm64-android' || status=$?; fi
-          if [ "$status" -eq 0 ]; then build_one android-armv7 'armv7-android' || status=$?; fi
-          if [ "$status" -eq 0 ]; then sha256sum defold-prototype/dist/bubble-safari-defold-prototype.apk defold-prototype/dist/bubble-safari-defold-prototype-arm64.apk defold-prototype/dist/bubble-safari-defold-prototype-armv7.apk > defold-prototype/dist/SHA256SUMS.txt; printf '\nAPK sizes:\n' >> defold-prototype/dist/build.log; ls -lh defold-prototype/dist/*.apk >> defold-prototype/dist/build.log; fi
-          echo "exit_code=$status" >> "$GITHUB_OUTPUT"; exit 0
+          status="${{ steps.art.outputs.exit_code }}"
+          if [ -z "$status" ]; then status=99; fi
+          if [ "$status" -eq 0 ]; then
+            rm -rf defold-prototype/out/android-universal
+            ARCHITECTURES='armv7-android,arm64-android' OUT_DIR="$GITHUB_WORKSPACE/defold-prototype/out/android-universal" BOB_JAR="$BOB" bash ./defold-prototype/build_android.sh >> defold-prototype/dist/build.log 2>&1
+            status=$?
+          fi
+          if [ "$status" -eq 0 ]; then
+            apk="$(find defold-prototype/out/android-universal -type f -name '*.apk' -print -quit)"
+            if [ -n "$apk" ]; then
+              cp "$apk" defold-prototype/dist/bubble-safari-defold-prototype.apk
+              sha256sum defold-prototype/dist/bubble-safari-defold-prototype.apk > defold-prototype/dist/SHA256SUMS.txt
+              printf '\nAPK size:\n' >> defold-prototype/dist/build.log
+              ls -lh defold-prototype/dist/bubble-safari-defold-prototype.apk >> defold-prototype/dist/build.log
+            else
+              status=98
+            fi
+          fi
+          echo "exit_code=$status" >> "$GITHUB_OUTPUT"
+          exit 0
 
       - name: Publish build result to prototype branch
+        if: always()
         shell: bash
         run: |
-          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -f defold-prototype/dist/build.log
-          for f in defold-prototype/dist/bubble-safari-defold-prototype.apk defold-prototype/dist/bubble-safari-defold-prototype-arm64.apk defold-prototype/dist/bubble-safari-defold-prototype-armv7.apk defold-prototype/dist/SHA256SUMS.txt; do [ -f "$f" ] && git add -f "$f"; done
-          git commit -m "build: publish Defold prototype APKs [skip ci]" || true
+          for f in defold-prototype/dist/bubble-safari-defold-prototype.apk defold-prototype/dist/SHA256SUMS.txt; do [ -f "$f" ] && git add -f "$f"; done
+          git commit -m "build: publish representative Defold APK [skip ci]" || true
           git pull --rebase origin defold-native-prototype || true
-          git push origin HEAD:defold-native-prototype
+          git push origin HEAD:defold-native-prototype || true
 
       - name: Upload APK and build reports
         if: steps.build.outputs.exit_code == '0'
@@ -82,18 +103,16 @@ jobs:
           if-no-files-found: warn
           path: |
             defold-prototype/dist/bubble-safari-defold-prototype.apk
-            defold-prototype/dist/bubble-safari-defold-prototype-arm64.apk
-            defold-prototype/dist/bubble-safari-defold-prototype-armv7.apk
             defold-prototype/dist/SHA256SUMS.txt
             defold-prototype/build/build-report.json
             defold-prototype/build/build-report.html
 
-      - name: Fail if Defold build failed
+      - name: Fail if build failed
         if: steps.build.outputs.exit_code != '0'
         shell: bash
         run: |
           cat defold-prototype/dist/build.log
-          exit "${{ steps.build.outputs.exit_code }}"
+          exit 1
 
   android-runtime-smoke:
     needs: android-apk
@@ -131,27 +150,14 @@ jobs:
         shell: bash
         run: |
           if ! grep -q 'Stage: emulator_booted' defold-prototype/dist/android-tv-smoke.txt 2>/dev/null; then echo 'Stage: failed_before_smoke_script' >> defold-prototype/dist/android-tv-smoke.txt; fi
-      - name: Publish smoke report
+      - name: Publish smoke evidence
         if: always()
         shell: bash
         run: |
-          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -f defold-prototype/dist/android-tv-smoke.txt
-          if [ -f defold-prototype/dist/android-tv-logcat.txt ]; then git add -f defold-prototype/dist/android-tv-logcat.txt; fi
-          if [ -f defold-prototype/dist/android-tv-smoke.png ]; then git add -f defold-prototype/dist/android-tv-smoke.png; fi
-          if [ -f defold-prototype/dist/android-tv-smoke-initial.png ]; then git add -f defold-prototype/dist/android-tv-smoke-initial.png; fi
+          for f in defold-prototype/dist/android-tv-logcat.txt defold-prototype/dist/android-tv-smoke.png defold-prototype/dist/android-tv-smoke-initial.png; do [ -f "$f" ] && git add -f "$f"; done
           git commit -m "test: publish Android runtime smoke report [skip ci]" || true
           git pull --rebase origin defold-native-prototype || true
           git push origin HEAD:defold-native-prototype || true
-      - name: Upload smoke evidence
-        if: always()
-        continue-on-error: true
-        uses: actions/upload-artifact@v4
-        with:
-          name: defold-android-runtime-smoke
-          if-no-files-found: warn
-          path: |
-            defold-prototype/dist/android-tv-smoke.txt
-            defold-prototype/dist/android-tv-logcat.txt
-            defold-prototype/dist/android-tv-smoke.png
-            defold-prototype/dist/android-tv-smoke-initial.png
