@@ -45,7 +45,7 @@ function handleBack(){state.flowId++;voice.stop();state.locked=false;if(screens.
 
 function installTvRuntimeHotfix(){
   if(window.__bubbleTvRuntimeHotfix)return;
-  window.__bubbleTvRuntimeHotfix='2026-09-12.1';
+  window.__bubbleTvRuntimeHotfix='2026-09-12.2';
   const style=document.createElement('style');
   style.textContent=`
 @media (min-aspect-ratio:4/3) and (max-height:820px){
@@ -79,7 +79,8 @@ function installTvRuntimeHotfix(){
     const now=Date.now();if(now-lastActivate<180)return;lastActivate=now;
     const active=$('.screen-active');if(!active)return;
     let target=document.activeElement;
-    if(!target||!target.matches?.('[data-focusable]')||!active.contains(target))target=$('[data-autofocus][data-focusable]:not([disabled])',active)||$('[data-focusable]:not([disabled])',active);
+    const globalTarget=target?.matches?.('#settingsButton[data-focusable]:not([disabled]), #soundButton[data-focusable]:not([disabled])')&&target.offsetParent!==null;
+    if(!target||!target.matches?.('[data-focusable]')||(!active.contains(target)&&!globalTarget))target=$('[data-autofocus][data-focusable]:not([disabled])',active)||$('[data-focusable]:not([disabled])',active);
     if(!target)return;
     try{target.focus({preventScroll:true})}catch{target.focus()}
     target.classList.add('tv-focus');target.click();
