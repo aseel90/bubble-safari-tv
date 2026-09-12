@@ -1,4 +1,6 @@
-/build/
-/.internal/
-/bundle/
-/assets/audio/*.wav
+.internal/
+build/
+assets/audio/*.wav
+*.keystore
+*.jks
+*.pass

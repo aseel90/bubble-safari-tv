@@ -1,42 +1,56 @@
 # Bubble Safari TV — Defold Native Prototype
 
-Independent native 2D experiment for the ocean world. It intentionally lives beside the existing WebView app and uses Android package `com.bubblesafari.tv.defold`, so both builds can be installed on the same TV for A/B testing.
+This directory is an isolated native 2D prototype. It does not replace or restructure the existing WebView application.
 
 ## Scope
 
-- Three native GUI choice bubbles.
-- Animal, size and color questions loaded from `data/ocean_questions.json`.
-- TV D-pad navigation, OK/DPAD_CENTER-equivalent Enter binding and Back.
-- Animated focus, success overlay, lightweight GUI confetti and simple sound setting.
-- Reuses the existing Leda `feedback_welldone.wav` through a generated local asset copy.
-- Emits `BS_METRIC` log lines for question transitions, input-handler time, slow frames and Lua GC samples.
+The prototype contains only the ocean A/B slice:
 
-## Prepare existing assets
+- three answer bubbles
+- animal, size and color questions loaded from `data/ocean_questions.json`
+- TV D-pad navigation, OK/DPAD_CENTER and Back
+- animated focus
+- success overlay and lightweight confetti
+- Leda audio resources reused from the repository audio library
+- simple settings overlay
+- internal `BS_METRIC` telemetry for frame/GC/input/question-transition diagnostics
 
-From repository root:
+Android package: `com.bubblesafari.tv.defold` so it can coexist with the WebView package on the same TV.
+
+## Asset policy
+
+Existing repository assets remain the source of truth. `tools/sync_assets.sh` copies only the audio required by this prototype into `assets/audio/` before a build. Generated copies are ignored by Git.
+
+SVG artwork remains master/source artwork. Runtime packaging should use raster textures/atlases rather than parsing SVG during gameplay.
+
+## Build
+
+Requirements:
+
+- Defold `bob.jar`
+- Java 25 or newer for current Bob releases
+
+From the repository root:
 
 ```bash
-bash defold-prototype/tools/sync_assets.sh
+BOB_JAR=/path/to/bob.jar ./defold-prototype/build_android.sh
 ```
 
-This copies only the required audio from the existing top-level `audio/` directory into the ignored `defold-prototype/assets/audio/` build input. The original WebView assets are not modified.
+By default the script builds a debug APK containing both `armv7-android` and `arm64-android`. Override with environment variables when needed:
 
-## Open/build
+```bash
+VARIANT=release ARCHITECTURES=arm64-android BOB_JAR=/path/to/bob.jar ./defold-prototype/build_android.sh
+```
 
-Open `defold-prototype/game.project` in Defold after running the asset sync. Android application id is deliberately different from WebView so both APKs can coexist.
+The build also writes JSON and HTML build reports. These reports are intended to make resource-size changes visible before the device benchmark stage.
 
-The first prototype uses Defold GUI primitives rather than SVG at runtime. Current SVG/art remains the master source and can later be rasterized into atlases after the engine decision.
+## Benchmark stage
 
-## Benchmark
-
-After installing both APKs on the Xiaomi TV Stick and connecting ADB:
+Device testing is intentionally kept outside this directory. The repository-level runner is:
 
 ```bash
 ./benchmark_tv.sh webview
 ./benchmark_tv.sh defold
-python3 benchmark/compare.py
 ```
 
-Default is five cold and five warm runs for each engine. Raw evidence and JSON summaries are stored below `benchmark-results/`.
-
-End-to-end input-to-photon latency is intentionally **not** claimed from app timestamps. The prototype logs handler time only; reliable visual latency requires Perfetto correlation when supported or a high-speed camera/photodiode method.
+Generated benchmark output is stored under `benchmark-results/`.
