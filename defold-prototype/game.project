@@ -1,6 +1,6 @@
 [project]
 title = Bubble Safari TV - Defold Prototype
-version = 0.1.0
+version = 0.1.1
 custom_resources = data
 
 [bootstrap]
@@ -24,7 +24,7 @@ game_binding = /input/game.input_bindingc
 
 [android]
 package = com.bubblesafari.tv.defold
-version_code = 1
+version_code = 2
 minimum_sdk_version = 26
 target_sdk_version = 36
 immersive_mode = 1
@@ -37,3 +37,7 @@ max_instances = 256
 
 [physics]
 type = 2D
+
+[network]
+http_timeout = 8
+http_thread_count = 2

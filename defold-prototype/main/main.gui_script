@@ -1,4 +1,4 @@
-local json = require "json"
+local telemetry = require "main.telemetry"
 
 local W, H = 1280, 720
 local BUBBLE_X = { 310, 640, 970 }
@@ -32,7 +32,7 @@ local function new_text(text, x, y, scale)
 end
 
 local function delete_node(node)
-    if node and gui.is_valid_node(node) then gui.delete_node(node) end
+    if node then gui.delete_node(node) end
 end
 
 local function set_focus(self, index)
@@ -48,6 +48,7 @@ local function set_focus(self, index)
     end
     if old ~= self.focus then
         metric("focus_changed", { from = old or 0, to = self.focus, q = self.question_index })
+        telemetry.record_focus(self.telemetry)
     end
 end
 
@@ -71,7 +72,7 @@ local function spawn_confetti(self)
         local tx = x + ((i % 2 == 0) and 70 or -70)
         local ty = 70 + ((i * 31) % 170)
         gui.animate(n, gui.PROP_POSITION, vmath.vector3(tx, ty, 4), gui.EASING_INQUAD, 0.75 + (i % 5) * 0.05, 0, function()
-            delete_node(n)
+            gui.set_enabled(n, false)
         end)
         gui.animate(n, gui.PROP_EULER, vmath.vector3(0, 0, i * 70), gui.EASING_LINEAR, 0.8)
     end
@@ -113,26 +114,30 @@ local function render_question(self)
     set_focus(self, 1)
     hide_feedback(self)
     metric("question_visible", { id = q.id, index = self.question_index, t_ms = math.floor(now_ms()) })
+    telemetry.record_question(self.telemetry)
 end
 
 local function next_question(self)
     local t0 = now_ms()
     self.question_index = self.question_index % #self.questions + 1
     render_question(self)
-    metric("question_transition", { ms = string.format("%.3f", now_ms() - t0), index = self.question_index })
+    local transition_ms = now_ms() - t0
+    metric("question_transition", { ms = string.format("%.3f", transition_ms), index = self.question_index })
+    telemetry.record_transition(self.telemetry, transition_ms)
 end
 
 local function answer(self)
     local q = self.questions[self.question_index]
     local correct = (self.focus - 1) == q.correct
     metric("answer", { q = q.id, choice = self.focus, correct = correct and 1 or 0, t_ms = math.floor(now_ms()) })
+    telemetry.record_answer(self.telemetry, correct)
     if correct then
         show_feedback(self)
         timer.delay(0.85, false, function() next_question(self) end)
     else
         local node = self.bubbles[self.focus]
-        gui.animate(node, gui.PROP_POSITION_X, BUBBLE_X[self.focus] - 16, gui.EASING_OUTQUAD, .06, 0, function()
-            gui.animate(node, gui.PROP_POSITION_X, BUBBLE_X[self.focus], gui.EASING_OUTQUAD, .06)
+        gui.animate(node, "position.x", BUBBLE_X[self.focus] - 16, gui.EASING_OUTQUAD, .06, 0, function()
+            gui.animate(node, "position.x", BUBBLE_X[self.focus], gui.EASING_OUTQUAD, .06)
         end)
     end
 end
@@ -146,11 +151,13 @@ local function set_settings(self, visible)
         gui.set_text(self.settings_sound, "Sound: " .. (self.sound_enabled and "ON" or "OFF") .. "   [OK to toggle]")
     end
     metric("settings", { open = visible and 1 or 0 })
+    if visible then telemetry.record_settings_open(self.telemetry) end
 end
 
 function init(self)
     msg.post(".", "acquire_input_focus")
     self.started_ms = now_ms()
+    self.telemetry = telemetry.new()
     self.frame_count = 0
     self.slow_frames = 0
     self.max_dt_ms = 0
@@ -194,11 +201,17 @@ function init(self)
 
     set_settings(self, false)
     render_question(self)
-    metric("native_ready", { startup_internal_ms = string.format("%.3f", now_ms() - self.started_ms) })
+    local startup_ms = now_ms() - self.started_ms
+    telemetry.set_startup(self.telemetry, startup_ms)
+    metric("native_ready", { startup_internal_ms = string.format("%.3f", startup_ms) })
+    telemetry.flush_pending(self.telemetry)
+    timer.delay(1.0, false, function() telemetry.send(self.telemetry, "session_start") end)
+    self.telemetry_timer = timer.delay(15.0, true, function() telemetry.send(self.telemetry, "periodic") end)
 end
 
 function update(self, dt)
     local dt_ms = dt * 1000
+    telemetry.record_frame(self.telemetry, dt_ms)
     self.frame_count = self.frame_count + 1
     if dt_ms > self.max_dt_ms then self.max_dt_ms = dt_ms end
     if dt_ms > 25 then
@@ -226,7 +239,9 @@ function on_input(self, action_id, action)
 
     if action_id == hash("back") then
         set_settings(self, not self.settings_open)
-        metric("input", { key = "back", handled_ms = string.format("%.3f", now_ms() - input_t) })
+        local handled_ms = now_ms() - input_t
+        telemetry.record_input(self.telemetry, handled_ms)
+        metric("input", { key = "back", handled_ms = string.format("%.3f", handled_ms) })
         return true
     end
 
@@ -235,6 +250,9 @@ function on_input(self, action_id, action)
             self.sound_enabled = not self.sound_enabled
             gui.set_text(self.settings_sound, "Sound: " .. (self.sound_enabled and "ON" or "OFF") .. "   [OK to toggle]")
             metric("settings_sound", { enabled = self.sound_enabled and 1 or 0 })
+            local handled_ms = now_ms() - input_t
+            telemetry.record_input(self.telemetry, handled_ms)
+            metric("input", { key = "settings_ok", handled_ms = string.format("%.3f", handled_ms) })
             return true
         end
         return true
@@ -250,11 +268,15 @@ function on_input(self, action_id, action)
         return false
     end
 
-    metric("input", { key = tostring(action_id), handled_ms = string.format("%.3f", now_ms() - input_t) })
+    local handled_ms = now_ms() - input_t
+    telemetry.record_input(self.telemetry, handled_ms)
+    metric("input", { key = tostring(action_id), handled_ms = string.format("%.3f", handled_ms) })
     return true
 end
 
 function final(self)
+    if self.telemetry_timer then timer.cancel(self.telemetry_timer) end
+    telemetry.final(self.telemetry)
     metric("session_end", { frames = self.frame_count })
     msg.post(".", "release_input_focus")
 end
