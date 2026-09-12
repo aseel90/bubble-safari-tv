@@ -93,92 +93,37 @@ jobs:
   android-runtime-smoke:
     needs: android-apk
     if: always()
-    runs-on: ubuntu-latest
-    timeout-minutes: 35
+    runs-on: macos-15
+    timeout-minutes: 40
     steps:
       - name: Checkout built prototype branch
         uses: actions/checkout@v4
         with:
           ref: defold-native-prototype
 
-      - name: Prepare smoke report
+      - name: Prepare ARM64 Android TV smoke report
         shell: bash
         run: |
           mkdir -p defold-prototype/dist
-          printf 'Bubble Safari Android runtime + TV launcher smoke\nUTC: %s\nRunner: ubuntu-latest x86_64, Android API 35\nStage: checkout_ok\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > defold-prototype/dist/android-tv-smoke.txt
+          printf 'Bubble Safari Android TV ARM64 runtime smoke\nUTC: %s\nRunner: macos-15 ARM64, Android TV API 34\nStage: checkout_ok\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > defold-prototype/dist/android-tv-smoke.txt
+          uname -a >> defold-prototype/dist/android-tv-smoke.txt 2>&1 || true
           test -f defold-prototype/dist/bubble-safari-defold-prototype.apk
           echo 'Stage: published_arm_apk_found' >> defold-prototype/dist/android-tv-smoke.txt
 
-      - name: Set up Java 25
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '25'
-
-      - name: Set up Defold Bob
-        uses: dapetcu21/setup-defold@v3.0.3
-        with:
-          sha1: stable
-
-      - name: Build matching x86_64 APK for emulator
-        id: x86build
-        shell: bash
-        run: |
-          bash ./defold-prototype/tools/sync_assets.sh
-          rm -rf defold-prototype/out/smoke-x86_64
-          mkdir -p defold-prototype/out/smoke-x86_64 defold-prototype/build
-          echo '--- x86_64 Defold build ---' >> defold-prototype/dist/android-tv-smoke.txt
-          set +e
-          (
-            cd defold-prototype
-            java -jar "$BOB" \
-              --platform armv7-android \
-              --architectures x86_64-android \
-              --variant release \
-              --archive \
-              --bundle-format apk \
-              --bundle-output "$GITHUB_WORKSPACE/defold-prototype/out/smoke-x86_64" \
-              resolve distclean build bundle
-          ) >> defold-prototype/dist/android-tv-smoke.txt 2>&1
-          status=$?
-          set -e
-          echo "x86_build_exit=$status" >> defold-prototype/dist/android-tv-smoke.txt
-          if [ "$status" -ne 0 ]; then
-            echo 'Stage: x86_64_smoke_build_failed' >> defold-prototype/dist/android-tv-smoke.txt
-            exit "$status"
-          fi
-          apk="$(find defold-prototype/out/smoke-x86_64 -type f -name '*.apk' -print -quit)"
-          if [ -z "$apk" ]; then
-            echo 'Stage: x86_64_smoke_apk_missing' >> defold-prototype/dist/android-tv-smoke.txt
-            exit 24
-          fi
-          cp "$apk" defold-prototype/dist/bubble-safari-defold-smoke-x86_64.apk
-          echo 'Stage: x86_64_smoke_apk_built' >> defold-prototype/dist/android-tv-smoke.txt
-
-      - name: Enable KVM
-        shell: bash
-        run: |
-          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
-          sudo udevadm control --reload-rules
-          sudo udevadm trigger --name-match=kvm
-          ls -l /dev/kvm >> defold-prototype/dist/android-tv-smoke.txt 2>&1 || true
-          echo 'Stage: kvm_enabled' >> defold-prototype/dist/android-tv-smoke.txt
-
-      - name: Boot Android 15 and run launcher smoke
+      - name: Boot Android TV ARM64 and run launcher smoke
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 35
-          target: google_apis
-          arch: x86_64
-          profile: pixel_5
-          force-avd-creation: false
+          api-level: 34
+          target: android-tv
+          arch: arm64-v8a
+          profile: tv_1080p
           cores: 2
           ram-size: 2048M
           emulator-options: -no-snapshot-load -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -camera-front none
           disable-animations: true
           script: |
             echo 'Stage: emulator_booted' >> defold-prototype/dist/android-tv-smoke.txt
-            bash ./defold-prototype/tools/android_tv_smoke.sh defold-prototype/dist/bubble-safari-defold-smoke-x86_64.apk
+            bash ./defold-prototype/tools/android_tv_smoke.sh defold-prototype/dist/bubble-safari-defold-prototype.apk
 
       - name: Mark pre-script failure
         if: failure()
