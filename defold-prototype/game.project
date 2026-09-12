@@ -1,6 +1,7 @@
 [project]
 title = Bubble Safari TV - Defold Prototype
 version = 0.1.0
+custom_resources = data
 
 [bootstrap]
 main_collection = /main/main.collectionc
