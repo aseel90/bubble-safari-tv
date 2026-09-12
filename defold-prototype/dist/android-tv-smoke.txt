@@ -1,5 +1,5 @@
 Bubble Safari Android runtime + TV launcher smoke
-UTC: 2026-09-12T19:19:25Z
+UTC: 2026-09-12T19:20:07Z
 Runner: ubuntu-latest x86_64, Android API 35
 Stage: checkout_ok
 Stage: published_arm_apk_found
