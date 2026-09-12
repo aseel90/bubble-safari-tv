@@ -49,3 +49,59 @@
 @media (max-width:1180px){.hud-progress{min-width:118px;padding:0 10px}.hud-progress-track{width:92px}.hud{gap:7px}.hud-pill{min-width:62px}}
 @media (max-height:620px){.world-card .world-art{width:64px;height:64px}.world-card strong{font-size:21px}.world-card small{font-size:12px;padding:3px 8px}.world-card.tv-focus,.world-card:focus{transform:translateY(-3px) scale(1.035)}.hud-progress{height:44px;min-width:104px;padding:0 9px}.hud-progress-track{width:84px;height:10px}.question-card{border-radius:26px}.choice-label{padding:5px 12px}.choice.tv-focus,.choice:focus{transform:translateY(-2px) scale(1.015)}}
 @media (prefers-reduced-motion:reduce){#progressFill,.choice:focus .choice-bubble,.choice.tv-focus .choice-bubble{transition:none;animation:none}}
+
+
+/* Bubble Safari TV v0.9 — performance-first polish without losing identity */
+.top-actions{display:flex;align-items:center;gap:.8vw;pointer-events:auto;direction:ltr}
+.settings-button{flex:0 0 50px;background:rgba(255,255,255,.94)!important}
+.settings-button .mini-ui-art{width:29px;height:29px}
+
+/* Avoid expensive full-surface readbacks on TV WebView. */
+.hud-pill,.icon-button,.panel,.feedback{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+.hud-pill,.icon-button{background:rgba(255,255,255,.94)}
+.panel{background:rgba(255,255,255,.94)}
+.feedback{background:rgba(15,60,46,.17)}
+.sky-glow{filter:none;box-shadow:none;background:radial-gradient(circle,rgba(255,236,150,.96) 0 35%,rgba(255,232,143,.36) 55%,rgba(255,232,143,0) 72%)}
+.cloud{filter:none}
+.world-card,.choice{backface-visibility:visible;transform:none}
+.world-card::after{filter:none!important;height:11px;background:radial-gradient(ellipse,rgba(40,76,61,.11) 0 48%,rgba(40,76,61,0) 72%)}
+.world-art,.choice-content,.choice-art,.world-decor .world-scene-art{filter:none!important}
+.world-art .game-art,.choice-art .game-art,.world-decor .game-art{filter:none!important}
+.screen-active .world-art{will-change:auto}
+
+/* Lighter bubble paint: one body gradient, a border, one inset depth cue, one soft shadow. */
+.choice-bubble{background:linear-gradient(145deg,var(--bubble-color,#79cee0),var(--bubble-deep,#5bb4c8))!important;border:5px solid rgba(255,255,255,.76);box-shadow:inset 0 -13px 20px rgba(28,103,127,.10),0 12px 28px rgba(36,87,71,.13);transition:transform .18s ease,box-shadow .18s ease}
+.choice-bubble::before{width:18%;height:9%;left:23%;top:16%;background:rgba(255,255,255,.72);filter:none!important;transform:rotate(-24deg)}
+.choice-bubble::after{width:7%;right:18%;bottom:18%;background:rgba(255,255,255,.28);box-shadow:none}
+.choice:focus .choice-bubble,.choice.tv-focus .choice-bubble{box-shadow:inset 0 -13px 20px rgba(28,103,127,.10),0 0 0 8px rgba(255,216,101,.88),0 14px 30px rgba(36,87,71,.17);transform:scale(1.035);animation:focusBreath 1.7s ease-in-out infinite alternate}
+.choice-label{bottom:calc(4.2% + var(--label-offset,0px));box-shadow:0 4px 12px rgba(30,73,57,.10)}
+
+/* Per-character transforms keep ears, fins and long necks inside the circular safe area. */
+.choice-content{width:74%;height:74%;filter:none!important;transition:transform .18s ease}
+.choice-art,.choice-size-art{width:min(96%,220px);height:min(96%,220px);filter:none!important;transform:translate(var(--art-x,0),var(--art-y,0)) scale(var(--art-scale,1));transform-origin:center;transition:transform .18s ease}
+.choice-art-shape{--art-scale:1;width:min(100%,234px);height:min(100%,234px)}
+.choice.tv-focus .choice-art,.choice:focus .choice-art{animation:none!important}
+#app[data-quality="full"][data-effects="on"] .choice.tv-focus .choice-content,#app[data-quality="full"][data-effects="on"] .choice:focus .choice-content{animation:choiceContentHello .82s ease-in-out infinite alternate}
+@keyframes choiceContentHello{from{transform:translateY(0) scale(1)}to{transform:translateY(-3px) scale(1.015)}}
+
+/* Balanced retains the signature bubble breathing but drops secondary continuous art motion. */
+#app[data-quality="balanced"] .world-card.tv-focus .world-art,#app[data-quality="balanced"] .world-card:focus .world-art{animation:none!important}
+#app[data-quality="balanced"] .mascot-art .game-art{filter:none!important}
+#app[data-effects="off"] .choice:focus .choice-bubble,#app[data-effects="off"] .choice.tv-focus .choice-bubble,#app[data-effects="off"] .mascot-art,#app[data-effects="off"] .mini-bubble,#app[data-effects="off"] .world-card.tv-focus .world-art,#app[data-effects="off"] .world-card:focus .world-art{animation:none!important}
+#app[data-effects="off"] .screen-active{animation:none}
+
+/* Settings: 10-foot UI, remote first. */
+.settings-panel{width:min(980px,84vw);padding:3.2vh 4vw 3.6vh}
+.settings-heading h2{font-size:clamp(34px,3.4vw,54px)}
+.settings-heading p{margin-bottom:2vh}
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;direction:rtl}
+.setting-card{min-height:100px;border:2px solid rgba(91,154,121,.14);border-radius:25px;background:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:16px;box-shadow:0 8px 20px rgba(39,90,69,.07)}
+.setting-card-wide{grid-column:1/-1}
+.setting-copy{display:flex;flex-direction:column;gap:4px;min-width:0}.setting-copy strong,.update-copy strong{font-size:22px;color:var(--forest-deep)}.setting-copy small,.update-copy small{font-size:15px;color:#668476;font-weight:700;line-height:1.35}
+.setting-toggle,.quality-button{border:2px solid rgba(61,120,95,.16);border-radius:17px;background:#eff8f1;color:var(--forest-deep);font-weight:900;min-width:98px;height:50px;padding:0 16px;cursor:pointer;transition:transform .15s ease,box-shadow .15s ease,background .15s ease}
+.setting-toggle[aria-pressed="true"],.quality-button.selected{background:#dff3ce;border-color:rgba(73,150,83,.28)}
+.quality-card{align-items:center}.quality-options{display:flex;gap:9px;direction:rtl;flex-wrap:wrap;justify-content:flex-start}.quality-button{min-width:112px}
+.update-card{align-items:center}.update-copy{display:flex;flex-direction:column;gap:4px;flex:1}.version-line{font-size:13px;color:#6a8579;font-weight:700;margin-top:2px;direction:rtl}.version-line b{color:#315b50}.update-button{width:auto!important;min-width:210px;margin:0!important;padding:0 18px}
+.setting-toggle:focus,.setting-toggle.tv-focus,.quality-button:focus,.quality-button.tv-focus,.update-button:focus,.update-button.tv-focus{transform:scale(1.045);box-shadow:0 0 0 6px rgba(255,216,101,.75)}
+
+@media (max-height:650px){.settings-panel{padding:2vh 3vw}.settings-heading p{margin-bottom:1vh}.settings-grid{gap:9px}.setting-card{min-height:76px;padding:10px 14px}.setting-copy strong,.update-copy strong{font-size:18px}.setting-copy small,.update-copy small{font-size:12px}.setting-toggle,.quality-button{height:43px;min-width:90px}.quality-button{min-width:98px}.update-button{height:45px!important;min-width:190px}.version-line{font-size:11px}}
