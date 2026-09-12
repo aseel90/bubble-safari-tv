@@ -121,8 +121,7 @@ function renderOptionVisual(option){
   const art=choiceArt(kind,option.visualId);
   const classes=['choice-art',kind==='shape'?'choice-art-shape':''];
   const layout=kind==='animal'?getAnimalLayout(option.visualId):{scale:1,x:0,y:0};
-  const sizeScale=option.kind==='size'?(option.scale||1):1;
-  const finalScale=(layout.scale||1)*sizeScale;
+  const finalScale=layout.scale||1;
   if(option.kind==='size')classes.push('choice-size-art');
   const style=` style="--art-scale:${finalScale.toFixed(3)};--art-x:${layout.x||0}%;--art-y:${layout.y||0}%"`;
   const data=kind==='animal'?` data-animal="${option.visualId}"`:'';
@@ -141,7 +140,7 @@ function renderQuestion(){
   choicesEl.innerHTML='';
   choicesEl.style.gridTemplateColumns=`repeat(${state.currentQuestion.options.length},minmax(0,1fr))`;
   state.currentQuestion.options.forEach((option,index)=>{
-    const button=document.createElement('button');button.type='button';button.className='choice focusable';button.dataset.focusable='';button.setAttribute('aria-label',option.label);
+    const button=document.createElement('button');button.type='button';button.className='choice focusable';button.dataset.focusable='';button.setAttribute('aria-label',option.label);if(option.kind==='size')button.dataset.sizeVisual=option.scale<.82?'small':option.scale>1.18?'big':'medium';
     const layout=option.visualKind==='animal'?getAnimalLayout(option.visualId):null;if(layout?.labelOffset)button.style.setProperty('--label-offset',`${layout.labelOffset}px`);button.innerHTML=`<span class="choice-bubble" style="--bubble-color:${option.color};--bubble-deep:${shade(option.color,-8)}"></span><span class="choice-content">${renderOptionVisual(option)}</span><span class="choice-label">${option.label}</span>`;
     button.addEventListener('click',()=>selectChoice(button,option));choicesEl.appendChild(button);if(index===0)setTimeout(()=>tv.setFocus(button),50);
   });
