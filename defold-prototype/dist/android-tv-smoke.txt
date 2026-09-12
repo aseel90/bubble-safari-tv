@@ -1,5 +1,5 @@
 Bubble Safari Defold Android TV smoke test
-UTC: 2026-09-12T19:09:25Z
+UTC: 2026-09-12T19:12:23Z
 Package: com.bubblesafari.tv.defold
 APK: defold-prototype/dist/bubble-safari-defold-prototype.apk
 Android: 15
