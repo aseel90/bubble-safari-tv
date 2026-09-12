@@ -112,7 +112,7 @@
 .choice[data-size-visual="small"]{--choice-bubble-h:66%;--choice-art-h:52%;--choice-center-y:41%}
 .choice[data-size-visual="medium"]{--choice-bubble-h:76%;--choice-art-h:59%;--choice-center-y:40%}
 .choice[data-size-visual="big"]{--choice-bubble-h:88%;--choice-art-h:69%;--choice-center-y:39%}
-.choice-bubble{inset:auto!important;left:50%;top:var(--choice-center-y);height:min(var(--choice-bubble-h),270px);width:auto;aspect-ratio:1/1;border-radius:50%;transform:translate(-50%,-50%);overflow:hidden}
+.choice-bubble{inset:auto;left:50%;top:var(--choice-center-y);height:min(var(--choice-bubble-h),270px);width:auto;aspect-ratio:1/1;border-radius:50%;transform:translate(-50%,-50%);overflow:hidden}
 .choice-content{position:absolute;left:50%;top:var(--choice-center-y);width:auto;height:min(var(--choice-art-h),205px);aspect-ratio:1/1;transform:translate(-50%,-50%);display:grid;place-items:center;overflow:visible}
 .choice-art,.choice-size-art{width:100%;height:100%;max-width:100%;max-height:100%}
 .choice:focus .choice-bubble,.choice.tv-focus .choice-bubble{transform:translate(-50%,-50%) scale(1.025);animation:focusBreathCentered 1.35s ease-in-out infinite alternate}
