@@ -1,6 +1,13 @@
-Bubble Safari Android TV CI smoke
-UTC: 2026-09-12T16:15:13Z
-Runner: macos-15 arm64
-Stage: checkout_ok
-Darwin sjc22-bm204-9c615c06-3c56-4628-aff7-e5cd780f3e4a-FECE335653E4.local 24.6.0 Darwin Kernel Version 24.6.0: Tue Jul 21 20:51:34 PDT 2026; root:xnu-11417.140.69.711.44~1/RELEASE_ARM64_VMAPPLE arm64
+Bubble Safari Defold Android TV smoke test
+UTC: 2026-09-12T16:28:31Z
+Package: com.bubblesafari.tv.defold
+APK: defold-prototype/dist/bubble-safari-defold-prototype.apk
+Android: 15
+SDK: 35
+Model: sdk_gphone64_x86_64
+ABI: x86_64
+Performing Streamed Install
+Success
+--- manifest/package assertions ---
+FAIL: leanback feature missing
 Stage: failed_before_smoke_script
