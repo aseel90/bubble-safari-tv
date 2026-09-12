@@ -1,5 +1,13 @@
-Build UTC: 2026-09-12T19:38:55Z
-=== BUILD android-universal architectures=armv7-android,arm64-android ===
+Build UTC: 2026-09-12T19:51:09Z
+Generated native ocean art:
+  ocean_bg.png: 13940 bytes
+  ocean_bg.tilesource: 242 bytes
+  ui_labels.png: 9248 bytes
+  ui_labels.tilesource: 874 bytes
+  ui_objects.png: 55174 bytes
+  ui_objects.tilesource: 850 bytes
+  ui_text.png: 46389 bytes
+  ui_text.tilesource: 755 bytes
 Synced 10 prototype audio files into defold-prototype/assets/audio
 WARNING: A restricted method in java.lang.System has been called
 WARNING: java.lang.System::load has been called by com.dynamo.bob.pipeline.ModelImporterJni in an unnamed module (file:/home/runner/work/bubble-safari-tv/bubble-safari-tv/.defold/bob.jar)
@@ -10,7 +18,7 @@ WARNING: Restricted methods will be blocked in a future release unless native ac
  20% Downloading 0 archives
  20% Working
  20% Reading classes
-2026-09-12 19:38:59 INFO     
+2026-09-12 19:51:16 INFO     
 WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
 WARNING: sun.misc.Unsafe::arrayBaseOffset has been called by com.google.protobuf.UnsafeUtil (file:/home/runner/work/bubble-safari-tv/bubble-safari-tv/.defold/bob.jar)
 WARNING: Please consider reporting this to the maintainers of class com.google.protobuf.UnsafeUtil
@@ -25,170 +33,197 @@ WARNING: sun.misc.Unsafe::arrayBaseOffset will be removed in a future release
  79% Reading tasks
  80% Reading tasks
  80% Building
-2026-09-12 19:39:01 INFO    Creating task builder with a fixed thread pool executor using 3 threads 
-2026-09-12 19:39:01 INFO    Build tasks 
-Sep 12, 2026 7:39:02 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+2026-09-12 19:51:18 INFO    Creating task builder with a fixed thread pool executor using 3 threads 
+2026-09-12 19:51:18 INFO    Build tasks 
+Sep 12, 2026 7:51:19 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+WARNING: Vulnerable protobuf generated type in use: com.dynamo.graphics.proto.Graphics$PathSettings
+As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
+Sep 12, 2026 7:51:19 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+WARNING: Vulnerable protobuf generated type in use: com.dynamo.graphics.proto.Graphics$PlatformProfile
+As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
+Sep 12, 2026 7:51:19 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+WARNING: Vulnerable protobuf generated type in use: com.dynamo.graphics.proto.Graphics$TextureProfile
+As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
+Sep 12, 2026 7:51:19 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+WARNING: Vulnerable protobuf generated type in use: com.dynamo.graphics.proto.Graphics$TextureProfiles
+As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
+Sep 12, 2026 7:51:19 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+WARNING: Vulnerable protobuf generated type in use: com.dynamo.graphics.proto.Graphics$TextureFormatAlternative
+As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
+Sep 12, 2026 7:51:19 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
 WARNING: Vulnerable protobuf generated type in use: com.dynamo.graphics.proto.Graphics$ShaderDesc$Shader
 As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:02 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+Sep 12, 2026 7:51:19 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
 WARNING: Vulnerable protobuf generated type in use: com.dynamo.graphics.proto.Graphics$ShaderDesc$ResourceType
 As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:02 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+Sep 12, 2026 7:51:19 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
 WARNING: Vulnerable protobuf generated type in use: com.dynamo.graphics.proto.Graphics$ShaderDesc$ResourceBinding
 As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:02 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+Sep 12, 2026 7:51:19 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
 WARNING: Vulnerable protobuf generated type in use: com.dynamo.graphics.proto.Graphics$ShaderDesc$ResourceMember
 As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:02 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+Sep 12, 2026 7:51:19 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
 WARNING: Vulnerable protobuf generated type in use: com.dynamo.graphics.proto.Graphics$ShaderDesc$ResourceTypeInfo
 As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:02 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+Sep 12, 2026 7:51:19 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
 WARNING: Vulnerable protobuf generated type in use: com.dynamo.graphics.proto.Graphics$ShaderDesc$ShaderReflection
 As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:02 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+Sep 12, 2026 7:51:19 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
 WARNING: Vulnerable protobuf generated type in use: com.dynamo.graphics.proto.Graphics$ShaderDesc
 As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-2026-09-12 19:39:02 INFO    Generating the resource graph 
-Sep 12, 2026 7:39:02 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+2026-09-12 19:51:19 INFO    Generating the resource graph 
+Sep 12, 2026 7:51:19 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
 WARNING: Vulnerable protobuf generated type in use: com.dynamo.proto.DdfMath$Point3
 As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:02 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+Sep 12, 2026 7:51:19 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
 WARNING: Vulnerable protobuf generated type in use: com.dynamo.proto.DdfMath$Quat
 As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:02 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+Sep 12, 2026 7:51:19 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
 WARNING: Vulnerable protobuf generated type in use: com.dynamo.proto.DdfMath$Vector3One
 As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:02 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+Sep 12, 2026 7:51:19 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
 WARNING: Vulnerable protobuf generated type in use: com.dynamo.gameobject.proto.GameObject$InstanceDesc
 As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:02 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+Sep 12, 2026 7:51:19 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
 WARNING: Vulnerable protobuf generated type in use: com.dynamo.gameobject.proto.GameObject$ComponenTypeDesc
 As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:02 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+Sep 12, 2026 7:51:19 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
 WARNING: Vulnerable protobuf generated type in use: com.dynamo.gameobject.proto.GameObject$CollectionDesc
 As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:02 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+Sep 12, 2026 7:51:19 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
 WARNING: Vulnerable protobuf generated type in use: com.dynamo.properties.proto.PropertiesProto$PropertyDeclarations
 As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:02 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+Sep 12, 2026 7:51:19 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
 WARNING: Vulnerable protobuf generated type in use: com.dynamo.gameobject.proto.GameObject$ComponentDesc
 As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:02 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+Sep 12, 2026 7:51:19 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
 WARNING: Vulnerable protobuf generated type in use: com.dynamo.gameobject.proto.GameObject$PrototypeDesc
 As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:02 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+Sep 12, 2026 7:51:19 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
 WARNING: Vulnerable protobuf generated type in use: com.dynamo.gamesys.proto.Gui$SceneDesc$FontDesc
 As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:02 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+Sep 12, 2026 7:51:19 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+WARNING: Vulnerable protobuf generated type in use: com.dynamo.gamesys.proto.Gui$SceneDesc$TextureDesc
+As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
+Sep 12, 2026 7:51:19 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
 WARNING: Vulnerable protobuf generated type in use: com.dynamo.proto.DdfMath$Vector4
 As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:02 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+Sep 12, 2026 7:51:19 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
 WARNING: Vulnerable protobuf generated type in use: com.dynamo.proto.DdfMath$Vector4One
 As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:02 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+Sep 12, 2026 7:51:19 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
 WARNING: Vulnerable protobuf generated type in use: com.dynamo.proto.DdfMath$Vector4WOne
 As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:02 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+Sep 12, 2026 7:51:19 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
 WARNING: Vulnerable protobuf generated type in use: com.dynamo.gamesys.proto.Gui$NodeDesc
 As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:02 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+Sep 12, 2026 7:51:19 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
 WARNING: Vulnerable protobuf generated type in use: com.dynamo.gamesys.proto.Gui$SceneDesc
 As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:02 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+Sep 12, 2026 7:51:19 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
 WARNING: Vulnerable protobuf generated type in use: com.dynamo.script.proto.Lua$LuaSource
 As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:02 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+Sep 12, 2026 7:51:19 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
 WARNING: Vulnerable protobuf generated type in use: com.dynamo.lua.proto.Lua$LuaModule
 As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:02 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+Sep 12, 2026 7:51:19 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
 WARNING: Vulnerable protobuf generated type in use: com.dynamo.render.proto.Font$FontMap
 As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:02 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+Sep 12, 2026 7:51:19 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
 WARNING: Vulnerable protobuf generated type in use: com.dynamo.render.proto.Material$MaterialDesc$Constant
 As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:02 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+Sep 12, 2026 7:51:19 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
 WARNING: Vulnerable protobuf generated type in use: com.dynamo.render.proto.Material$MaterialDesc
 As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:02 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+Sep 12, 2026 7:51:19 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
 WARNING: Vulnerable protobuf generated type in use: com.dynamo.render.proto.Font$GlyphBank$Glyph
 As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:02 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+Sep 12, 2026 7:51:19 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
 WARNING: Vulnerable protobuf generated type in use: com.dynamo.render.proto.Font$GlyphBank
 As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:02 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+Sep 12, 2026 7:51:19 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+WARNING: Vulnerable protobuf generated type in use: com.dynamo.gamesys.proto.TextureSetProto$TextureSetAnimation
+As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
+Sep 12, 2026 7:51:19 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+WARNING: Vulnerable protobuf generated type in use: com.dynamo.gamesys.proto.TextureSetProto$SpriteGeometry
+As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
+Sep 12, 2026 7:51:19 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+WARNING: Vulnerable protobuf generated type in use: com.dynamo.gamesys.proto.TextureSetProto$TextureSet
+As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
+Sep 12, 2026 7:51:19 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
 WARNING: Vulnerable protobuf generated type in use: com.dynamo.gamesys.proto.Sound$SoundDesc
 As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:02 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+Sep 12, 2026 7:51:20 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
 WARNING: Vulnerable protobuf generated type in use: com.dynamo.render.proto.Render$RenderPrototypeDesc
 As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:02 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+Sep 12, 2026 7:51:20 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
 WARNING: Vulnerable protobuf generated type in use: com.dynamo.input.proto.Input$KeyTrigger
 As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:02 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+Sep 12, 2026 7:51:20 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
 WARNING: Vulnerable protobuf generated type in use: com.dynamo.input.proto.Input$InputBinding
 As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:02 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+Sep 12, 2026 7:51:20 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
 WARNING: Vulnerable protobuf generated type in use: com.dynamo.render.proto.Render$DisplayProfileQualifier
 As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:02 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+Sep 12, 2026 7:51:20 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
 WARNING: Vulnerable protobuf generated type in use: com.dynamo.render.proto.Render$DisplayProfile
 As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:02 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+Sep 12, 2026 7:51:20 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
 WARNING: Vulnerable protobuf generated type in use: com.dynamo.render.proto.Render$DisplayProfiles
 As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-2026-09-12 19:39:02 INFO    Generating the resource graph took 0.026000 s 
-2026-09-12 19:39:02 INFO    Creation of the excluded resources list. 
-2026-09-12 19:39:02 INFO    Creation of the excluded resources list took 0.000000 s 
-2026-09-12 19:39:02 INFO    GameProjectBuilder.createArchive 
-2026-09-12 19:39:02 INFO    Creating archive entries with a fixed thread pool executor using 3 threads 
-2026-09-12 19:39:02 INFO    GameProjectBuilder.createArchive took 0.037000 
-2026-09-12 19:39:02 INFO    buildManifestData begin 
-2026-09-12 19:39:02 INFO    ManifestBuilder.buildManifestData took 0.003000 
-2026-09-12 19:39:02 INFO    buildManifestData begin 
-2026-09-12 19:39:02 INFO    ManifestBuilder.buildManifestData took 0.001000 
-2026-09-12 19:39:02 INFO    Writing the resource graph to json 
-2026-09-12 19:39:02 INFO    Writing the resource graph to json took 0.007000 s 
-2026-09-12 19:39:02 INFO    Build tasks took 1.705000 s 
+2026-09-12 19:51:20 INFO    Generating the resource graph took 0.031000 s 
+2026-09-12 19:51:20 INFO    Creation of the excluded resources list. 
+2026-09-12 19:51:20 INFO    Creation of the excluded resources list took 0.000000 s 
+2026-09-12 19:51:20 INFO    GameProjectBuilder.createArchive 
+2026-09-12 19:51:20 INFO    Creating archive entries with a fixed thread pool executor using 3 threads 
+2026-09-12 19:51:20 INFO    GameProjectBuilder.createArchive took 0.201000 
+2026-09-12 19:51:20 INFO    buildManifestData begin 
+2026-09-12 19:51:20 INFO    ManifestBuilder.buildManifestData took 0.005000 
+2026-09-12 19:51:20 INFO    buildManifestData begin 
+2026-09-12 19:51:20 INFO    ManifestBuilder.buildManifestData took 0.000000 
+2026-09-12 19:51:20 INFO    Writing the resource graph to json 
+2026-09-12 19:51:20 INFO    Writing the resource graph to json took 0.012000 s 
+2026-09-12 19:51:20 INFO    Build tasks took 1.871000 s 
  82% Generating report
  84% Bundling
-2026-09-12 19:39:03 INFO    Compiling resources from /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/res 
-2026-09-12 19:39:03 INFO    Compiling /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/res/com.bubblesafari.tv.defold to /tmp/defold-bob-invoke-17635413868359011383/compiled_resources16685345959576914501/com.bubblesafari.tv.defold 
-2026-09-12 19:39:03 INFO    exec: /tmp/11317728105912260645/x86_64-linux/aapt2 compile -o /tmp/defold-bob-invoke-17635413868359011383/compiled_resources16685345959576914501/com.bubblesafari.tv.defold --dir /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/res/com.bubblesafari.tv.defold 
-2026-09-12 19:39:03 INFO    result:  
-2026-09-12 19:39:03 INFO    Compiling /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/res/com.defold.android to /tmp/defold-bob-invoke-17635413868359011383/compiled_resources16685345959576914501/com.defold.android 
-2026-09-12 19:39:03 INFO    exec: /tmp/11317728105912260645/x86_64-linux/aapt2 compile -o /tmp/defold-bob-invoke-17635413868359011383/compiled_resources16685345959576914501/com.defold.android --dir /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/res/com.defold.android 
-2026-09-12 19:39:03 INFO    result:  
-2026-09-12 19:39:03 INFO    Linking resources from /tmp/defold-bob-invoke-17635413868359011383/compiled_resources16685345959576914501 
-2026-09-12 19:39:03 INFO    exec: /tmp/11317728105912260645/x86_64-linux/aapt2 link --proto-format -o /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/aab/aapt2/apk/output.apk -I /tmp/11317728105912260645/lib/android.jar --manifest /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/AndroidManifest.xml --auto-add-overlay -R @/home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/aab/compiled_resources.txt 
-2026-09-12 19:39:03 INFO    result:  
-2026-09-12 19:39:03 INFO    Creating AAB base.zip 
-2026-09-12 19:39:03 INFO    Copying dex to /tmp/11317728105912260645/lib/classes.dex 
-2026-09-12 19:39:03 INFO    Copying asset /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/build/default/game.projectc to /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/aab/base/assets/game.projectc 
-2026-09-12 19:39:03 INFO    Copying asset /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/build/default/game.arci to /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/aab/base/assets/game.arci 
-2026-09-12 19:39:03 INFO    Copying asset /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/build/default/game.arcd to /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/aab/base/assets/game.arcd 
-2026-09-12 19:39:03 INFO    Copying asset /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/build/default/game.dmanifest to /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/aab/base/assets/game.dmanifest 
-2026-09-12 19:39:03 INFO    Copying VkQuality data /tmp/11317728105912260645/lib/vkquality/vkqualitydata.vkq to /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/aab/base/assets/vkqualitydata.vkq 
-2026-09-12 19:39:03 INFO    Copying resources to /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/aab/base/res 
-2026-09-12 19:39:03 INFO    Copying engine to /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/aab/base/lib/armeabi-v7a/libBubbleSafariTVDefoldPrototype.so 
-2026-09-12 19:39:03 INFO    Copying VkQuality library /tmp/11317728105912260645/libexec/armv7-android/libvkquality.so to /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/aab/base/lib/armeabi-v7a/libvkquality.so 
-2026-09-12 19:39:03 INFO    Copying engine to /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/aab/base/lib/arm64-v8a/libBubbleSafariTVDefoldPrototype.so 
-2026-09-12 19:39:03 INFO    Copying VkQuality library /tmp/11317728105912260645/libexec/arm64-android/libvkquality.so to /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/aab/base/lib/arm64-v8a/libvkquality.so 
-2026-09-12 19:39:03 INFO    Zipping /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/aab/base to /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/aab/base.zip 
-2026-09-12 19:39:04 INFO    Creating Android Application Bundle 
-2026-09-12 19:39:05 INFO    exec: /usr/lib/jvm/temurin-25-jdk-amd64/bin/java -jar /tmp/11317728105912260645/bundletool-all.jar build-bundle --modules /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/aab/base.zip --output /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/BubbleSafariTVDefoldPrototype.aab --config /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/aab/BundleConfig.json 
-2026-09-12 19:39:07 INFO    result: WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
-WARNING: sun.misc.Unsafe::arrayBaseOffset has been called by com.google.protobuf.UnsafeUtil$MemoryAccessor (file:/tmp/11317728105912260645/bundletool-all.jar)
+2026-09-12 19:51:20 INFO    Compiling resources from /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/res 
+2026-09-12 19:51:20 INFO    Compiling /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/res/com.bubblesafari.tv.defold to /tmp/defold-bob-invoke-2117651464615596505/compiled_resources5204966380345045098/com.bubblesafari.tv.defold 
+2026-09-12 19:51:20 INFO    exec: /tmp/14223675564269908351/x86_64-linux/aapt2 compile -o /tmp/defold-bob-invoke-2117651464615596505/compiled_resources5204966380345045098/com.bubblesafari.tv.defold --dir /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/res/com.bubblesafari.tv.defold 
+2026-09-12 19:51:20 INFO    result:  
+2026-09-12 19:51:20 INFO    Compiling /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/res/com.defold.android to /tmp/defold-bob-invoke-2117651464615596505/compiled_resources5204966380345045098/com.defold.android 
+2026-09-12 19:51:20 INFO    exec: /tmp/14223675564269908351/x86_64-linux/aapt2 compile -o /tmp/defold-bob-invoke-2117651464615596505/compiled_resources5204966380345045098/com.defold.android --dir /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/res/com.defold.android 
+2026-09-12 19:51:20 INFO    result:  
+2026-09-12 19:51:20 INFO    Linking resources from /tmp/defold-bob-invoke-2117651464615596505/compiled_resources5204966380345045098 
+2026-09-12 19:51:20 INFO    exec: /tmp/14223675564269908351/x86_64-linux/aapt2 link --proto-format -o /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/aab/aapt2/apk/output.apk -I /tmp/14223675564269908351/lib/android.jar --manifest /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/AndroidManifest.xml --auto-add-overlay -R @/home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/aab/compiled_resources.txt 
+2026-09-12 19:51:20 INFO    result:  
+2026-09-12 19:51:20 INFO    Creating AAB base.zip 
+2026-09-12 19:51:20 INFO    Copying dex to /tmp/14223675564269908351/lib/classes.dex 
+2026-09-12 19:51:20 INFO    Copying asset /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/build/default/game.projectc to /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/aab/base/assets/game.projectc 
+2026-09-12 19:51:20 INFO    Copying asset /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/build/default/game.arci to /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/aab/base/assets/game.arci 
+2026-09-12 19:51:20 INFO    Copying asset /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/build/default/game.arcd to /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/aab/base/assets/game.arcd 
+2026-09-12 19:51:20 INFO    Copying asset /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/build/default/game.dmanifest to /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/aab/base/assets/game.dmanifest 
+2026-09-12 19:51:20 INFO    Copying VkQuality data /tmp/14223675564269908351/lib/vkquality/vkqualitydata.vkq to /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/aab/base/assets/vkqualitydata.vkq 
+2026-09-12 19:51:20 INFO    Copying resources to /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/aab/base/res 
+2026-09-12 19:51:20 INFO    Copying engine to /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/aab/base/lib/armeabi-v7a/libBubbleSafariTVDefoldPrototype.so 
+2026-09-12 19:51:21 INFO    Copying VkQuality library /tmp/14223675564269908351/libexec/armv7-android/libvkquality.so to /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/aab/base/lib/armeabi-v7a/libvkquality.so 
+2026-09-12 19:51:21 INFO    Copying engine to /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/aab/base/lib/arm64-v8a/libBubbleSafariTVDefoldPrototype.so 
+2026-09-12 19:51:21 INFO    Copying VkQuality library /tmp/14223675564269908351/libexec/arm64-android/libvkquality.so to /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/aab/base/lib/arm64-v8a/libvkquality.so 
+2026-09-12 19:51:21 INFO    Zipping /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/aab/base to /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/aab/base.zip 
+2026-09-12 19:51:22 INFO    Creating Android Application Bundle 
+2026-09-12 19:51:22 INFO    exec: /usr/lib/jvm/temurin-25-jdk-amd64/bin/java -jar /tmp/14223675564269908351/bundletool-all.jar build-bundle --modules /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/aab/base.zip --output /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/BubbleSafariTVDefoldPrototype.aab --config /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/aab/BundleConfig.json 
+2026-09-12 19:51:24 INFO    result: WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::arrayBaseOffset has been called by com.google.protobuf.UnsafeUtil$MemoryAccessor (file:/tmp/14223675564269908351/bundletool-all.jar)
 WARNING: Please consider reporting this to the maintainers of class com.google.protobuf.UnsafeUtil$MemoryAccessor
 WARNING: sun.misc.Unsafe::arrayBaseOffset will be removed in a future release
  
-2026-09-12 19:39:07 INFO    Sign /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/BubbleSafariTVDefoldPrototype.aab 
-2026-09-12 19:39:07 INFO    exec: /usr/lib/jvm/temurin-25-jdk-amd64/bin/keytool -genkey -v -noprompt -dname CN=Android, OU=Debug, O=Android, L=Unknown, ST=Unknown, C=US -keystore /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/debug.keystore -storepass android -alias androiddebugkey -keyalg RSA -validity 14000 
-2026-09-12 19:39:08 INFO    result: Generating 3072-bit RSA key pair and self-signed certificate (SHA384withRSA) with a validity of 14,000 days
+2026-09-12 19:51:24 INFO    Sign /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/BubbleSafariTVDefoldPrototype.aab 
+2026-09-12 19:51:24 INFO    exec: /usr/lib/jvm/temurin-25-jdk-amd64/bin/keytool -genkey -v -noprompt -dname CN=Android, OU=Debug, O=Android, L=Unknown, ST=Unknown, C=US -keystore /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/debug.keystore -storepass android -alias androiddebugkey -keyalg RSA -validity 14000 
+2026-09-12 19:51:26 INFO    result: Generating 3072-bit RSA key pair and self-signed certificate (SHA384withRSA) with a validity of 14,000 days
 	for: CN=Android, OU=Debug, O=Android, L=Unknown, ST=Unknown, C=US
 [Storing /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/debug.keystore]
  
-2026-09-12 19:39:08 INFO    exec: /usr/lib/jvm/temurin-25-jdk-amd64/bin/jarsigner -verbose -keystore /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/debug.keystore -storepass android -keypass android /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/BubbleSafariTVDefoldPrototype.aab androiddebugkey 
-2026-09-12 19:39:10 INFO    result:    adding: META-INF/MANIFEST.MF
+2026-09-12 19:51:26 INFO    exec: /usr/lib/jvm/temurin-25-jdk-amd64/bin/jarsigner -verbose -keystore /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/debug.keystore -storepass android -keypass android /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/BubbleSafariTVDefoldPrototype.aab androiddebugkey 
+2026-09-12 19:51:28 INFO    result:    adding: META-INF/MANIFEST.MF
    adding: META-INF/ANDROIDD.SF
    adding: META-INF/ANDROIDD.RSA
   signing: BundleConfig.pb
@@ -224,479 +259,19 @@ jar signed.
 Warning: 
 The signer's certificate is self-signed.
  
-2026-09-12 19:39:10 INFO    Cleanup bundle folder 
-2026-09-12 19:39:10 INFO    Creating universal APK set 
-2026-09-12 19:39:10 INFO    exec: /usr/lib/jvm/temurin-25-jdk-amd64/bin/java -jar /tmp/11317728105912260645/bundletool-all.jar build-apks --mode UNIVERSAL --bundle /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/BubbleSafariTVDefoldPrototype.aab --output /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/BubbleSafariTVDefoldPrototype.apks --ks /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/debug.keystore --ks-pass file:/home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/debug.keystore.pass.txt --ks-key-alias androiddebugkey --key-pass file:/home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/debug.keystore.pass.txt 
-2026-09-12 19:39:12 INFO    result: WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
-WARNING: sun.misc.Unsafe::arrayBaseOffset has been called by com.google.protobuf.UnsafeUtil$MemoryAccessor (file:/tmp/11317728105912260645/bundletool-all.jar)
+2026-09-12 19:51:28 INFO    Cleanup bundle folder 
+2026-09-12 19:51:28 INFO    Creating universal APK set 
+2026-09-12 19:51:28 INFO    exec: /usr/lib/jvm/temurin-25-jdk-amd64/bin/java -jar /tmp/14223675564269908351/bundletool-all.jar build-apks --mode UNIVERSAL --bundle /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/BubbleSafariTVDefoldPrototype.aab --output /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal/BubbleSafariTVDefoldPrototype/BubbleSafariTVDefoldPrototype.apks --ks /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/debug.keystore --ks-pass file:/home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/debug.keystore.pass.txt --ks-key-alias androiddebugkey --key-pass file:/home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/debug.keystore.pass.txt 
+2026-09-12 19:51:30 INFO    result: WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::arrayBaseOffset has been called by com.google.protobuf.UnsafeUtil$MemoryAccessor (file:/tmp/14223675564269908351/bundletool-all.jar)
 WARNING: Please consider reporting this to the maintainers of class com.google.protobuf.UnsafeUtil$MemoryAccessor
 WARNING: sun.misc.Unsafe::arrayBaseOffset will be removed in a future release
  
-2026-09-12 19:39:12 INFO    Extracting universal APK from APK set 
+2026-09-12 19:51:30 INFO    Extracting universal APK from APK set 
 100% Bundling
 Time profiler report creation took 0.01 seconds
 Defold Android bundle created under: /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-universal
 Build reports: defold-prototype/build/build-report.{json,html}
-=== BUILD android-arm64 architectures=arm64-android ===
-Synced 10 prototype audio files into defold-prototype/assets/audio
-  0% Downloading 0 archives
- 20% Downloading 0 archives
- 20% Working
-WARNING: A restricted method in java.lang.System has been called
-WARNING: java.lang.System::load has been called by com.dynamo.bob.pipeline.ModelImporterJni in an unnamed module (file:/home/runner/work/bubble-safari-tv/bubble-safari-tv/.defold/bob.jar)
-WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
-WARNING: Restricted methods will be blocked in a future release unless native access is enabled
 
- 20% Reading classes
-2026-09-12 19:39:13 INFO     
-WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
-WARNING: sun.misc.Unsafe::arrayBaseOffset has been called by com.google.protobuf.UnsafeUtil (file:/home/runner/work/bubble-safari-tv/bubble-safari-tv/.defold/bob.jar)
-WARNING: Please consider reporting this to the maintainers of class com.google.protobuf.UnsafeUtil
-WARNING: sun.misc.Unsafe::arrayBaseOffset will be removed in a future release
- 36% Reading classes
- 52% Reading classes
- 52% Cleaning
- 68% Cleaning
- 73% Cleaning
- 73% Cleaning engine
- 75% Cleaning engine
- 79% Reading tasks
- 80% Reading tasks
- 80% Building
-2026-09-12 19:39:14 INFO    Creating task builder with a fixed thread pool executor using 3 threads 
-2026-09-12 19:39:14 INFO    Build tasks 
-Sep 12, 2026 7:39:15 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.graphics.proto.Graphics$ShaderDesc$Shader
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:15 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.graphics.proto.Graphics$ShaderDesc$ResourceType
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:15 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.graphics.proto.Graphics$ShaderDesc$ResourceBinding
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:15 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.graphics.proto.Graphics$ShaderDesc$ResourceMember
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:15 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.graphics.proto.Graphics$ShaderDesc$ResourceTypeInfo
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:15 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.graphics.proto.Graphics$ShaderDesc$ShaderReflection
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:15 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.graphics.proto.Graphics$ShaderDesc
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-2026-09-12 19:39:15 INFO    Generating the resource graph 
-Sep 12, 2026 7:39:15 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.proto.DdfMath$Point3
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:15 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.proto.DdfMath$Quat
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:15 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.proto.DdfMath$Vector3One
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:15 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.gameobject.proto.GameObject$InstanceDesc
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:15 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.gameobject.proto.GameObject$ComponenTypeDesc
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:15 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.gameobject.proto.GameObject$CollectionDesc
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:15 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.properties.proto.PropertiesProto$PropertyDeclarations
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:15 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.gameobject.proto.GameObject$ComponentDesc
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:15 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.gameobject.proto.GameObject$PrototypeDesc
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:15 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.gamesys.proto.Gui$SceneDesc$FontDesc
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:15 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.proto.DdfMath$Vector4
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:15 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.proto.DdfMath$Vector4One
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:15 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.proto.DdfMath$Vector4WOne
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:15 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.gamesys.proto.Gui$NodeDesc
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:15 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.gamesys.proto.Gui$SceneDesc
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:15 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.script.proto.Lua$LuaSource
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:15 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.lua.proto.Lua$LuaModule
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:15 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.render.proto.Font$FontMap
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:15 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.render.proto.Material$MaterialDesc$Constant
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:15 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.render.proto.Material$MaterialDesc
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:15 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.render.proto.Font$GlyphBank$Glyph
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:15 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.render.proto.Font$GlyphBank
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:15 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.gamesys.proto.Sound$SoundDesc
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:15 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.render.proto.Render$RenderPrototypeDesc
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:15 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.input.proto.Input$KeyTrigger
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:15 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.input.proto.Input$InputBinding
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:15 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.render.proto.Render$DisplayProfileQualifier
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:15 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.render.proto.Render$DisplayProfile
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:15 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.render.proto.Render$DisplayProfiles
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-2026-09-12 19:39:15 INFO    Generating the resource graph took 0.024000 s 
-2026-09-12 19:39:15 INFO    Creation of the excluded resources list. 
-2026-09-12 19:39:15 INFO    Creation of the excluded resources list took 0.000000 s 
-2026-09-12 19:39:15 INFO    GameProjectBuilder.createArchive 
-2026-09-12 19:39:15 INFO    Creating archive entries with a fixed thread pool executor using 3 threads 
-2026-09-12 19:39:15 INFO    GameProjectBuilder.createArchive took 0.044000 
-2026-09-12 19:39:15 INFO    buildManifestData begin 
-2026-09-12 19:39:15 INFO    ManifestBuilder.buildManifestData took 0.003000 
-2026-09-12 19:39:15 INFO    buildManifestData begin 
-2026-09-12 19:39:15 INFO    ManifestBuilder.buildManifestData took 0.000000 
-2026-09-12 19:39:15 INFO    Writing the resource graph to json 
-2026-09-12 19:39:15 INFO    Writing the resource graph to json took 0.010000 s 
-2026-09-12 19:39:15 INFO    Build tasks took 0.877000 s 
- 82% Generating report
- 84% Bundling
-2026-09-12 19:39:15 INFO    Compiling resources from /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-arm64/BubbleSafariTVDefoldPrototype/res 
-2026-09-12 19:39:15 INFO    Compiling /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-arm64/BubbleSafariTVDefoldPrototype/res/com.bubblesafari.tv.defold to /tmp/defold-bob-invoke-6208253569025526658/compiled_resources8888966338722478863/com.bubblesafari.tv.defold 
-2026-09-12 19:39:15 INFO    exec: /tmp/14655889774625092353/x86_64-linux/aapt2 compile -o /tmp/defold-bob-invoke-6208253569025526658/compiled_resources8888966338722478863/com.bubblesafari.tv.defold --dir /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-arm64/BubbleSafariTVDefoldPrototype/res/com.bubblesafari.tv.defold 
-2026-09-12 19:39:15 INFO    result:  
-2026-09-12 19:39:15 INFO    Compiling /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-arm64/BubbleSafariTVDefoldPrototype/res/com.defold.android to /tmp/defold-bob-invoke-6208253569025526658/compiled_resources8888966338722478863/com.defold.android 
-2026-09-12 19:39:15 INFO    exec: /tmp/14655889774625092353/x86_64-linux/aapt2 compile -o /tmp/defold-bob-invoke-6208253569025526658/compiled_resources8888966338722478863/com.defold.android --dir /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-arm64/BubbleSafariTVDefoldPrototype/res/com.defold.android 
-2026-09-12 19:39:15 INFO    result:  
-2026-09-12 19:39:15 INFO    Linking resources from /tmp/defold-bob-invoke-6208253569025526658/compiled_resources8888966338722478863 
-2026-09-12 19:39:15 INFO    exec: /tmp/14655889774625092353/x86_64-linux/aapt2 link --proto-format -o /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-arm64/BubbleSafariTVDefoldPrototype/aab/aapt2/apk/output.apk -I /tmp/14655889774625092353/lib/android.jar --manifest /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-arm64/BubbleSafariTVDefoldPrototype/AndroidManifest.xml --auto-add-overlay -R @/home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-arm64/BubbleSafariTVDefoldPrototype/aab/compiled_resources.txt 
-2026-09-12 19:39:15 INFO    result:  
-2026-09-12 19:39:15 INFO    Creating AAB base.zip 
-2026-09-12 19:39:15 INFO    Copying dex to /tmp/14655889774625092353/lib/classes.dex 
-2026-09-12 19:39:15 INFO    Copying asset /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/build/default/game.projectc to /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-arm64/BubbleSafariTVDefoldPrototype/aab/base/assets/game.projectc 
-2026-09-12 19:39:15 INFO    Copying asset /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/build/default/game.arci to /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-arm64/BubbleSafariTVDefoldPrototype/aab/base/assets/game.arci 
-2026-09-12 19:39:15 INFO    Copying asset /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/build/default/game.arcd to /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-arm64/BubbleSafariTVDefoldPrototype/aab/base/assets/game.arcd 
-2026-09-12 19:39:15 INFO    Copying asset /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/build/default/game.dmanifest to /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-arm64/BubbleSafariTVDefoldPrototype/aab/base/assets/game.dmanifest 
-2026-09-12 19:39:15 INFO    Copying VkQuality data /tmp/14655889774625092353/lib/vkquality/vkqualitydata.vkq to /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-arm64/BubbleSafariTVDefoldPrototype/aab/base/assets/vkqualitydata.vkq 
-2026-09-12 19:39:15 INFO    Copying resources to /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-arm64/BubbleSafariTVDefoldPrototype/aab/base/res 
-2026-09-12 19:39:15 INFO    Copying engine to /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-arm64/BubbleSafariTVDefoldPrototype/aab/base/lib/arm64-v8a/libBubbleSafariTVDefoldPrototype.so 
-2026-09-12 19:39:15 INFO    Copying VkQuality library /tmp/14655889774625092353/libexec/arm64-android/libvkquality.so to /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-arm64/BubbleSafariTVDefoldPrototype/aab/base/lib/arm64-v8a/libvkquality.so 
-2026-09-12 19:39:15 INFO    Zipping /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-arm64/BubbleSafariTVDefoldPrototype/aab/base to /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-arm64/BubbleSafariTVDefoldPrototype/aab/base.zip 
-2026-09-12 19:39:16 INFO    Creating Android Application Bundle 
-2026-09-12 19:39:16 INFO    exec: /usr/lib/jvm/temurin-25-jdk-amd64/bin/java -jar /tmp/14655889774625092353/bundletool-all.jar build-bundle --modules /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-arm64/BubbleSafariTVDefoldPrototype/aab/base.zip --output /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-arm64/BubbleSafariTVDefoldPrototype/BubbleSafariTVDefoldPrototype.aab --config /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-arm64/BubbleSafariTVDefoldPrototype/aab/BundleConfig.json 
-2026-09-12 19:39:17 INFO    result: WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
-WARNING: sun.misc.Unsafe::arrayBaseOffset has been called by com.google.protobuf.UnsafeUtil$MemoryAccessor (file:/tmp/14655889774625092353/bundletool-all.jar)
-WARNING: Please consider reporting this to the maintainers of class com.google.protobuf.UnsafeUtil$MemoryAccessor
-WARNING: sun.misc.Unsafe::arrayBaseOffset will be removed in a future release
- 
-2026-09-12 19:39:17 INFO    Sign /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-arm64/BubbleSafariTVDefoldPrototype/BubbleSafariTVDefoldPrototype.aab 
-2026-09-12 19:39:17 INFO    exec: /usr/lib/jvm/temurin-25-jdk-amd64/bin/jarsigner -verbose -keystore /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/debug.keystore -storepass android -keypass android /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-arm64/BubbleSafariTVDefoldPrototype/BubbleSafariTVDefoldPrototype.aab androiddebugkey 
-2026-09-12 19:39:18 INFO    result:    adding: META-INF/MANIFEST.MF
-   adding: META-INF/ANDROIDD.SF
-   adding: META-INF/ANDROIDD.RSA
-  signing: BundleConfig.pb
-  signing: base/dex/classes.dex
-  signing: base/lib/arm64-v8a/libBubbleSafariTVDefoldPrototype.so
-  signing: base/lib/arm64-v8a/libvkquality.so
-  signing: base/res/drawable/tv_banner.xml
-  signing: base/res/drawable-hdpi-v4/icon.png
-  signing: base/res/drawable-ldpi-v4/icon.png
-  signing: base/res/drawable-xxhdpi-v4/icon.png
-  signing: base/res/drawable-xxxhdpi-v4/icon.png
-  signing: base/res/drawable-xhdpi-v4/icon.png
-  signing: base/res/drawable-mdpi-v4/icon.png
-  signing: base/assets/game.arcd
-  signing: base/assets/game.projectc
-  signing: base/assets/game.dmanifest
-  signing: base/assets/vkqualitydata.vkq
-  signing: base/assets/game.arci
-  signing: base/manifest/AndroidManifest.xml
-  signing: base/assets.pb
-  signing: base/native.pb
-  signing: base/resources.pb
-
->>> Signer
-    X.509, CN=Android, OU=Debug, O=Android, L=Unknown, ST=Unknown, C=US
-    Signature algorithm: SHA384withRSA, 3072-bit RSA key
-    [trusted certificate]
-
-jar signed.
-
-Warning: 
-The signer's certificate is self-signed.
- 
-2026-09-12 19:39:18 INFO    Cleanup bundle folder 
-2026-09-12 19:39:18 INFO    Creating universal APK set 
-2026-09-12 19:39:18 INFO    exec: /usr/lib/jvm/temurin-25-jdk-amd64/bin/java -jar /tmp/14655889774625092353/bundletool-all.jar build-apks --mode UNIVERSAL --bundle /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-arm64/BubbleSafariTVDefoldPrototype/BubbleSafariTVDefoldPrototype.aab --output /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-arm64/BubbleSafariTVDefoldPrototype/BubbleSafariTVDefoldPrototype.apks --ks /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/debug.keystore --ks-pass file:/home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/debug.keystore.pass.txt --ks-key-alias androiddebugkey --key-pass file:/home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/debug.keystore.pass.txt 
-2026-09-12 19:39:19 INFO    result: WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
-WARNING: sun.misc.Unsafe::arrayBaseOffset has been called by com.google.protobuf.UnsafeUtil$MemoryAccessor (file:/tmp/14655889774625092353/bundletool-all.jar)
-WARNING: Please consider reporting this to the maintainers of class com.google.protobuf.UnsafeUtil$MemoryAccessor
-WARNING: sun.misc.Unsafe::arrayBaseOffset will be removed in a future release
- 
-2026-09-12 19:39:19 INFO    Extracting universal APK from APK set 
-100% Bundling
-Time profiler report creation took 0.01 seconds
-Defold Android bundle created under: /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-arm64
-Build reports: defold-prototype/build/build-report.{json,html}
-=== BUILD android-armv7 architectures=armv7-android ===
-Synced 10 prototype audio files into defold-prototype/assets/audio
-  0% Downloading 0 archives
- 20% Downloading 0 archives
- 20% Working
-WARNING: A restricted method in java.lang.System has been called
-WARNING: java.lang.System::load has been called by com.dynamo.bob.pipeline.ModelImporterJni in an unnamed module (file:/home/runner/work/bubble-safari-tv/bubble-safari-tv/.defold/bob.jar)
-WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
-WARNING: Restricted methods will be blocked in a future release unless native access is enabled
-
- 20% Reading classes
-2026-09-12 19:39:20 INFO     
-WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
-WARNING: sun.misc.Unsafe::arrayBaseOffset has been called by com.google.protobuf.UnsafeUtil (file:/home/runner/work/bubble-safari-tv/bubble-safari-tv/.defold/bob.jar)
-WARNING: Please consider reporting this to the maintainers of class com.google.protobuf.UnsafeUtil
-WARNING: sun.misc.Unsafe::arrayBaseOffset will be removed in a future release
- 36% Reading classes
- 52% Reading classes
- 52% Cleaning
- 68% Cleaning
- 73% Cleaning
- 73% Cleaning engine
- 75% Cleaning engine
- 79% Reading tasks
- 80% Reading tasks
- 80% Building
-2026-09-12 19:39:20 INFO    Creating task builder with a fixed thread pool executor using 3 threads 
-2026-09-12 19:39:20 INFO    Build tasks 
-Sep 12, 2026 7:39:21 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.graphics.proto.Graphics$ShaderDesc$Shader
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:21 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.graphics.proto.Graphics$ShaderDesc$ResourceType
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:21 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.graphics.proto.Graphics$ShaderDesc$ResourceBinding
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:21 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.graphics.proto.Graphics$ShaderDesc$ResourceMember
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:21 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.graphics.proto.Graphics$ShaderDesc$ResourceTypeInfo
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:21 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.graphics.proto.Graphics$ShaderDesc$ShaderReflection
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:21 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.graphics.proto.Graphics$ShaderDesc
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-2026-09-12 19:39:21 INFO    Generating the resource graph 
-Sep 12, 2026 7:39:21 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.proto.DdfMath$Point3
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:21 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.proto.DdfMath$Quat
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:21 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.proto.DdfMath$Vector3One
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:21 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.gameobject.proto.GameObject$InstanceDesc
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:21 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.gameobject.proto.GameObject$ComponenTypeDesc
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:21 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.gameobject.proto.GameObject$CollectionDesc
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:21 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.properties.proto.PropertiesProto$PropertyDeclarations
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:21 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.gameobject.proto.GameObject$ComponentDesc
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:21 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.gameobject.proto.GameObject$PrototypeDesc
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:21 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.gamesys.proto.Gui$SceneDesc$FontDesc
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:21 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.proto.DdfMath$Vector4
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:21 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.proto.DdfMath$Vector4One
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:21 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.proto.DdfMath$Vector4WOne
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:21 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.gamesys.proto.Gui$NodeDesc
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:21 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.gamesys.proto.Gui$SceneDesc
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:21 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.script.proto.Lua$LuaSource
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:21 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.lua.proto.Lua$LuaModule
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:21 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.render.proto.Font$FontMap
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:21 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.render.proto.Material$MaterialDesc$Constant
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:21 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.render.proto.Material$MaterialDesc
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:21 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.render.proto.Font$GlyphBank$Glyph
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:21 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.render.proto.Font$GlyphBank
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:21 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.gamesys.proto.Sound$SoundDesc
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:21 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.render.proto.Render$RenderPrototypeDesc
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:21 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.input.proto.Input$KeyTrigger
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:21 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.input.proto.Input$InputBinding
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:21 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.render.proto.Render$DisplayProfileQualifier
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:21 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.render.proto.Render$DisplayProfile
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-Sep 12, 2026 7:39:21 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
-WARNING: Vulnerable protobuf generated type in use: com.dynamo.render.proto.Render$DisplayProfiles
-As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
-2026-09-12 19:39:21 INFO    Generating the resource graph took 0.025000 s 
-2026-09-12 19:39:21 INFO    Creation of the excluded resources list. 
-2026-09-12 19:39:21 INFO    Creation of the excluded resources list took 0.000000 s 
-2026-09-12 19:39:21 INFO    GameProjectBuilder.createArchive 
-2026-09-12 19:39:21 INFO    Creating archive entries with a fixed thread pool executor using 3 threads 
-2026-09-12 19:39:21 INFO    GameProjectBuilder.createArchive took 0.033000 
-2026-09-12 19:39:21 INFO    buildManifestData begin 
-2026-09-12 19:39:21 INFO    ManifestBuilder.buildManifestData took 0.003000 
-2026-09-12 19:39:21 INFO    buildManifestData begin 
-2026-09-12 19:39:21 INFO    ManifestBuilder.buildManifestData took 0.000000 
-2026-09-12 19:39:21 INFO    Writing the resource graph to json 
-2026-09-12 19:39:21 INFO    Writing the resource graph to json took 0.008000 s 
-2026-09-12 19:39:21 INFO    Build tasks took 0.792000 s 
- 82% Generating report
- 84% Bundling
-2026-09-12 19:39:21 INFO    Compiling resources from /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-armv7/BubbleSafariTVDefoldPrototype/res 
-2026-09-12 19:39:21 INFO    Compiling /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-armv7/BubbleSafariTVDefoldPrototype/res/com.bubblesafari.tv.defold to /tmp/defold-bob-invoke-16725913757411757495/compiled_resources9237013836857199239/com.bubblesafari.tv.defold 
-2026-09-12 19:39:21 INFO    exec: /tmp/9359381323874480809/x86_64-linux/aapt2 compile -o /tmp/defold-bob-invoke-16725913757411757495/compiled_resources9237013836857199239/com.bubblesafari.tv.defold --dir /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-armv7/BubbleSafariTVDefoldPrototype/res/com.bubblesafari.tv.defold 
-2026-09-12 19:39:21 INFO    result:  
-2026-09-12 19:39:21 INFO    Compiling /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-armv7/BubbleSafariTVDefoldPrototype/res/com.defold.android to /tmp/defold-bob-invoke-16725913757411757495/compiled_resources9237013836857199239/com.defold.android 
-2026-09-12 19:39:21 INFO    exec: /tmp/9359381323874480809/x86_64-linux/aapt2 compile -o /tmp/defold-bob-invoke-16725913757411757495/compiled_resources9237013836857199239/com.defold.android --dir /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-armv7/BubbleSafariTVDefoldPrototype/res/com.defold.android 
-2026-09-12 19:39:21 INFO    result:  
-2026-09-12 19:39:21 INFO    Linking resources from /tmp/defold-bob-invoke-16725913757411757495/compiled_resources9237013836857199239 
-2026-09-12 19:39:21 INFO    exec: /tmp/9359381323874480809/x86_64-linux/aapt2 link --proto-format -o /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-armv7/BubbleSafariTVDefoldPrototype/aab/aapt2/apk/output.apk -I /tmp/9359381323874480809/lib/android.jar --manifest /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-armv7/BubbleSafariTVDefoldPrototype/AndroidManifest.xml --auto-add-overlay -R @/home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-armv7/BubbleSafariTVDefoldPrototype/aab/compiled_resources.txt 
-2026-09-12 19:39:21 INFO    result:  
-2026-09-12 19:39:21 INFO    Creating AAB base.zip 
-2026-09-12 19:39:21 INFO    Copying dex to /tmp/9359381323874480809/lib/classes.dex 
-2026-09-12 19:39:21 INFO    Copying asset /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/build/default/game.projectc to /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-armv7/BubbleSafariTVDefoldPrototype/aab/base/assets/game.projectc 
-2026-09-12 19:39:21 INFO    Copying asset /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/build/default/game.arci to /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-armv7/BubbleSafariTVDefoldPrototype/aab/base/assets/game.arci 
-2026-09-12 19:39:21 INFO    Copying asset /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/build/default/game.arcd to /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-armv7/BubbleSafariTVDefoldPrototype/aab/base/assets/game.arcd 
-2026-09-12 19:39:21 INFO    Copying asset /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/build/default/game.dmanifest to /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-armv7/BubbleSafariTVDefoldPrototype/aab/base/assets/game.dmanifest 
-2026-09-12 19:39:21 INFO    Copying VkQuality data /tmp/9359381323874480809/lib/vkquality/vkqualitydata.vkq to /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-armv7/BubbleSafariTVDefoldPrototype/aab/base/assets/vkqualitydata.vkq 
-2026-09-12 19:39:21 INFO    Copying resources to /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-armv7/BubbleSafariTVDefoldPrototype/aab/base/res 
-2026-09-12 19:39:21 INFO    Copying engine to /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-armv7/BubbleSafariTVDefoldPrototype/aab/base/lib/armeabi-v7a/libBubbleSafariTVDefoldPrototype.so 
-2026-09-12 19:39:21 INFO    Copying VkQuality library /tmp/9359381323874480809/libexec/armv7-android/libvkquality.so to /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-armv7/BubbleSafariTVDefoldPrototype/aab/base/lib/armeabi-v7a/libvkquality.so 
-2026-09-12 19:39:21 INFO    Zipping /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-armv7/BubbleSafariTVDefoldPrototype/aab/base to /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-armv7/BubbleSafariTVDefoldPrototype/aab/base.zip 
-2026-09-12 19:39:23 INFO    Creating Android Application Bundle 
-2026-09-12 19:39:23 INFO    exec: /usr/lib/jvm/temurin-25-jdk-amd64/bin/java -jar /tmp/9359381323874480809/bundletool-all.jar build-bundle --modules /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-armv7/BubbleSafariTVDefoldPrototype/aab/base.zip --output /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-armv7/BubbleSafariTVDefoldPrototype/BubbleSafariTVDefoldPrototype.aab --config /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-armv7/BubbleSafariTVDefoldPrototype/aab/BundleConfig.json 
-2026-09-12 19:39:24 INFO    result: WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
-WARNING: sun.misc.Unsafe::arrayBaseOffset has been called by com.google.protobuf.UnsafeUtil$MemoryAccessor (file:/tmp/9359381323874480809/bundletool-all.jar)
-WARNING: Please consider reporting this to the maintainers of class com.google.protobuf.UnsafeUtil$MemoryAccessor
-WARNING: sun.misc.Unsafe::arrayBaseOffset will be removed in a future release
- 
-2026-09-12 19:39:24 INFO    Sign /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-armv7/BubbleSafariTVDefoldPrototype/BubbleSafariTVDefoldPrototype.aab 
-2026-09-12 19:39:24 INFO    exec: /usr/lib/jvm/temurin-25-jdk-amd64/bin/jarsigner -verbose -keystore /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/debug.keystore -storepass android -keypass android /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-armv7/BubbleSafariTVDefoldPrototype/BubbleSafariTVDefoldPrototype.aab androiddebugkey 
-2026-09-12 19:39:26 INFO    result:    adding: META-INF/MANIFEST.MF
-   adding: META-INF/ANDROIDD.SF
-   adding: META-INF/ANDROIDD.RSA
-  signing: BundleConfig.pb
-  signing: base/dex/classes.dex
-  signing: base/lib/armeabi-v7a/libBubbleSafariTVDefoldPrototype.so
-  signing: base/lib/armeabi-v7a/libvkquality.so
-  signing: base/res/drawable/tv_banner.xml
-  signing: base/res/drawable-hdpi-v4/icon.png
-  signing: base/res/drawable-ldpi-v4/icon.png
-  signing: base/res/drawable-xxhdpi-v4/icon.png
-  signing: base/res/drawable-xxxhdpi-v4/icon.png
-  signing: base/res/drawable-xhdpi-v4/icon.png
-  signing: base/res/drawable-mdpi-v4/icon.png
-  signing: base/assets/game.arcd
-  signing: base/assets/game.projectc
-  signing: base/assets/game.dmanifest
-  signing: base/assets/vkqualitydata.vkq
-  signing: base/assets/game.arci
-  signing: base/manifest/AndroidManifest.xml
-  signing: base/assets.pb
-  signing: base/native.pb
-  signing: base/resources.pb
-
->>> Signer
-    X.509, CN=Android, OU=Debug, O=Android, L=Unknown, ST=Unknown, C=US
-    Signature algorithm: SHA384withRSA, 3072-bit RSA key
-    [trusted certificate]
-
-jar signed.
-
-Warning: 
-The signer's certificate is self-signed.
- 
-2026-09-12 19:39:26 INFO    Cleanup bundle folder 
-2026-09-12 19:39:26 INFO    Creating universal APK set 
-2026-09-12 19:39:26 INFO    exec: /usr/lib/jvm/temurin-25-jdk-amd64/bin/java -jar /tmp/9359381323874480809/bundletool-all.jar build-apks --mode UNIVERSAL --bundle /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-armv7/BubbleSafariTVDefoldPrototype/BubbleSafariTVDefoldPrototype.aab --output /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-armv7/BubbleSafariTVDefoldPrototype/BubbleSafariTVDefoldPrototype.apks --ks /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/debug.keystore --ks-pass file:/home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/debug.keystore.pass.txt --ks-key-alias androiddebugkey --key-pass file:/home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/debug.keystore.pass.txt 
-2026-09-12 19:39:27 INFO    result: WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
-WARNING: sun.misc.Unsafe::arrayBaseOffset has been called by com.google.protobuf.UnsafeUtil$MemoryAccessor (file:/tmp/9359381323874480809/bundletool-all.jar)
-WARNING: Please consider reporting this to the maintainers of class com.google.protobuf.UnsafeUtil$MemoryAccessor
-WARNING: sun.misc.Unsafe::arrayBaseOffset will be removed in a future release
- 
-2026-09-12 19:39:27 INFO    Extracting universal APK from APK set 
-100% Bundling
-Time profiler report creation took 0.01 seconds
-Defold Android bundle created under: /home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/out/android-armv7
-Build reports: defold-prototype/build/build-report.{json,html}
-
-APK sizes:
--rw-r--r-- 1 runner runner 7.6M Sep 12 19:39 defold-prototype/dist/bubble-safari-defold-prototype-arm64.apk
--rw-r--r-- 1 runner runner  24M Sep 12 19:39 defold-prototype/dist/bubble-safari-defold-prototype-armv7.apk
--rw-r--r-- 1 runner runner  30M Sep 12 19:39 defold-prototype/dist/bubble-safari-defold-prototype.apk
+APK size:
+-rw-r--r-- 1 runner runner 30M Sep 12 19:51 defold-prototype/dist/bubble-safari-defold-prototype.apk
