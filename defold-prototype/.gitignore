@@ -1,0 +1,4 @@
+/build/
+/.internal/
+/bundle/
+/assets/audio/*.wav
