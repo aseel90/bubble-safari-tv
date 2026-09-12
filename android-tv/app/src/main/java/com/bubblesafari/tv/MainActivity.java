@@ -56,6 +56,7 @@ public final class MainActivity extends Activity {
     private static final String STAGING_DIR = "game-update-staging";
     private static final String BACKUP_DIR = "game-update-backup";
     private static final String VERSION_FILE = ".bubble-safari-version";
+    private static final String BUNDLED_VERSION_ASSET = "bubble-safari-version.txt";
     private static final long MAX_MANIFEST_BYTES = 64 * 1024L;
     private static final long MAX_ZIP_BYTES = 50 * 1024 * 1024L;
     private static final long MAX_UNPACKED_BYTES = 100 * 1024 * 1024L;
@@ -397,7 +398,7 @@ public final class MainActivity extends Activity {
     }
 
     private String readBundledVersion() {
-        try (InputStream input = getAssets().open(VERSION_FILE)) {
+        try (InputStream input = getAssets().open(BUNDLED_VERSION_ASSET)) {
             return new String(readLimited(input, 512), StandardCharsets.UTF_8).trim();
         } catch (Exception ignored) {
             return "";
