@@ -199,7 +199,7 @@ public final class MainActivity extends Activity {
                 }
 
                 UpdateManifest manifest = fetchManifest();
-                String activeVersion = readVersion(activeUpdateDir);
+                String activeVersion = isValidGameDirectory(activeUpdateDir) ? readVersion(activeUpdateDir) : readBundledVersion();
                 File pending = new File(getFilesDir(), PENDING_DIR);
                 String pendingVersion = readVersion(pending);
 
@@ -394,6 +394,14 @@ public final class MainActivity extends Activity {
         return directory != null && new File(directory, "index.html").isFile()
                 && new File(directory, "game-v3.js").isFile()
                 && new File(directory, "tv-nav.js").isFile();
+    }
+
+    private String readBundledVersion() {
+        try (InputStream input = getAssets().open(VERSION_FILE)) {
+            return new String(readLimited(input, 512), StandardCharsets.UTF_8).trim();
+        } catch (Exception ignored) {
+            return "";
+        }
     }
 
     private static String readVersion(File directory) {
