@@ -9,7 +9,7 @@ const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 const screens = { home:$('#homeScreen'), age:$('#ageScreen'), world:$('#worldScreen'), settings:$('#settingsScreen'), game:$('#gameScreen'), finish:$('#finishScreen') };
 const app=$('#app'), worldDecor=$('#worldDecor'), hud=$('#hud'), settingsButton=$('#settingsButton'), starCount=$('#starCount'), roundText=$('#roundText'), progressMeter=$('#progressMeter'), progressFill=$('#progressFill'), worldName=$('#worldName'), worldIcon=$('#worldIcon'), choicesEl=$('#choices'), questionText=$('#questionText'), questionKicker=$('#questionKicker'), questionVisual=$('#questionVisual'), replayButton=$('#replayButton'), soundButton=$('#soundButton'), soundIcon=$('#soundIcon'), feedback=$('#feedback'), feedbackTitle=$('#feedbackTitle'), feedbackSubtitle=$('#feedbackSubtitle'), feedbackIcon=$('#feedbackIcon'), confetti=$('#confetti'), finalStars=$('#finalStars');
-const updateStatus=$('#updateStatus'), updateProgress=$('#updateProgress'), updateProgressFill=$('#updateProgressFill'), updateProgressPercent=$('#updateProgressPercent'), currentVersion=$('#currentVersion'), latestVersion=$('#latestVersion'), checkUpdateButton=$('#checkUpdateButton'), otaOverlay=$('#otaOverlay'), otaOverlayLabel=$('#otaOverlayLabel'), otaOverlayPercent=$('#otaOverlayPercent'), otaOverlayFill=$('#otaOverlayFill');
+const updateStatus=$('#updateStatus'), updateProgressEl=$('#updateProgress'), updateProgressFill=$('#updateProgressFill'), updateProgressPercent=$('#updateProgressPercent'), currentVersion=$('#currentVersion'), latestVersion=$('#latestVersion'), checkUpdateButton=$('#checkUpdateButton'), otaOverlay=$('#otaOverlay'), otaOverlayLabel=$('#otaOverlayLabel'), otaOverlayPercent=$('#otaOverlayPercent'), otaOverlayFill=$('#otaOverlayFill');
 
 const state={age:'2-3',world:'jungle',round:0,totalRounds:12,stars:0,streak:0,muted:localStorage.getItem('bubbleSafariMuted')==='1',effects:localStorage.getItem('bubbleSafariEffects')!=='0',quality:localStorage.getItem('bubbleSafariQuality')||'auto',settingsReturn:'home',currentQuestion:null,locked:false,typePlan:[],usedTargets:{},feedbackHistory:[],lastSize:null,flowId:0};
 const voice=createVoiceEngine({isMuted:()=>state.muted});
@@ -193,7 +193,7 @@ function setUpdatePercent(percent){
   const safe=Math.max(0,Math.min(100,Number(percent)||0)),scale=String(safe/100),text=`${Math.round(safe)}%`;
   if(updateProgressFill)updateProgressFill.style.transform=`scaleX(${scale})`;
   if(updateProgressPercent)updateProgressPercent.textContent=text;
-  if(updateProgress){updateProgress.setAttribute('aria-valuenow',String(Math.round(safe)));updateProgress.dataset.percent=String(Math.round(safe))}
+  if(updateProgressEl){updateProgressEl.setAttribute('aria-valuenow',String(Math.round(safe)));updateProgressEl.dataset.percent=String(Math.round(safe))}
   if(otaOverlayFill)otaOverlayFill.style.transform=`scaleX(${scale})`;
   if(otaOverlayPercent)otaOverlayPercent.textContent=text;
 }
@@ -203,7 +203,7 @@ function renderUpdateState(detail={}){
   const indeterminate=['checking','available','verifying','installing'].includes(phase)&&percent<=0;
   if(updateStatus&&message)updateStatus.textContent=message;
   if(latestVersion&&version)latestVersion.textContent=version.slice(0,8);
-  if(updateProgress){updateProgress.dataset.phase=phase;updateProgress.classList.toggle('indeterminate',indeterminate)}
+  if(updateProgressEl){updateProgressEl.dataset.phase=phase;updateProgressEl.classList.toggle('indeterminate',indeterminate)}
   if(otaOverlay){
     otaOverlay.classList.toggle('hidden',phase==='idle');
     otaOverlay.classList.toggle('indeterminate',indeterminate);
