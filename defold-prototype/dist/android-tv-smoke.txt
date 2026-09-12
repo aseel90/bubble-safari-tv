@@ -1,0 +1,1 @@
+Smoke workflow failed before the test script created a report.
