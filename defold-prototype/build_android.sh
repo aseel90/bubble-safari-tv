@@ -2,7 +2,6 @@
 set -euo pipefail
 
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ROOT="$(cd "$PROJECT_DIR/.." && pwd)"
 BOB_JAR="${BOB_JAR:-${BOB:-}}"
 JAVA_BIN="${JAVA_BIN:-java}"
 VARIANT="${VARIANT:-debug}"
@@ -16,9 +15,10 @@ if [[ -z "$BOB_JAR" ]]; then
 fi
 
 [[ -f "$BOB_JAR" ]] || { echo "bob.jar not found: $BOB_JAR" >&2; exit 3; }
+BOB_JAR="$(cd "$(dirname "$BOB_JAR")" && pwd)/$(basename "$BOB_JAR")"
 command -v "$JAVA_BIN" >/dev/null || { echo "Java not found: $JAVA_BIN" >&2; exit 4; }
 
-"$PROJECT_DIR/tools/sync_assets.sh"
+bash "$PROJECT_DIR/tools/sync_assets.sh"
 mkdir -p "$PROJECT_DIR/build" "$OUT_DIR"
 
 cd "$PROJECT_DIR"

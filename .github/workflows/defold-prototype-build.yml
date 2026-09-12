@@ -9,6 +9,9 @@ on:
       - 'defold-prototype/**'
       - '.github/workflows/defold-prototype-build.yml'
 
+permissions:
+  contents: read
+
 jobs:
   android-apk:
     runs-on: ubuntu-latest
@@ -28,11 +31,8 @@ jobs:
           sha1: stable
 
       - name: Build native prototype APK
-        env:
-          BOB_JAR: ${{ env.BOB }}
         run: |
-          chmod +x defold-prototype/build_android.sh defold-prototype/tools/sync_assets.sh
-          BOB_JAR="$BOB" ./defold-prototype/build_android.sh
+          BOB_JAR="$BOB" bash ./defold-prototype/build_android.sh
 
       - name: Upload APK and build reports
         uses: actions/upload-artifact@v4

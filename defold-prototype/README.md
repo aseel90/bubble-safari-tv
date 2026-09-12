@@ -38,13 +38,13 @@ Requirements:
 From the repository root:
 
 ```bash
-BOB_JAR=/path/to/bob.jar ./defold-prototype/build_android.sh
+BOB_JAR=/path/to/bob.jar bash ./defold-prototype/build_android.sh
 ```
 
 By default the script builds a debug APK containing both `armv7-android` and `arm64-android`. Override with environment variables when needed:
 
 ```bash
-VARIANT=release ARCHITECTURES=arm64-android BOB_JAR=/path/to/bob.jar ./defold-prototype/build_android.sh
+VARIANT=release ARCHITECTURES=arm64-android BOB_JAR=/path/to/bob.jar bash ./defold-prototype/build_android.sh
 ```
 
 The build also writes JSON and HTML build reports. These reports are intended to make resource-size changes visible before the device benchmark stage.
@@ -54,8 +54,8 @@ The build also writes JSON and HTML build reports. These reports are intended to
 Device testing is intentionally kept outside this directory. The repository-level runner is:
 
 ```bash
-./benchmark_tv.sh webview
-./benchmark_tv.sh defold
+bash ./benchmark_tv.sh webview
+bash ./benchmark_tv.sh defold
 ```
 
 Generated benchmark output is stored under `benchmark-results/`.
