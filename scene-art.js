@@ -19,12 +19,14 @@ export function sceneArt(id){
       <path d="M0 372 Q180 338 340 370 T680 368 T1010 370 T1200 364 V400 H0Z" fill="#77ba63" opacity=".42"/>
     </g>`);
   if(id==='ocean') return scene(`
-    <g opacity=".88">
-      <path d="M0 286 Q90 252 180 286 T360 286 T540 286 T720 286 T900 286 T1080 286 T1260 286 V400 H0Z" fill="#48b4cc" opacity=".38"/>
-      <g fill="none" stroke="#79c97a" stroke-width="18" stroke-linecap="round"><path d="M90 400 Q70 335 95 280 Q118 235 100 185"/><path d="M1080 400 Q1050 340 1082 285 Q1110 238 1090 190"/><path d="M1015 400 Q995 352 1015 315"/></g>
+    <g opacity=".9">
+      <path d="M0 286 Q90 252 180 286 T360 286 T540 286 T720 286 T900 286 T1080 286 T1260 286 V400 H0Z" fill="#48b4cc" opacity=".34"/>
+      <g fill="none" stroke="#72bf73" stroke-width="18" stroke-linecap="round"><path d="M90 400 Q70 335 95 280 Q118 235 100 185"/><path d="M1080 400 Q1050 340 1082 285 Q1110 238 1090 190"/><path d="M1015 400 Q995 352 1015 315"/></g>
       <g fill="#f29b72" opacity=".72"><path d="M185 400 Q180 330 220 300 Q250 330 245 400Z"/><path d="M950 400 Q950 340 990 315 Q1022 345 1015 400Z"/></g>
-      <g fill="none" stroke="#d8f8ff" stroke-width="6" opacity=".65"><circle cx="180" cy="150" r="16"/><circle cx="210" cy="100" r="10"/><circle cx="1010" cy="132" r="18"/><circle cx="1045" cy="82" r="9"/><circle cx="690" cy="190" r="12"/></g>
-      <path d="M0 382 Q145 345 285 378 T565 376 T850 378 T1200 374 V400 H0Z" fill="#2f97b1" opacity=".3"/>
+      <g fill="none" stroke="#d8f8ff" stroke-width="6" opacity=".68"><circle cx="180" cy="150" r="16"/><circle cx="210" cy="100" r="10"/><circle cx="1010" cy="132" r="18"/><circle cx="1045" cy="82" r="9"/><circle cx="690" cy="190" r="12"/></g>
+      <g opacity=".5" fill="#ffd36c"><path d="M330 170 C350 145 385 145 406 166 C390 188 354 190 330 170Z"/><path d="M330 170 L308 151 Q304 171 309 190Z"/></g>
+      <g opacity=".42" fill="#ff9f86"><path d="M770 120 C790 98 821 101 839 120 C824 139 792 140 770 120Z"/><path d="M770 120 L750 104 Q747 120 751 137Z"/></g>
+      <path d="M0 382 Q145 345 285 378 T565 376 T850 378 T1200 374 V400 H0Z" fill="#2f97b1" opacity=".28"/>
     </g>`);
   return scene(`
     <g opacity=".9">
