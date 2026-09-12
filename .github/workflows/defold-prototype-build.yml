@@ -150,6 +150,8 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -f defold-prototype/dist/android-tv-smoke.txt
           if [ -f defold-prototype/dist/android-tv-logcat.txt ]; then git add -f defold-prototype/dist/android-tv-logcat.txt; fi
+          if [ -f defold-prototype/dist/android-tv-smoke.png ]; then git add -f defold-prototype/dist/android-tv-smoke.png; fi
+          if [ -f defold-prototype/dist/android-tv-smoke-initial.png ]; then git add -f defold-prototype/dist/android-tv-smoke-initial.png; fi
           git commit -m "test: publish Android runtime smoke report [skip ci]" || true
           git pull --rebase origin defold-native-prototype || true
           git push origin HEAD:defold-native-prototype || true
@@ -165,3 +167,4 @@ jobs:
             defold-prototype/dist/android-tv-smoke.txt
             defold-prototype/dist/android-tv-logcat.txt
             defold-prototype/dist/android-tv-smoke.png
+            defold-prototype/dist/android-tv-smoke-initial.png
