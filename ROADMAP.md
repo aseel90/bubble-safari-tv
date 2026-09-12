@@ -11,82 +11,130 @@
 - نسخة WebView الحالية تبقى سليمة ولا يتم استبدالها أثناء مرحلة الـPrototype.
 - تطوير Defold يتم على الفرع `defold-native-prototype` وليس على `main`.
 
-## حالة الـPrototype الحالية
+## حالة الـPrototype
 
 المجلد: `defold-prototype/`
 
 الحزمة: `com.bubblesafari.tv.defold`
 
-الغرض من اختلاف الحزمة هو السماح بتثبيت Defold ونسخة WebView معًا على نفس جهاز Android TV للمقارنة A/B.
+الحزمة مختلفة عن WebView حتى يمكن تثبيت النسختين معًا على Android TV للمقارنة.
 
-تم بناء APK فعلي بنجاح عبر GitHub Actions:
+النسخة الحالية بعد دمج Telemetry المباشرة:
 
-`defold-prototype/dist/bubble-safari-defold-prototype.apk`
+- Defold project version: `0.1.1`
+- Android `versionCode`: `2`
+- APK: `defold-prototype/dist/bubble-safari-defold-prototype.apk`
+- SHA-256: `81d12e0e02795da73d41196e8447a53baf5b16d5293ae6b753fbc03f2f8e20df`
 
-SHA-256 الحالي:
+تم بناء الـAPK بنجاح عبر GitHub Actions. نجاح البناء لا يعني أن اختبار Xiaomi الفعلي قد تم.
 
-`8ba34a78c1aca0f4dd8d28e33cffb06c43324570acbc4b576cd373d44e476ad3`
+## هدف هذه النسخة
 
-هذا يعني أن مرحلة **التجميع/build** نجحت. هذا لا يعني أن اختبار الجهاز الحقيقي أو اختبار الأداء قد تم.
+هذه ليست اللعبة الكاملة. هدفها الإجابة عن سؤال واحد:
 
-## ماذا يجب أن يظهر عند تشغيل APK الحالي
+**هل Defold Native أفضل عمليًا من WebView لهذه اللعبة على Xiaomi TV Stick ضعيف؟**
 
-الـAPK الحالي هو **شريحة اختبار Native لعالم البحر فقط**، وليس اللعبة الكاملة.
+نريد قياس:
 
-عند التشغيل المتوقع:
+- سلاسة Frame pacing.
+- frame P50/P95/P99.
+- slow-frame spikes.
+- استجابة D-pad/OK داخل التطبيق.
+- سرعة انتقال السؤال.
+- startup الداخلي.
+- Lua heap/GC.
+- استقرار التطبيق أثناء الاستخدام.
 
-1. يفتح التطبيق في Landscape/Fullscreen كتطبيق Android TV مستقل.
-2. تظهر شاشة Defold Native داكنة بعنوان `BUBBLE SAFARI - OCEAN NATIVE`.
-3. يظهر سؤال واحد في الأعلى مع عداد مثل `1 / 3`.
-4. تظهر ثلاث فقاعات اختيار كبيرة في منتصف الشاشة.
-5. تبدأ الفقاعة الأولى في حالة Focus واضحة ومكبرة قليلًا.
-6. الريموت:
-   - Left / Up: الانتقال إلى الاختيار السابق.
-   - Right / Down: الانتقال إلى الاختيار التالي.
-   - OK / Enter: اعتماد الاختيار.
-   - Back: فتح/إغلاق Settings البسيطة.
-7. عند الإجابة الصحيحة:
-   - تظهر طبقة `أحسنت!`.
-   - يظهر Confetti خفيف Native.
-   - يعمل صوت `feedback_welldone.wav` إذا كان الصوت مفعّلًا.
-   - بعد حوالي 0.85 ثانية ينتقل للسؤال التالي.
-8. عند الإجابة الخاطئة:
-   - تهتز الفقاعة المحددة حركة قصيرة.
-   - يبقى السؤال نفسه بدون تقدم.
-9. بعد السؤال الثالث يعود التسلسل إلى السؤال الأول؛ لا توجد شاشة نهاية في هذا الـPrototype.
+ثم نقرر Go/No-Go قبل نقل بقية اللعبة.
 
-## الأسئلة الثلاثة الحالية
+## ماذا يظهر داخل الـPrototype
 
-### 1. Animal
+- شاشة Native لعالم البحر فقط.
+- 3 فقاعات اختيار.
+- سؤال حيوان: `اختر السمكة`.
+- سؤال حجم: `اختر الكبير`.
+- سؤال لون: `اختر الأزرق`.
+- D-pad للتنقل.
+- OK للاختيار.
+- Back لفتح Settings البسيطة.
+- Focus animation.
+- `أحسنت!` + Confetti عند الإجابة الصحيحة.
+- صوت النجاح الحالي.
 
-السؤال: `اختر السمكة`
+لا توجد Home الكاملة أو اختيار العمر أو جميع العوالم أو جميع أنواع الأسئلة في هذه المرحلة.
 
-الخيارات:
-- سمكة — الصحيح.
-- سلحفاة.
-- سلطعون.
+## Direct Cloudflare Telemetry — بدون كمبيوتر
 
-### 2. Size
+تم إلغاء الاعتماد على الكمبيوتر/ADB كمسار أساسي لجمع تقارير Defold.
 
-السؤال: `اختر الكبير`
+الـAPK نفسه يرسل تقارير Cumulative عبر HTTPS مباشرة من Xiaomi TV Stick إلى Cloudflare Worker:
 
-الخيارات:
-- صغير.
-- كبير — الصحيح.
-- صغير.
+`https://bubble-safari-benchmark-ingest.aseelsalah266.workers.dev/report`
 
-### 3. Color
+Worker الحالي:
 
-السؤال: `اختر الأزرق`
+`bubble-safari-benchmark-ingest`
 
-الخيارات:
-- أصفر.
-- أحمر.
-- أزرق — الصحيح.
+قاعدة البيانات:
 
-## الصوت — الحالة الفعلية الآن
+`bubble-safari-benchmarks` على Cloudflare D1.
 
-تم تجهيز وضم موارد صوتية للسؤال والاختيارات التالية:
+المسار:
+
+**Xiaomi TV Stick → Defold APK → HTTPS → Cloudflare Worker → D1**
+
+لا يحتاج المستخدم إلى فتح ملفات أو JSON أو تشغيل ADB أو استخدام كمبيوتر.
+
+### توقيت الإرسال
+
+- تقرير بعد بداية الجلسة بحوالي ثانية.
+- تقرير Cumulative كل 15 ثانية.
+- محاولة best-effort عند نهاية الجلسة.
+- إذا فشل الإنترنت، يحتفظ التطبيق بآخر تقرير فاشل محليًا ويحاول إرساله في التشغيل التالي.
+
+### البيانات المرسلة
+
+- session/install pseudonymous IDs لا تعتمد على Android hardware ID.
+- Manufacturer / device model.
+- Android system/API version.
+- لغة الجهاز/المنطقة.
+- Defold engine version.
+- app/package version.
+- internal startup time.
+- frame count / average / P50 / P95 / P99 / max.
+- estimated FPS.
+- slow frames فوق 16.67ms و25ms.
+- input handler average/P95/max.
+- question-transition average/P95/max.
+- answer counts.
+- focus changes / questions visible / settings opens.
+- Lua heap/GC start/current/peak/delta.
+
+Frame percentiles تُحسب بهيستوغرام بدقة `0.5ms` لتقليل تكلفة القياس وتأثيره على الأداء.
+
+### ما لا تدعي Telemetry الداخلية قياسه
+
+التقرير الداخلي الحالي لا يدعي قياس:
+
+- Android process PSS/RAM الكامل.
+- CPU process average/peak من مستوى النظام.
+- GPU counters/SurfaceFlinger.
+- input-to-photon latency الحقيقي.
+
+هذه تحتاج Android native/OS instrumentation أعمق أو ADB. يمكن إضافتها لاحقًا إذا احتجنا دقة أعلى، لكن المسار الحالي يكفي لبدء تقييم Defold من الجهاز نفسه بلا كمبيوتر.
+
+## Cloudflare — الحالة الحالية
+
+- Worker منشور على `workers.dev`.
+- D1 database موجودة.
+- جدول `reports` موجود.
+- عند آخر تحقق قبل اختبار الجهاز: عدد التقارير `0`.
+
+بالتالي أول تقارير تظهر لاحقًا يمكن نسبها بسهولة إلى تشغيل الـAPK على الجهاز الحقيقي.
+
+## الصوت — الحالة الحالية
+
+موارد Leda التالية موجودة في المشروع:
 
 - fish / turtle / crab
 - big / small
@@ -94,156 +142,68 @@ SHA-256 الحالي:
 - prompt_choose_picture
 - feedback_welldone
 
-لكن **منطق الشاشة الحالي يشغّل صوت النجاح `feedback_welldone` فقط**.
-
-أصوات السؤال والاختيارات موجودة كموارد داخل مشروع Defold، لكنها لم تُوصل بعد إلى `main.gui_script`. يجب عدم اعتبار قراءة السؤال بصوت Leda مكتملة حتى يتم توصيل هذا المنطق.
-
-## Settings الحالية
-
-زر Back يفتح Overlay بسيط للإعدادات.
-
-الخيار الوحيد حاليًا هو Sound ON/OFF، ويتم تبديله بزر OK.
-
-هذه ليست شاشة إعدادات اللعبة النهائية.
-
-## Telemetry الموجودة داخل الـPrototype
-
-الكود يطبع أحداثًا تبدأ بـ `BS_METRIC` لتسهيل القياس لاحقًا، ومنها:
-
-- `native_ready`
-- `focus_changed`
-- `question_visible`
-- `question_transition`
-- `answer`
-- `input`
-- `slow_frame`
-- `runtime_sample`
-- `session_end`
-
-هذه Telemetry جاهزة للاستخدام في الاختبار لاحقًا، لكنها لا تعني أن الأرقام قد جُمعت من Xiaomi حتى الآن.
-
-## ما ليس موجودًا في APK الحالي
-
-هذا مهم حتى لا نخلط الـPrototype مع اللعبة النهائية:
-
-- لا توجد شاشة Home الكاملة.
-- لا يوجد اختيار العمر.
-- لا يوجد اختيار العوالم.
-- لا توجد العوالم الأربعة.
-- لا توجد جميع أنواع الأسئلة.
-- لا توجد الحيوانات كرسومات/Textures نهائية بعد؛ الواجهة الحالية تستخدم GUI primitives ونصوصًا بسيطة.
-- لا يوجد نظام النجوم/السلسلة/أفضل نتيجة الكامل.
-- لا توجد شاشة Finish النهائية.
-- لا يوجد حفظ تقدم اللعبة الكامل.
-- لا يوجد Port كامل لـWebView.
-- أصوات السؤال والاختيارات لم تُربط بالمنطق بعد.
-- دعم وعرض العربية على الخط المدمج يحتاج تحققًا بصريًا على الجهاز الحقيقي.
+لكن الموصول فعليًا بمنطق اللعب حاليًا هو صوت `feedback_welldone` فقط. توصيل قراءة السؤال والاختيارات ما زال ضمن Phase 1.
 
 ## Android TV
 
-تمت إضافة Manifest merge خاص بالـTV بدل استبدال Manifest Defold الأساسي بالكامل.
-
-المقصود منه:
+Manifest الخاص بالـPrototype يحتوي على:
 
 - `LEANBACK_LAUNCHER`.
-- عدم اشتراط Touchscreen.
-- Landscape.
-- ظهور التطبيق كتطبيق TV مستقل.
+- touchscreen غير مطلوب.
+- Internet permission لإرسال Telemetry.
+- package مستقل لنسخة Defold.
 
-البناء نجح، لكن الظهور الفعلي في Launcher وسلوك Back/DPAD على Xiaomi يبقيان ضمن اختبار الجهاز الحقيقي المؤجل.
+## Build pipeline
 
-## مرحلة البناء
-
-تمت إضافة:
+تم تجهيز:
 
 - `defold-prototype/build_android.sh`
-- GitHub Actions workflow لبناء الـPrototype.
-- Build reports بصيغة JSON/HTML.
-- إخراج APK مستقل.
-- دعم `armv7-android` و`arm64-android` في البناء الحالي.
+- GitHub Actions build.
+- build report JSON/HTML.
+- APK universal يحتوي armv7 + arm64.
+- نشر الـAPK الناتج إلى `defold-prototype/dist/` على فرع الـPrototype.
 
-أثناء أول build تم إصلاح مشكلتين فعليتين:
+## ADB benchmark
 
-1. عدم استخدام مجلد Defold الداخلي `build/` كوجهة للـAPK.
-2. تحديث مرجع الخط المدمج إلى `/builtins/fonts/default.font` المتوافق مع Defold الحالي.
+أدوات ADB القديمة تبقى موجودة كمسار قياس أعمق اختياري:
 
-## Benchmark — مؤجل حاليًا
+- `benchmark_tv.sh`
+- `benchmark/parse_run.py`
+- `benchmark/aggregate.py`
+- `benchmark/compare.py`
 
-تم تجهيز البنية، لكن **لم يتم تشغيلها على Xiaomi TV Stick بعد**.
+لكنها **ليست مطلوبة** لجمع Telemetry الأساسية من Defold الآن.
 
-الأوامر المخطط لها لاحقًا:
+قد نستخدمها لاحقًا فقط إذا احتجنا PSS/CPU/GPU/cold-start النظامية بدقة أعلى.
 
-```bash
-bash ./benchmark_tv.sh webview
-bash ./benchmark_tv.sh defold
-python3 benchmark/compare.py
-```
-
-المخرجات:
-
-- `benchmark-results/webview/`
-- `benchmark-results/defold/`
-- `benchmark-results/comparison/`
-
-المقاييس المستهدفة:
-
-- Cold startup.
-- Warm startup.
-- Frame P50/P95/P99.
-- FPS / slow / janky frames.
-- Frame pacing.
-- CPU average/peak.
-- RAM/PSS average/peak.
-- GC/spikes.
-- Question transition.
-- Defold internal telemetry.
-- GPU metrics إن كان الجهاز/Android يوفرها بشكل موثوق.
-
-اختبار input-to-photon الحقيقي لا يتم الادعاء بقياسه من `BS_METRIC input`؛ القياس الحالي هو وقت handler داخل التطبيق فقط.
-
-## بوابة Go / No-Go
-
-لا يبدأ نقل اللعبة كاملة إلى Defold إلا بعد الاختبار الفعلي على Xiaomi TV Stick.
-
-نستمر في Defold إذا أثبت تحسنًا واضحًا في مجموعة من:
-
-- ثبات Frame pacing.
-- Startup.
-- CPU.
-- RAM/PSS.
-- الاستجابة بالريموت.
-- عدم وجود مشاكل TV-specific أو Arabic/audio blockers كبيرة.
-
-إذا لم يظهر تحسن عملي واضح مقارنة بالـWebView، لا ننقل اللعبة كاملة وننتقل لتقييم الخطة B بدل إكمال Migration مكلف بلا فائدة.
-
-## المراحل التالية بعد الـPrototype
-
-### Phase 1 — إكمال Slice قبل القياس
+## Phase 1 — إكمال Slice
 
 - توصيل صوت Leda للسؤال والاختيار.
-- إضافة Texture/Atlas حقيقي لثلاثة حيوانات بحرية بدل النص فقط.
-- تثبيت خط عربي مناسب والتأكد من shaping/rendering.
-- تحسين Settings البسيطة.
-- إبقاء البيانات خارج Lua قدر الإمكان.
+- Texture/Atlas حقيقي للحيوانات بدل النصوص فقط.
+- تثبيت خط عربي مناسب والتحقق من shaping/rendering.
+- حفظ Settings بشكل دائم.
+- إبقاء بيانات اللعبة خارج Lua قدر الإمكان.
 
-### Phase 2 — Xiaomi validation
+## Phase 2 — Xiaomi validation
 
-مؤجلة حاليًا بطلب صاحب المشروع.
+عند تثبيت النسخة الحالية على Xiaomi:
 
-عند البدء بها:
+1. فتح التطبيق واللعب طبيعيًا بالريموت.
+2. إبقاءه مفتوحًا مدة كافية لتصل عدة تقارير دورية.
+3. لا حاجة لكمبيوتر أو ADB.
+4. قراءة تقارير D1 وتحليلها.
+5. تكرار الجلسات حتى نحصل على عينة مستقرة.
 
-- تثبيت WebView وDefold جنبًا إلى جنب.
-- فحص Launcher وD-pad/OK/Back والصوت والعربية.
-- تشغيل 5 cold + 5 warm على كل نسخة.
-- إخراج مقارنة موحدة.
+اختبار WebView يحتاج لاحقًا Telemetry مماثلة أو مسار ADB حتى تكون المقارنة A/B عادلة.
 
-### Phase 3 — قرار المحرك
+## Phase 3 — Go / No-Go
 
-- Defold ينجح: نخطط لنقل اللعبة على مراحل.
-- النتيجة متقاربة أو أسوأ: نوقف النقل ونقيّم Godot Compatibility ثم libGDX.
+نستمر في Defold إذا ظهر تحسن عملي واضح في الأداء والاستقرار والاستجابة مع عدم وجود blockers كبيرة في Android TV أو العربية أو الصوت.
 
-## قاعدة المشروع أثناء هذه المرحلة
+إذا كانت النتيجة متقاربة أو أسوأ من WebView، لا ننقل اللعبة كاملة ونقيّم Godot Compatibility ثم libGDX.
 
-`main` يمثل النسخة الحالية المستقرة.
+## قاعدة المشروع
 
-أي عمل خاص بالـPrototype Native يبقى على `defold-native-prototype` حتى اكتمال التقييم واتخاذ قرار واضح.
+`main` يبقى النسخة الحالية المستقرة.
+
+كل عمل خاص بالـPrototype Native يبقى على `defold-native-prototype` حتى اكتمال التقييم واتخاذ قرار واضح.
