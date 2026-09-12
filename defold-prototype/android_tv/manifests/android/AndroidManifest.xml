@@ -6,7 +6,9 @@
     <uses-feature android:name="android.software.leanback" android:required="true" />
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
 
-    <application android:appCategory="game">
+    <application
+        android:appCategory="game"
+        android:banner="@drawable/tv_banner">
         <activity android:name="com.dynamo.android.DefoldActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
