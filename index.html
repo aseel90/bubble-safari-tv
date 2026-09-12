@@ -44,12 +44,15 @@
         </div>
       </div>
 
-      <div class="hud hidden" id="hud">
-        <div class="hud-pill world-pill" aria-label="العالم الحالي"><span id="worldIcon" class="mini-ui-art"></span><strong id="worldName">الغابة</strong></div>
-        <div class="hud-pill" aria-label="النجوم"><span class="mini-ui-art" data-ui-art="star" aria-hidden="true"></span><strong id="starCount">0</strong></div>
-        <div class="hud-pill" aria-label="التقدم"><span id="roundText">1 / 15</span></div>
-        <div class="hud-progress" id="progressMeter" role="progressbar" aria-label="تقدم المغامرة" aria-valuemin="1" aria-valuemax="15" aria-valuenow="1"><span class="hud-progress-track"><span id="progressFill"></span></span></div>
-        <button class="icon-button focusable" id="soundButton" type="button" aria-label="تشغيل أو كتم الصوت" data-focusable><span id="soundIcon" class="mini-ui-art" aria-hidden="true"></span></button>
+      <div class="top-actions">
+        <div class="hud hidden" id="hud">
+          <div class="hud-pill world-pill" aria-label="العالم الحالي"><span id="worldIcon" class="mini-ui-art"></span><strong id="worldName">الغابة</strong></div>
+          <div class="hud-pill" aria-label="النجوم"><span class="mini-ui-art" data-ui-art="star" aria-hidden="true"></span><strong id="starCount">0</strong></div>
+          <div class="hud-pill" aria-label="التقدم"><span id="roundText">1 / 15</span></div>
+          <div class="hud-progress" id="progressMeter" role="progressbar" aria-label="تقدم المغامرة" aria-valuemin="1" aria-valuemax="15" aria-valuenow="1"><span class="hud-progress-track"><span id="progressFill"></span></span></div>
+          <button class="icon-button focusable" id="soundButton" type="button" aria-label="تشغيل أو كتم الصوت" data-focusable><span id="soundIcon" class="mini-ui-art" aria-hidden="true"></span></button>
+        </div>
+        <button class="icon-button settings-button focusable" id="settingsButton" type="button" aria-label="الإعدادات" data-focusable><span class="mini-ui-art" aria-hidden="true"><svg class="game-art" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><path d="M92 24 H108 L114 44 Q123 47 131 53 L150 44 L161 55 L152 74 Q158 82 161 91 L181 98 V114 L161 121 Q158 130 152 138 L161 157 L150 168 L131 159 Q123 165 114 168 L108 188 H92 L86 168 Q77 165 69 159 L50 168 L39 157 L48 138 Q42 130 39 121 L19 114 V98 L39 91 Q42 82 48 74 L39 55 L50 44 L69 53 Q77 47 86 44Z" fill="#315b50"/><circle cx="100" cy="106" r="31" fill="#fff7df"/><circle cx="100" cy="106" r="15" fill="#68c8ee"/></svg></span></button>
       </div>
     </header>
 
@@ -93,6 +96,39 @@
             <button type="button" class="world-card focusable world-card-farm" data-world="farm" data-focusable><span class="world-art" data-world-art="farm"></span><strong>المزرعة</strong><small>حيوانات لطيفة وأحجام</small></button>
             <button type="button" class="world-card focusable world-card-ocean" data-world="ocean" data-focusable><span class="world-art" data-world-art="ocean"></span><strong>البحر</strong><small>مخلوقات البحر والأرقام</small></button>
             <button type="button" class="world-card focusable world-card-bubblecity" data-world="bubblecity" data-focusable><span class="world-art" data-world-art="bubblecity"></span><strong>مدينة الفقاعات</strong><small>ألوان وأشكال وأرقام وألغاز</small></button>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" id="settingsScreen" aria-labelledby="settingsTitle">
+        <div class="panel settings-panel">
+          <button class="back-button focusable" id="settingsBackButton" type="button" data-focusable data-autofocus aria-label="العودة"><span class="back-icon" data-ui-art="back" aria-hidden="true"></span></button>
+          <div class="panel-heading settings-heading"><span class="eyebrow">للأهل</span><h2 id="settingsTitle">الإعدادات</h2><p>اضبط الصوت والأداء وتحقق من تحديثات اللعبة.</p></div>
+          <div class="settings-grid">
+            <div class="setting-card">
+              <div class="setting-copy"><strong>الصوت</strong><small>التوجيهات والمؤثرات الصوتية</small></div>
+              <button class="setting-toggle focusable" id="settingsSoundToggle" type="button" data-focusable aria-pressed="true"><span id="settingsSoundText">تشغيل</span></button>
+            </div>
+            <div class="setting-card">
+              <div class="setting-copy"><strong>المؤثرات المرئية</strong><small>الحركة والاحتفالات مع الحفاظ على السلاسة</small></div>
+              <button class="setting-toggle focusable" id="settingsEffectsToggle" type="button" data-focusable aria-pressed="true"><span id="settingsEffectsText">تشغيل</span></button>
+            </div>
+            <div class="setting-card setting-card-wide quality-card">
+              <div class="setting-copy"><strong>جودة الحركة</strong><small id="qualityHint">تلقائي يختار الوضع الأنسب للتلفزيون</small></div>
+              <div class="quality-options" role="group" aria-label="جودة الحركة">
+                <button class="quality-button focusable" type="button" data-quality="auto" data-focusable>تلقائي</button>
+                <button class="quality-button focusable" type="button" data-quality="balanced" data-focusable>متوازن</button>
+                <button class="quality-button focusable" type="button" data-quality="full" data-focusable>كامل</button>
+              </div>
+            </div>
+            <div class="setting-card setting-card-wide update-card">
+              <div class="update-copy">
+                <strong>تحديثات اللعبة</strong>
+                <small id="updateStatus">يتم فحص التحديثات تلقائيًا عند فتح التطبيق.</small>
+                <span class="version-line"><b>الحالية:</b> <span id="currentVersion">—</span> <b>الأحدث:</b> <span id="latestVersion">—</span></span>
+              </div>
+              <button class="secondary-button update-button focusable" id="checkUpdateButton" type="button" data-focusable>تحقق من وجود تحديث</button>
+            </div>
           </div>
         </div>
       </section>
