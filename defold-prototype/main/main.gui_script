@@ -175,7 +175,7 @@ local function set_settings(self, visible)
     if visible then telemetry_call(self, "record_settings_open") end
 end
 
-function init(self)
+local function init_impl(self)
     msg.post(".", "acquire_input_focus")
     self.started_ms = now_ms()
     self.telemetry = nil
@@ -257,7 +257,28 @@ function init(self)
     end
 end
 
+function init(self)
+    self.boot_status = gui.get_node("boot_status")
+    self.startup_failed = false
+    local ok, err = xpcall(function() init_impl(self) end, function(e)
+        if debug and debug.traceback then
+            return debug.traceback(tostring(e), 2)
+        end
+        return tostring(e)
+    end)
+    if ok then
+        gui.set_enabled(self.boot_status, false)
+    else
+        self.startup_failed = true
+        print("BS_FATAL_INIT " .. tostring(err))
+        gui.set_text(self.boot_status, "STARTUP ERROR")
+        gui.set_color(self.boot_status, vmath.vector4(1.0, 0.35, 0.25, 1.0))
+        gui.set_enabled(self.boot_status, true)
+    end
+end
+
 function update(self, dt)
+    if self.startup_failed then return end
     local dt_ms = dt * 1000
     telemetry_call(self, "record_frame", dt_ms)
     self.frame_count = self.frame_count + 1
@@ -282,6 +303,7 @@ function update(self, dt)
 end
 
 function on_input(self, action_id, action)
+    if self.startup_failed then return false end
     if not action.pressed then return false end
     local input_t = now_ms()
 
@@ -323,6 +345,10 @@ function on_input(self, action_id, action)
 end
 
 function final(self)
+    if self.startup_failed then
+        msg.post(".", "release_input_focus")
+        return
+    end
     if self.telemetry_timer then timer.cancel(self.telemetry_timer) end
     telemetry_call(self, "final")
     metric("session_end", { frames = self.frame_count })

@@ -1,6 +1,6 @@
 [project]
 title = Bubble Safari TV - Defold Prototype
-version = 0.1.4
+version = 0.1.5
 custom_resources = data
 bundle_resources = /android_tv/bundle
 
@@ -25,7 +25,7 @@ game_binding = /input/game.input_bindingc
 
 [android]
 package = com.bubblesafari.tv.defold
-version_code = 5
+version_code = 6
 minimum_sdk_version = 26
 target_sdk_version = 36
 immersive_mode = 1
