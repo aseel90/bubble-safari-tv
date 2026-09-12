@@ -1,0 +1,38 @@
+{
+  "world": "ocean",
+  "questions": [
+    {
+      "id": "animal_fish",
+      "type": "animal",
+      "prompt": "اختر السمكة",
+      "correct": 0,
+      "choices": [
+        {"id": "fish", "label": "سمكة", "audio": "animal_fish"},
+        {"id": "turtle", "label": "سلحفاة", "audio": "animal_turtle"},
+        {"id": "crab", "label": "سلطعون", "audio": "animal_crab"}
+      ]
+    },
+    {
+      "id": "size_big",
+      "type": "size",
+      "prompt": "اختر الكبير",
+      "correct": 1,
+      "choices": [
+        {"id": "small", "label": "صغير", "audio": "size_small"},
+        {"id": "big", "label": "كبير", "audio": "size_big"},
+        {"id": "small_2", "label": "صغير", "audio": "size_small"}
+      ]
+    },
+    {
+      "id": "color_blue",
+      "type": "color",
+      "prompt": "اختر الأزرق",
+      "correct": 2,
+      "choices": [
+        {"id": "yellow", "label": "أصفر", "hex": "#ffd867", "audio": "color_yellow"},
+        {"id": "red", "label": "أحمر", "hex": "#ff8176", "audio": "color_red"},
+        {"id": "blue", "label": "أزرق", "hex": "#70cfe9", "audio": "color_blue"}
+      ]
+    }
+  ]
+}
