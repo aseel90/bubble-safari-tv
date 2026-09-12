@@ -194,7 +194,7 @@ function updateSoundUi(){
   const toggle=$('#settingsSoundToggle');if(toggle)toggle.setAttribute('aria-pressed',state.muted?'false':'true');
 }
 function openSettings(){state.settingsReturn=activeScreenName();voice.stop();showScreen('settings');applyPreferences();updateSoundUi()}
-function closeSettings(){showScreen(state.settingsReturn||'home')}
+function closeSettings(){showScreen(state.settingsReturn||'home');setTimeout(()=>tv?.ensureFocus(),60)}
 async function checkForUpdates(){
   const button=$('#checkUpdateButton'),status=$('#updateStatus'),currentEl=$('#currentVersion'),latestEl=$('#latestVersion');
   if(!button||!status)return;
