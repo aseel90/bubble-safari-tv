@@ -1,9 +1,16 @@
 export function createVoiceEngine({ isMuted }) {
   let audioContext = null;
-  let currentVoice = null;
   let currentResolve = null;
   let pendingVoice = null;
+  let activeKey = null;
+  const voicePlayer = new Audio();
+  voicePlayer.preload = 'auto';
+  voicePlayer.volume = .96;
   const audioFile = key => `./audio/${key}.wav`;
+  const speechFallback = {
+    prompt_match: 'اختر الصورة',
+    prompt_odd: 'اختر الصورة المختلفة'
+  };
 
   function ensureAudio() {
     if (isMuted()) return null;
@@ -52,39 +59,68 @@ export function createVoiceEngine({ isMuted }) {
   function settleCurrent(result = false) {
     const resolve = currentResolve;
     currentResolve = null;
-    currentVoice = null;
+    activeKey = null;
     if (resolve) resolve(result);
   }
 
   function stop() {
-    if (currentVoice) {
-      try { currentVoice.pause(); currentVoice.currentTime = 0; } catch {}
-      settleCurrent(false);
-    }
+    try {
+      voicePlayer.pause();
+      voicePlayer.currentTime = 0;
+      voicePlayer.removeAttribute('src');
+      voicePlayer.load();
+    } catch {}
+    try { window.speechSynthesis?.cancel(); } catch {}
+    settleCurrent(false);
+  }
+
+  function speakFallback(key) {
+    const text = speechFallback[key];
+    if (!text || !('speechSynthesis' in window) || isMuted()) return Promise.resolve(false);
+    return new Promise(resolve => {
+      try {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'ar-SA';
+        utterance.rate = .88;
+        utterance.pitch = 1.08;
+        const voices = speechSynthesis.getVoices?.() || [];
+        const arabic = voices.find(v => /^ar([_-]|$)/i.test(v.lang || ''));
+        if (arabic) utterance.voice = arabic;
+        utterance.onend = () => resolve(true);
+        utterance.onerror = () => resolve(false);
+        speechSynthesis.cancel();
+        speechSynthesis.speak(utterance);
+      } catch { resolve(false); }
+    });
   }
 
   function tryPlay(key) {
     if (isMuted() || !key) return Promise.resolve(false);
     stop();
-    const audio = new Audio(audioFile(key));
-    currentVoice = audio;
-    audio.preload = 'auto';
-    audio.volume = .96;
+    activeKey = key;
+    voicePlayer.src = audioFile(key);
+    voicePlayer.preload = 'auto';
 
     return new Promise(resolve => {
       currentResolve = resolve;
       const finish = result => {
-        if (currentVoice !== audio) return;
+        if (activeKey !== key) return;
         settleCurrent(result);
       };
-      audio.onended = () => finish(true);
-      audio.onerror = () => finish(false);
-      audio.play().then(() => {
+      voicePlayer.onended = () => finish(true);
+      voicePlayer.onerror = async () => {
+        if (activeKey !== key) return;
+        const spoken = await speakFallback(key);
+        finish(spoken);
+      };
+      voicePlayer.play().then(() => {
         pendingVoice = null;
-        fetch(audioFile(key)).catch(() => {});
-      }).catch(err => {
+      }).catch(async err => {
         if (err?.name === 'NotAllowedError') pendingVoice = { key };
-        finish(false);
+        if (speechFallback[key]) {
+          const spoken = await speakFallback(key);
+          finish(spoken);
+        } else finish(false);
       });
     });
   }
@@ -97,16 +133,15 @@ export function createVoiceEngine({ isMuted }) {
 
   function retryPending() {
     ensureAudio();
-    if (!pendingVoice || isMuted() || currentVoice) return;
+    if (!pendingVoice || isMuted() || activeKey) return;
     const { key } = pendingVoice;
     tryPlay(key);
   }
 
   function preload(keys = []) {
-    [...new Set(keys.filter(Boolean))].forEach(key => {
-      const audio = new Audio(audioFile(key));
-      audio.preload = 'metadata';
-      try { audio.load(); } catch {}
+    // Keep memory predictable on TV: warm only a tiny set through the HTTP/app-assets cache.
+    [...new Set(keys.filter(Boolean))].slice(0, 5).forEach(key => {
+      fetch(audioFile(key), { cache: 'force-cache' }).catch(() => {});
     });
   }
 
