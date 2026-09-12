@@ -7,7 +7,7 @@ REPORT="${REPORT:-defold-prototype/dist/android-tv-smoke.txt}"
 SCREENSHOT="${SCREENSHOT:-defold-prototype/dist/android-tv-smoke.png}"
 
 mkdir -p "$(dirname "$REPORT")"
-: > "$REPORT"
+touch "$REPORT"
 exec > >(tee -a "$REPORT") 2>&1
 
 echo "Bubble Safari Defold Android TV smoke test"
@@ -32,10 +32,6 @@ adb install -r "$APK"
 echo "--- manifest/package assertions ---"
 adb shell dumpsys package "$PKG" > /tmp/package.txt
 
-# `dumpsys package <pkg>` does not consistently print manifest uses-feature declarations
-# on all Android versions, so don't fail the runtime test on that output. Record the
-# packaged manifest/badging when Android build-tools are available, then verify the
-# actual LEANBACK launcher intent through PackageManager below.
 AAPT_BIN="$(command -v aapt || true)"
 if [[ -z "$AAPT_BIN" && -n "${ANDROID_HOME:-}" ]]; then
   AAPT_BIN="$(find "$ANDROID_HOME/build-tools" -type f -name aapt 2>/dev/null | sort -V | tail -n 1 || true)"
@@ -46,9 +42,9 @@ if [[ -n "$AAPT_BIN" ]]; then
   grep -q "android.software.leanback" /tmp/apk-badging.txt \
     && echo "Manifest check: leanback declaration present" \
     || echo "WARN: leanback declaration not shown by aapt badging"
-  grep -q "LEANBACK_LAUNCHER" /tmp/apk-badging.txt \
-    && echo "Manifest check: LEANBACK_LAUNCHER present" \
-    || echo "WARN: LEANBACK_LAUNCHER not shown by aapt badging"
+  grep -q "leanback-launchable-activity:" /tmp/apk-badging.txt \
+    && echo "Manifest check: leanback launchable activity present" \
+    || echo "WARN: leanback launchable activity not shown by aapt badging"
 fi
 
 RESOLVED="$(adb shell cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.LEANBACK_LAUNCHER "$PKG" 2>/dev/null | tr -d '\r' | tail -n 1)"
@@ -61,9 +57,19 @@ fi
 adb logcat -c
 
 echo "--- launch ---"
-START_OUT="$(adb shell am start -W -a android.intent.action.MAIN -c android.intent.category.LEANBACK_LAUNCHER "$PKG" 2>&1 | tr -d '\r')"
+echo "Launching resolved TV activity explicitly: $RESOLVED"
+set +e
+START_OUT="$(adb shell am start -W -n "$RESOLVED" 2>&1 | tr -d '\r')"
+START_STATUS=$?
+set -e
 printf '%s\n' "$START_OUT"
-printf '%s\n' "$START_OUT" | grep -q "Status: ok" || { echo "FAIL: TV launch intent did not return Status: ok"; exit 30; }
+echo "am start exit code: $START_STATUS"
+if [[ "$START_STATUS" -ne 0 ]] || ! printf '%s\n' "$START_OUT" | grep -Eq "Status: ok|Starting: Intent"; then
+  echo "FAIL: Android could not start the resolved DefoldActivity"
+  echo "--- immediate logcat ---"
+  adb logcat -d -v time | tail -n 250 || true
+  exit 30
+fi
 
 sleep 6
 PID="$(adb shell pidof "$PKG" | tr -d '\r' || true)"
