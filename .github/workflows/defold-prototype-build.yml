@@ -44,7 +44,7 @@ jobs:
           set -e
           echo "exit_code=$status" >> "$GITHUB_OUTPUT"
           if [ "$status" -eq 0 ]; then
-            apk="$(find defold-prototype/build/android -type f -name '*.apk' -print -quit)"
+            apk="$(find defold-prototype/out/android -type f -name '*.apk' -print -quit)"
             if [ -z "$apk" ]; then
               echo "Build returned success but no APK was found." >> defold-prototype/dist/build.log
               status=20
