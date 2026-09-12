@@ -88,3 +88,68 @@ jobs:
         run: |
           cat defold-prototype/dist/build.log
           exit "${{ steps.build.outputs.exit_code }}"
+
+  android-tv-smoke:
+    needs: android-apk
+    runs-on: macos-15
+    timeout-minutes: 35
+    steps:
+      - name: Checkout built prototype branch
+        uses: actions/checkout@v4
+        with:
+          ref: defold-native-prototype
+
+      - name: Prepare smoke report
+        shell: bash
+        run: |
+          mkdir -p defold-prototype/dist
+          printf 'Bubble Safari Android TV CI smoke\nUTC: %s\nRunner: macos-15 arm64\nStage: checkout_ok\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > defold-prototype/dist/android-tv-smoke.txt
+          uname -a >> defold-prototype/dist/android-tv-smoke.txt 2>&1 || true
+          test -f defold-prototype/dist/bubble-safari-defold-prototype.apk
+          echo 'Stage: published_apk_found' >> defold-prototype/dist/android-tv-smoke.txt
+
+      - name: Boot Android TV ARM64 and run smoke test
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: android-tv
+          arch: arm64-v8a
+          profile: tv_1080p
+          cores: 2
+          ram-size: 2048M
+          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+          disable-animations: true
+          script: |
+            echo 'Stage: emulator_booted' >> defold-prototype/dist/android-tv-smoke.txt
+            bash ./defold-prototype/tools/android_tv_smoke.sh defold-prototype/dist/bubble-safari-defold-prototype.apk
+
+      - name: Mark pre-script failure
+        if: failure()
+        shell: bash
+        run: |
+          if ! grep -q 'Stage: emulator_booted' defold-prototype/dist/android-tv-smoke.txt 2>/dev/null; then
+            echo 'Stage: failed_before_smoke_script' >> defold-prototype/dist/android-tv-smoke.txt
+          fi
+
+      - name: Publish smoke report
+        if: always()
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f defold-prototype/dist/android-tv-smoke.txt
+          if [ -f defold-prototype/dist/android-tv-logcat.txt ]; then git add -f defold-prototype/dist/android-tv-logcat.txt; fi
+          git commit -m "test: publish Android TV smoke report [skip ci]" || true
+          git pull --rebase origin defold-native-prototype || true
+          git push origin HEAD:defold-native-prototype || true
+
+      - name: Upload smoke evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: defold-android-tv-smoke
+          if-no-files-found: warn
+          path: |
+            defold-prototype/dist/android-tv-smoke.txt
+            defold-prototype/dist/android-tv-logcat.txt
+            defold-prototype/dist/android-tv-smoke.png
