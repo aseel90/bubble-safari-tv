@@ -125,6 +125,9 @@
               <div class="update-copy">
                 <strong>تحديثات اللعبة</strong>
                 <small id="updateStatus">يتم فحص التحديثات تلقائيًا عند فتح التطبيق.</small>
+                <div class="update-progress" id="updateProgress" data-phase="idle" role="progressbar" aria-label="تقدم تحديث اللعبة" aria-valuemin="0" aria-valuemax="100">
+                  <span class="update-progress-track"><span id="updateProgressFill"></span></span><b id="updateProgressPercent">0%</b>
+                </div>
                 <span class="version-line"><b>الحالية:</b> <span id="currentVersion">—</span> <b>الأحدث:</b> <span id="latestVersion">—</span></span>
               </div>
               <button class="secondary-button update-button focusable" id="checkUpdateButton" type="button" data-focusable>تحقق من وجود تحديث</button>
@@ -156,6 +159,11 @@
         </div>
       </section>
     </main>
+
+    <div class="ota-overlay hidden" id="otaOverlay" role="status" aria-live="polite">
+      <div class="ota-overlay-head"><strong id="otaOverlayLabel">جاري التحقق من التحديث…</strong><b id="otaOverlayPercent">0%</b></div>
+      <span class="ota-overlay-track"><span id="otaOverlayFill"></span></span>
+    </div>
 
     <div class="feedback" id="feedback" aria-hidden="true"><div class="feedback-card"><div class="feedback-icon" id="feedbackIcon"></div><strong id="feedbackTitle">رائع!</strong><span id="feedbackSubtitle">وجدتها</span></div></div>
     <div class="confetti" id="confetti" aria-hidden="true"></div>
