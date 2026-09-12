@@ -36,29 +36,54 @@ jobs:
         with:
           sha1: stable
 
-      - name: Build native prototype APK
+      - name: Build native prototype APKs
         id: build
         shell: bash
         run: |
           mkdir -p defold-prototype/dist
-          rm -f defold-prototype/dist/bubble-safari-defold-prototype.apk
+          rm -f \
+            defold-prototype/dist/bubble-safari-defold-prototype.apk \
+            defold-prototype/dist/bubble-safari-defold-prototype-arm64.apk \
+            defold-prototype/dist/bubble-safari-defold-prototype-armv7.apk \
+            defold-prototype/dist/SHA256SUMS.txt
           printf 'Build UTC: %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > defold-prototype/dist/build.log
-          set +e
-          BOB_JAR="$BOB" bash ./defold-prototype/build_android.sh >> defold-prototype/dist/build.log 2>&1
-          status=$?
-          set -e
-          echo "exit_code=$status" >> "$GITHUB_OUTPUT"
-          if [ "$status" -eq 0 ]; then
-            apk="$(find defold-prototype/out/android -type f -name '*.apk' -print -quit)"
-            if [ -z "$apk" ]; then
-              echo "Build returned success but no APK was found." >> defold-prototype/dist/build.log
-              status=20
-              echo "exit_code=$status" >> "$GITHUB_OUTPUT"
-            else
-              cp "$apk" defold-prototype/dist/bubble-safari-defold-prototype.apk
-              sha256sum defold-prototype/dist/bubble-safari-defold-prototype.apk > defold-prototype/dist/SHA256SUMS.txt
+
+          build_one() {
+            local name="$1"
+            local archs="$2"
+            local out="defold-prototype/out/$name"
+            echo "=== BUILD $name architectures=$archs ===" >> defold-prototype/dist/build.log
+            rm -rf "$out"
+            if ! ARCHITECTURES="$archs" OUT_DIR="$GITHUB_WORKSPACE/$out" BOB_JAR="$BOB" \
+              bash ./defold-prototype/build_android.sh >> defold-prototype/dist/build.log 2>&1; then
+              return 1
             fi
+            local apk
+            apk="$(find "$out" -type f -name '*.apk' -print -quit)"
+            [ -n "$apk" ] || return 2
+            case "$name" in
+              android-universal) cp "$apk" defold-prototype/dist/bubble-safari-defold-prototype.apk ;;
+              android-arm64) cp "$apk" defold-prototype/dist/bubble-safari-defold-prototype-arm64.apk ;;
+              android-armv7) cp "$apk" defold-prototype/dist/bubble-safari-defold-prototype-armv7.apk ;;
+            esac
+          }
+
+          status=0
+          build_one android-universal 'armv7-android,arm64-android' || status=$?
+          if [ "$status" -eq 0 ]; then build_one android-arm64 'arm64-android' || status=$?; fi
+          if [ "$status" -eq 0 ]; then build_one android-armv7 'armv7-android' || status=$?; fi
+
+          if [ "$status" -eq 0 ]; then
+            sha256sum \
+              defold-prototype/dist/bubble-safari-defold-prototype.apk \
+              defold-prototype/dist/bubble-safari-defold-prototype-arm64.apk \
+              defold-prototype/dist/bubble-safari-defold-prototype-armv7.apk \
+              > defold-prototype/dist/SHA256SUMS.txt
+            printf '\nAPK sizes:\n' >> defold-prototype/dist/build.log
+            ls -lh defold-prototype/dist/*.apk >> defold-prototype/dist/build.log
           fi
+
+          echo "exit_code=$status" >> "$GITHUB_OUTPUT"
           exit 0
 
       - name: Publish build result to prototype branch
@@ -67,10 +92,14 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -f defold-prototype/dist/build.log
-          if [ -f defold-prototype/dist/bubble-safari-defold-prototype.apk ]; then
-            git add -f defold-prototype/dist/bubble-safari-defold-prototype.apk defold-prototype/dist/SHA256SUMS.txt
-          fi
-          git commit -m "build: publish defold prototype APK [skip ci]" || true
+          for f in \
+            defold-prototype/dist/bubble-safari-defold-prototype.apk \
+            defold-prototype/dist/bubble-safari-defold-prototype-arm64.apk \
+            defold-prototype/dist/bubble-safari-defold-prototype-armv7.apk \
+            defold-prototype/dist/SHA256SUMS.txt; do
+            [ -f "$f" ] && git add -f "$f"
+          done
+          git commit -m "build: publish Defold prototype APKs [skip ci]" || true
           git pull --rebase origin defold-native-prototype || true
           git push origin HEAD:defold-native-prototype
 
@@ -83,6 +112,8 @@ jobs:
           if-no-files-found: warn
           path: |
             defold-prototype/dist/bubble-safari-defold-prototype.apk
+            defold-prototype/dist/bubble-safari-defold-prototype-arm64.apk
+            defold-prototype/dist/bubble-safari-defold-prototype-armv7.apk
             defold-prototype/dist/SHA256SUMS.txt
             defold-prototype/build/build-report.json
             defold-prototype/build/build-report.html
