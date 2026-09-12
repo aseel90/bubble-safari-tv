@@ -127,15 +127,22 @@ jobs:
           rm -rf defold-prototype/out/smoke-x86_64
           mkdir -p defold-prototype/out/smoke-x86_64 defold-prototype/build
           cd defold-prototype
+          set +e
           java -jar "$BOB" \
-            --platform x86_64-android \
+            --platform armv7-android \
             --architectures x86_64-android \
             --variant release \
             --archive \
             --bundle-format apk \
             --bundle-output "$GITHUB_WORKSPACE/defold-prototype/out/smoke-x86_64" \
-            resolve distclean build bundle
+            resolve distclean build bundle 2>&1 | tee -a "$GITHUB_WORKSPACE/defold-prototype/dist/android-tv-smoke.txt"
+          bob_status=${PIPESTATUS[0]}
+          set -e
           cd "$GITHUB_WORKSPACE"
+          if [ "$bob_status" -ne 0 ]; then
+            echo "Stage: x86_64_smoke_build_failed code=$bob_status" >> defold-prototype/dist/android-tv-smoke.txt
+            exit "$bob_status"
+          fi
           apk="$(find defold-prototype/out/smoke-x86_64 -type f -name '*.apk' -print -quit)"
           test -n "$apk"
           cp "$apk" defold-prototype/dist/bubble-safari-defold-smoke-x86_64.apk
