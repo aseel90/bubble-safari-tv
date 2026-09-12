@@ -25,7 +25,7 @@ tasks.register('syncWebAssets', Sync) {
     }
     into(generatedWebAssets)
     doLast {
-        def marker = new File(generatedWebAssets.get().asFile, ".bubble-safari-version")
+        def marker = new File(generatedWebAssets.get().asFile, "bubble-safari-version.txt")
         marker.text = (System.getenv("GITHUB_SHA") ?: "bundled").trim()
     }
 }
