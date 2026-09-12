@@ -78,7 +78,7 @@ jobs:
               'assets/index.html',
               'assets/game-v3.js',
               'assets/tv-nav.js',
-              'assets/.bubble-safari-version',
+              'assets/bubble-safari-version.txt',
               'assets/audio/ui_start.wav',
           }
           with zipfile.ZipFile(apk) as zf:
