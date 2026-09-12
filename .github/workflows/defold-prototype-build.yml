@@ -38,8 +38,9 @@ jobs:
         run: |
           mkdir -p defold-prototype/dist
           rm -f defold-prototype/dist/bubble-safari-defold-prototype.apk
+          printf 'Build UTC: %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > defold-prototype/dist/build.log
           set +e
-          BOB_JAR="$BOB" bash ./defold-prototype/build_android.sh > defold-prototype/dist/build.log 2>&1
+          BOB_JAR="$BOB" bash ./defold-prototype/build_android.sh >> defold-prototype/dist/build.log 2>&1
           status=$?
           set -e
           echo "exit_code=$status" >> "$GITHUB_OUTPUT"
@@ -66,6 +67,7 @@ jobs:
             git add -f defold-prototype/dist/bubble-safari-defold-prototype.apk defold-prototype/dist/SHA256SUMS.txt
           fi
           git commit -m "build: publish defold prototype APK [skip ci]" || true
+          git pull --rebase origin defold-native-prototype || true
           git push origin HEAD:defold-native-prototype
 
       - name: Upload APK and build reports

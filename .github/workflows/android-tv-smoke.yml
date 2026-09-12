@@ -2,22 +2,24 @@ name: Defold Android TV Smoke
 
 on:
   workflow_dispatch:
-  push:
+  workflow_run:
+    workflows:
+      - Defold Prototype Build
+    types:
+      - completed
     branches:
       - defold-native-prototype
-    paths:
-      - 'defold-prototype/**'
-      - '.github/workflows/android-tv-smoke.yml'
 
 permissions:
   contents: write
 
 jobs:
   android-tv-smoke:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     runs-on: macos-15
-    timeout-minutes: 40
+    timeout-minutes: 35
     steps:
-      - name: Checkout prototype branch
+      - name: Checkout latest prototype branch
         uses: actions/checkout@v4
         with:
           ref: defold-native-prototype
@@ -28,45 +30,10 @@ jobs:
           mkdir -p defold-prototype/dist
           printf 'Bubble Safari Android TV CI smoke\nUTC: %s\nRunner: macos-15 arm64\nStage: checkout_ok\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > defold-prototype/dist/android-tv-smoke.txt
           uname -a >> defold-prototype/dist/android-tv-smoke.txt 2>&1 || true
-
-      - name: Set up Java 25
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '25'
-
-      - name: Set up Defold Bob
-        uses: dapetcu21/setup-defold@v3.0.3
-        with:
-          sha1: stable
-
-      - name: Build ARM64 smoke APK
-        id: build
-        shell: bash
-        run: |
-          echo 'Stage: build_start' >> defold-prototype/dist/android-tv-smoke.txt
-          rm -rf defold-prototype/out/tv-smoke
-          set +e
-          ARCHITECTURES=arm64-android \
-          OUT_DIR="$PWD/defold-prototype/out/tv-smoke" \
-          BOB_JAR="$BOB" \
-          bash ./defold-prototype/build_android.sh >> defold-prototype/dist/android-tv-smoke.txt 2>&1
-          status=$?
-          set -e
-          echo "build_exit=$status" >> defold-prototype/dist/android-tv-smoke.txt
-          if [ "$status" -ne 0 ]; then
-            exit "$status"
-          fi
-          apk="$(find defold-prototype/out/tv-smoke -type f -name '*.apk' -print -quit)"
-          if [ -z "$apk" ]; then
-            echo 'FAIL: build succeeded but APK missing' >> defold-prototype/dist/android-tv-smoke.txt
-            exit 12
-          fi
-          echo "SMOKE_APK=$apk" >> "$GITHUB_ENV"
-          echo "Stage: build_ok APK=$apk" >> defold-prototype/dist/android-tv-smoke.txt
+          test -f defold-prototype/dist/bubble-safari-defold-prototype.apk
+          echo 'Stage: published_apk_found' >> defold-prototype/dist/android-tv-smoke.txt
 
       - name: Boot Android TV ARM64 and run smoke test
-        if: success()
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 34
@@ -79,7 +46,7 @@ jobs:
           disable-animations: true
           script: |
             echo 'Stage: emulator_booted' >> defold-prototype/dist/android-tv-smoke.txt
-            bash ./defold-prototype/tools/android_tv_smoke.sh "$SMOKE_APK"
+            bash ./defold-prototype/tools/android_tv_smoke.sh defold-prototype/dist/bubble-safari-defold-prototype.apk
 
       - name: Mark pre-script failure
         if: failure()
