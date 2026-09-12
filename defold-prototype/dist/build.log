@@ -6,13 +6,54 @@ WARNING: Restricted methods will be blocked in a future release unless native ac
 
   0% Downloading 0 archives
  20% Downloading 0 archives
-100% Downloading 0 archives
-ERROR: unspecified:-1: 'com.dynamo.bob.CompileExceptionError: Folder '/home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/build' in the project folder can't be used for bundling as this folder is reserved for Defold build system.'
+ 20% Working
+ 20% Reading classes
+2026-09-12 15:34:37 INFO     
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::arrayBaseOffset has been called by com.google.protobuf.UnsafeUtil (file:/home/runner/work/bubble-safari-tv/bubble-safari-tv/.defold/bob.jar)
+WARNING: Please consider reporting this to the maintainers of class com.google.protobuf.UnsafeUtil
+WARNING: sun.misc.Unsafe::arrayBaseOffset will be removed in a future release
+ 36% Reading classes
+ 52% Reading classes
+ 52% Cleaning
+ 68% Cleaning
+ 73% Cleaning
+ 73% Cleaning engine
+ 75% Cleaning engine
+ 79% Reading tasks
+ 80% Reading tasks
+100% Reading tasks
+ERROR: main/main.gui:0: 'com.dynamo.bob.CompileExceptionError: the font '/builtins/fonts/system_font.font' can't be found'
 
-Time profiler report creation took 0.07 seconds
-2026-09-12 15:33:42 SEVERE  Folder '/home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/build' in the project folder can't be used for bundling as this folder is reserved for Defold build system. 
-2026-09-12 15:33:42 SEVERE  com.dynamo.bob.Project.validateBundleOutputDirectory(Project.java:1017) 
-2026-09-12 15:33:42 SEVERE  com.dynamo.bob.Project.build(Project.java:805) 
-2026-09-12 15:33:42 SEVERE  com.dynamo.bob.Bob.invoke(Bob.java:987) 
-2026-09-12 15:33:42 SEVERE  com.dynamo.bob.Bob.main(Bob.java:1066) 
-2026-09-12 15:33:42 SEVERE  Folder '/home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/build' in the project folder can't be used for bundling as this folder is reserved for Defold build system. 
+Time profiler report creation took 0.04 seconds
+2026-09-12 15:34:39 SEVERE  the font '/builtins/fonts/system_font.font' can't be found 
+2026-09-12 15:34:39 SEVERE  com.dynamo.bob.pipeline.BuilderUtil.checkResource(BuilderUtil.java:47) 
+2026-09-12 15:34:39 SEVERE  com.dynamo.bob.Builder.createSubTask(Builder.java:124) 
+2026-09-12 15:34:39 SEVERE  com.dynamo.bob.ProtoBuilder.createSubTasks(ProtoBuilder.java:160) 
+2026-09-12 15:34:39 SEVERE  com.dynamo.bob.ProtoBuilder.createSubTasks(ProtoBuilder.java:149) 
+2026-09-12 15:34:39 SEVERE  com.dynamo.bob.ProtoBuilder.create(ProtoBuilder.java:191) 
+2026-09-12 15:34:39 SEVERE  com.dynamo.bob.Project.createTask(Project.java:558) 
+2026-09-12 15:34:39 SEVERE  com.dynamo.bob.Project.createTask(Project.java:530) 
+2026-09-12 15:34:39 SEVERE  com.dynamo.bob.Builder.createSubTask(Builder.java:125) 
+2026-09-12 15:34:39 SEVERE  com.dynamo.bob.ProtoBuilder.createSubTasks(ProtoBuilder.java:160) 
+2026-09-12 15:34:39 SEVERE  com.dynamo.bob.ProtoBuilder.createSubTasks(ProtoBuilder.java:149) 
+2026-09-12 15:34:39 SEVERE  com.dynamo.bob.pipeline.GameObjectBuilder.create(GameObjectBuilder.java:117) 
+2026-09-12 15:34:39 SEVERE  com.dynamo.bob.Project.createTask(Project.java:558) 
+2026-09-12 15:34:39 SEVERE  com.dynamo.bob.Project.createTask(Project.java:530) 
+2026-09-12 15:34:39 SEVERE  com.dynamo.bob.Builder.createSubTask(Builder.java:125) 
+2026-09-12 15:34:39 SEVERE  com.dynamo.bob.ProtoBuilder.createSubTasks(ProtoBuilder.java:160) 
+2026-09-12 15:34:39 SEVERE  com.dynamo.bob.ProtoBuilder.createSubTasks(ProtoBuilder.java:149) 
+2026-09-12 15:34:39 SEVERE  com.dynamo.bob.pipeline.CollectionBuilder.create(CollectionBuilder.java:98) 
+2026-09-12 15:34:39 SEVERE  com.dynamo.bob.Project.createTask(Project.java:558) 
+2026-09-12 15:34:39 SEVERE  com.dynamo.bob.Project.createTask(Project.java:530) 
+2026-09-12 15:34:39 SEVERE  com.dynamo.bob.Builder.createSubTask(Builder.java:106) 
+2026-09-12 15:34:39 SEVERE  com.dynamo.bob.pipeline.GameProjectBuilder.create(GameProjectBuilder.java:204) 
+2026-09-12 15:34:39 SEVERE  com.dynamo.bob.Project.createTask(Project.java:558) 
+2026-09-12 15:34:39 SEVERE  com.dynamo.bob.Project.createTask(Project.java:530) 
+2026-09-12 15:34:39 SEVERE  com.dynamo.bob.Project.createTasks(Project.java:630) 
+2026-09-12 15:34:39 SEVERE  com.dynamo.bob.Project.createAndRunTasks(Project.java:1879) 
+2026-09-12 15:34:39 SEVERE  com.dynamo.bob.Project.doBuild(Project.java:2072) 
+2026-09-12 15:34:39 SEVERE  com.dynamo.bob.Project.build(Project.java:815) 
+2026-09-12 15:34:39 SEVERE  com.dynamo.bob.Bob.invoke(Bob.java:987) 
+2026-09-12 15:34:39 SEVERE  com.dynamo.bob.Bob.main(Bob.java:1066) 
+2026-09-12 15:34:39 SEVERE  the font '/builtins/fonts/system_font.font' can't be found 
