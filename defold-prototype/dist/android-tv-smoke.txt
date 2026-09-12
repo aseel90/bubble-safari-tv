@@ -1,7 +1,6 @@
-Bubble Safari Android TV ARM64 runtime smoke
-UTC: 2026-09-12T19:24:10Z
-Runner: macos-15 ARM64, Android TV API 34
+Bubble Safari Android runtime + TV launcher smoke
+UTC: 2026-09-12T19:39:51Z
+Runner: macos-15 ARM64, Android API 35 ARM64
 Stage: checkout_ok
-Darwin iad20-eo1207-fabb8c58-da40-4465-891b-12f1936d6a6d-D69752179856.local 24.6.0 Darwin Kernel Version 24.6.0: Tue Jul 21 20:51:34 PDT 2026; root:xnu-11417.140.69.711.44~1/RELEASE_ARM64_VMAPPLE arm64
-Stage: published_arm_apk_found
+Stage: exact_arm_apk_found
 Stage: failed_before_smoke_script
