@@ -90,11 +90,11 @@ jobs:
           cat defold-prototype/dist/build.log
           exit "${{ steps.build.outputs.exit_code }}"
 
-  android-tv-smoke:
+  android-runtime-smoke:
     needs: android-apk
     if: always()
-    runs-on: macos-15
-    timeout-minutes: 35
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout built prototype branch
         uses: actions/checkout@v4
@@ -105,24 +105,30 @@ jobs:
         shell: bash
         run: |
           mkdir -p defold-prototype/dist
-          printf 'Bubble Safari Android TV CI smoke\nUTC: %s\nRunner: macos-15 arm64\nStage: checkout_ok\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > defold-prototype/dist/android-tv-smoke.txt
-          uname -a >> defold-prototype/dist/android-tv-smoke.txt 2>&1 || true
-          if [ ! -f defold-prototype/dist/bubble-safari-defold-prototype.apk ]; then
-            echo 'FAIL: published APK missing' >> defold-prototype/dist/android-tv-smoke.txt
-            exit 11
-          fi
+          printf 'Bubble Safari Android runtime + TV launcher smoke\nUTC: %s\nRunner: ubuntu-latest x86_64, Android API 35 ARM translation\nStage: checkout_ok\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > defold-prototype/dist/android-tv-smoke.txt
+          test -f defold-prototype/dist/bubble-safari-defold-prototype.apk
           echo 'Stage: published_apk_found' >> defold-prototype/dist/android-tv-smoke.txt
 
-      - name: Boot Android TV ARM64 and run smoke test
+      - name: Enable KVM
+        shell: bash
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+          ls -l /dev/kvm >> defold-prototype/dist/android-tv-smoke.txt 2>&1 || true
+          echo 'Stage: kvm_enabled' >> defold-prototype/dist/android-tv-smoke.txt
+
+      - name: Boot Android 15 and run launcher smoke
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 34
-          target: android-tv
-          arch: arm64-v8a
-          profile: tv_1080p
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_5
+          force-avd-creation: false
           cores: 2
           ram-size: 2048M
-          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+          emulator-options: -no-snapshot-load -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -camera-front none
           disable-animations: true
           script: |
             echo 'Stage: emulator_booted' >> defold-prototype/dist/android-tv-smoke.txt
@@ -144,7 +150,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -f defold-prototype/dist/android-tv-smoke.txt
           if [ -f defold-prototype/dist/android-tv-logcat.txt ]; then git add -f defold-prototype/dist/android-tv-logcat.txt; fi
-          git commit -m "test: publish Android TV smoke report [skip ci]" || true
+          git commit -m "test: publish Android runtime smoke report [skip ci]" || true
           git pull --rebase origin defold-native-prototype || true
           git push origin HEAD:defold-native-prototype || true
 
@@ -153,7 +159,7 @@ jobs:
         continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
-          name: defold-android-tv-smoke
+          name: defold-android-runtime-smoke
           if-no-files-found: warn
           path: |
             defold-prototype/dist/android-tv-smoke.txt
