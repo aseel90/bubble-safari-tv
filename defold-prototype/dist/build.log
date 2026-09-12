@@ -1,0 +1,18 @@
+Synced 10 prototype audio files into defold-prototype/assets/audio
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by com.dynamo.bob.pipeline.ModelImporterJni in an unnamed module (file:/home/runner/work/bubble-safari-tv/bubble-safari-tv/.defold/bob.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+  0% Downloading 0 archives
+ 20% Downloading 0 archives
+100% Downloading 0 archives
+ERROR: unspecified:-1: 'com.dynamo.bob.CompileExceptionError: Folder '/home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/build' in the project folder can't be used for bundling as this folder is reserved for Defold build system.'
+
+Time profiler report creation took 0.07 seconds
+2026-09-12 15:33:42 SEVERE  Folder '/home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/build' in the project folder can't be used for bundling as this folder is reserved for Defold build system. 
+2026-09-12 15:33:42 SEVERE  com.dynamo.bob.Project.validateBundleOutputDirectory(Project.java:1017) 
+2026-09-12 15:33:42 SEVERE  com.dynamo.bob.Project.build(Project.java:805) 
+2026-09-12 15:33:42 SEVERE  com.dynamo.bob.Bob.invoke(Bob.java:987) 
+2026-09-12 15:33:42 SEVERE  com.dynamo.bob.Bob.main(Bob.java:1066) 
+2026-09-12 15:33:42 SEVERE  Folder '/home/runner/work/bubble-safari-tv/bubble-safari-tv/defold-prototype/build' in the project folder can't be used for bundling as this folder is reserved for Defold build system. 
