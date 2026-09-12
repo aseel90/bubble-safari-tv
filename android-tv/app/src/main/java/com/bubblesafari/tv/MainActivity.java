@@ -27,6 +27,7 @@ import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -64,7 +65,9 @@ public final class MainActivity extends Activity {
     private WebViewAssetLoader assetLoader;
     private OnBackInvokedCallback backCallback;
     private File activeUpdateDir;
-    private volatile boolean updateCheckStarted;
+    private volatile boolean updateCheckRunning;
+    private volatile boolean pageReady;
+    private volatile String lastUpdateStateJson = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,14 +133,24 @@ public final class MainActivity extends Activity {
         settings.setDisplayZoomControls(false);
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
         settings.setCacheMode(WebSettings.LOAD_DEFAULT);
-        settings.setUserAgentString(settings.getUserAgentString() + " BubbleSafariTV/0.8-ota");
+        settings.setUserAgentString(settings.getUserAgentString() + " BubbleSafariTV/0.9-progress");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) settings.setSafeBrowsingEnabled(true);
         boolean debuggable = (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
         WebView.setWebContentsDebuggingEnabled(debuggable);
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-                return assetLoader.shouldInterceptRequest(request.getUrl());
+                Uri uri = request.getUrl();
+                if (ASSET_HOST.equalsIgnoreCase(uri.getHost())
+                        && "/native/check-update".equals(uri.getPath())) {
+                    checkForGameUpdateAsync(true);
+                    return new WebResourceResponse(
+                            "text/plain",
+                            "UTF-8",
+                            new ByteArrayInputStream("ok".getBytes(StandardCharsets.UTF_8))
+                    );
+                }
+                return assetLoader.shouldInterceptRequest(uri);
             }
 
             @Override
@@ -149,6 +162,8 @@ public final class MainActivity extends Activity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
+                pageReady = true;
+                dispatchLastUpdateState();
                 view.requestFocus();
                 enterImmersiveMode();
             }
@@ -164,19 +179,79 @@ public final class MainActivity extends Activity {
     }
 
     private void checkForGameUpdateAsync() {
-        if (updateCheckStarted) return;
-        updateCheckStarted = true;
+        checkForGameUpdateAsync(false);
+    }
+
+    private void checkForGameUpdateAsync(boolean userRequested) {
+        if (updateCheckRunning) {
+            if (userRequested) {
+                sendUpdateState("checking", 0, "جاري التحقق من التحديثات…", "");
+            }
+            return;
+        }
+
+        updateCheckRunning = true;
         updateExecutor.execute(() -> {
+            boolean visibleProgress = userRequested;
             try {
+                if (userRequested) {
+                    sendUpdateState("checking", 0, "جاري التحقق من التحديثات…", "");
+                }
+
                 UpdateManifest manifest = fetchManifest();
                 String activeVersion = readVersion(activeUpdateDir);
                 File pending = new File(getFilesDir(), PENDING_DIR);
-                if (manifest.version.equals(activeVersion) || manifest.version.equals(readVersion(pending))) return;
+                String pendingVersion = readVersion(pending);
+
+                if (manifest.version.equals(activeVersion)) {
+                    if (userRequested) {
+                        sendUpdateState("upToDate", 100, "اللعبة محدثة بالكامل.", manifest.version);
+                    }
+                    return;
+                }
+
+                if (manifest.version.equals(pendingVersion)) {
+                    sendUpdateState("ready", 100, "التحديث محمّل وجاهز. أغلق اللعبة وافتحها لتفعيله.", manifest.version);
+                    return;
+                }
+
+                visibleProgress = true;
+                sendUpdateState("available", 0, "تم العثور على تحديث جديد. سيبدأ التنزيل الآن…", manifest.version);
                 downloadAndStageUpdate(manifest);
+                sendUpdateState("ready", 100, "اكتمل تنزيل التحديث والتحقق منه. أغلق اللعبة وافتحها لتفعيله.", manifest.version);
                 Log.i(TAG, "Game update downloaded for next launch: " + manifest.version);
             } catch (Exception error) {
                 Log.w(TAG, "Game update check failed; current game remains available", error);
+                if (visibleProgress) {
+                    sendUpdateState("error", 0, "تعذر إكمال التحديث الآن. اللعبة الحالية ما زالت تعمل.", "");
+                }
+            } finally {
+                updateCheckRunning = false;
             }
+        });
+    }
+
+    private void sendUpdateState(String phase, int percent, String message, String version) {
+        try {
+            JSONObject state = new JSONObject();
+            state.put("phase", phase);
+            state.put("percent", Math.max(0, Math.min(100, percent)));
+            state.put("message", message == null ? "" : message);
+            state.put("version", version == null ? "" : version);
+            lastUpdateStateJson = state.toString();
+            dispatchLastUpdateState();
+        } catch (Exception error) {
+            Log.w(TAG, "Could not publish update state", error);
+        }
+    }
+
+    private void dispatchLastUpdateState() {
+        if (!pageReady || webView == null || lastUpdateStateJson.isEmpty()) return;
+        String json = lastUpdateStateJson;
+        runOnUiThread(() -> {
+            if (webView == null) return;
+            String script = "window.BubbleSafariNativeUpdate&&window.BubbleSafariNativeUpdate(" + json + ");";
+            webView.evaluateJavascript(script, null);
         });
     }
 
@@ -208,8 +283,10 @@ public final class MainActivity extends Activity {
         deleteRecursively(staging);
         if (!staging.mkdirs()) throw new IOException("Could not create staging directory");
         try {
-            downloadFile(UPDATE_BUNDLE_URL + "?v=" + manifest.version, zipFile, MAX_ZIP_BYTES);
+            downloadFile(UPDATE_BUNDLE_URL + "?v=" + manifest.version, zipFile, MAX_ZIP_BYTES, manifest.version);
+            sendUpdateState("verifying", 100, "اكتمل التنزيل. جاري التحقق من سلامة التحديث…", manifest.version);
             if (!manifest.sha256.equals(sha256(zipFile))) throw new IOException("Update checksum mismatch");
+            sendUpdateState("installing", 100, "تم التحقق بنجاح. جاري تجهيز التحديث…", manifest.version);
             unzipSafely(zipFile, staging, MAX_UNPACKED_BYTES);
             if (!isValidGameDirectory(staging)) throw new IOException("Update bundle is incomplete");
             writeVersion(staging, manifest.version);
@@ -221,7 +298,7 @@ public final class MainActivity extends Activity {
         }
     }
 
-    private static void downloadFile(String urlString, File target, long maxBytes) throws Exception {
+    private void downloadFile(String urlString, File target, long maxBytes, String version) throws Exception {
         HttpURLConnection connection = (HttpURLConnection) new URL(urlString).openConnection();
         connection.setConnectTimeout(7000);
         connection.setReadTimeout(15000);
@@ -232,7 +309,9 @@ public final class MainActivity extends Activity {
             long declaredLength = connection.getContentLengthLong();
             if (declaredLength > maxBytes) throw new IOException("Update bundle is too large");
             long total = 0;
+            int lastPercent = -1;
             byte[] buffer = new byte[32 * 1024];
+            sendUpdateState("downloading", 0, "جاري تنزيل التحديث… 0%", version);
             try (InputStream input = new BufferedInputStream(connection.getInputStream());
                  BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream(target))) {
                 int read;
@@ -240,7 +319,17 @@ public final class MainActivity extends Activity {
                     total += read;
                     if (total > maxBytes) throw new IOException("Update bundle exceeded size limit");
                     output.write(buffer, 0, read);
+                    if (declaredLength > 0) {
+                        int percent = (int) Math.min(100, (total * 100L) / declaredLength);
+                        if (percent != lastPercent) {
+                            lastPercent = percent;
+                            sendUpdateState("downloading", percent, "جاري تنزيل التحديث… " + percent + "%", version);
+                        }
+                    }
                 }
+            }
+            if (declaredLength <= 0) {
+                sendUpdateState("downloading", 100, "اكتمل تنزيل التحديث.", version);
             }
         } finally {
             connection.disconnect();
@@ -410,6 +499,7 @@ public final class MainActivity extends Activity {
 
     @Override
     protected void onDestroy() {
+        pageReady = false;
         updateExecutor.shutdownNow();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && backCallback != null) {
             getOnBackInvokedDispatcher().unregisterOnBackInvokedCallback(backCallback);
