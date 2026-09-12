@@ -6,7 +6,11 @@ export function createVoiceEngine({ isMuted }) {
   const voicePlayer = new Audio();
   voicePlayer.preload = 'auto';
   voicePlayer.volume = .96;
-  const audioFile = key => `./audio/${key}.wav`;
+  const audioAliases = {
+    prompt_match: 'prompt_choose_picture',
+    prompt_odd: 'prompt_choose_different_picture'
+  };
+  const audioFile = key => `./audio/${audioAliases[key] || key}.wav`;
   const speechFallback = {
     prompt_match: 'اختر الصورة',
     prompt_odd: 'اختر الصورة المختلفة'
@@ -97,10 +101,6 @@ export function createVoiceEngine({ isMuted }) {
   function tryPlay(key) {
     if (isMuted() || !key) return Promise.resolve(false);
     stop();
-    if (speechFallback[key]) {
-      pendingVoice = null;
-      return speakFallback(key);
-    }
     activeKey = key;
     voicePlayer.src = audioFile(key);
     voicePlayer.preload = 'auto';
@@ -143,7 +143,6 @@ export function createVoiceEngine({ isMuted }) {
   }
 
   function preload(keys = []) {
-    // Keep memory predictable on TV: warm only a tiny set through the HTTP/app-assets cache.
     [...new Set(keys.filter(Boolean))].slice(0, 5).forEach(key => {
       fetch(audioFile(key), { cache: 'force-cache' }).catch(() => {});
     });
