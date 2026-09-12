@@ -105,3 +105,19 @@
 .setting-toggle:focus,.setting-toggle.tv-focus,.quality-button:focus,.quality-button.tv-focus,.update-button:focus,.update-button.tv-focus{transform:scale(1.045);box-shadow:0 0 0 6px rgba(255,216,101,.75)}
 
 @media (max-height:650px){.settings-panel{padding:2vh 3vw}.settings-heading p{margin-bottom:1vh}.settings-grid{gap:9px}.setting-card{min-height:76px;padding:10px 14px}.setting-copy strong,.update-copy strong{font-size:18px}.setting-copy small,.update-copy small{font-size:12px}.setting-toggle,.quality-button{height:43px;min-width:90px}.quality-button{min-width:98px}.update-button{height:45px!important;min-width:190px}.version-line{font-size:11px}}
+
+
+/* Bubble Safari v0.9 circular TV choice geometry: keep art inside the bubble without clipping character identity. */
+.choice{--choice-bubble-h:82%;--choice-art-h:64%;--choice-center-y:40%}
+.choice[data-size-visual="small"]{--choice-bubble-h:66%;--choice-art-h:52%;--choice-center-y:41%}
+.choice[data-size-visual="medium"]{--choice-bubble-h:76%;--choice-art-h:59%;--choice-center-y:40%}
+.choice[data-size-visual="big"]{--choice-bubble-h:88%;--choice-art-h:69%;--choice-center-y:39%}
+.choice-bubble{inset:auto!important;left:50%;top:var(--choice-center-y);height:min(var(--choice-bubble-h),270px);width:auto;aspect-ratio:1/1;border-radius:50%;transform:translate(-50%,-50%);overflow:hidden}
+.choice-content{position:absolute;left:50%;top:var(--choice-center-y);width:auto;height:min(var(--choice-art-h),205px);aspect-ratio:1/1;transform:translate(-50%,-50%);display:grid;place-items:center;overflow:visible}
+.choice-art,.choice-size-art{width:100%;height:100%;max-width:100%;max-height:100%}
+.choice:focus .choice-bubble,.choice.tv-focus .choice-bubble{transform:translate(-50%,-50%) scale(1.025);animation:focusBreathCentered 1.35s ease-in-out infinite alternate}
+@keyframes focusBreathCentered{from{transform:translate(-50%,-50%) scale(1.015)}to{transform:translate(-50%,-50%) scale(1.045)}}
+.choice.correct-pop .choice-bubble{animation:bubblePopCentered .45s ease forwards}
+@keyframes bubblePopCentered{0%{transform:translate(-50%,-50%) scale(1);opacity:1}50%{transform:translate(-50%,-50%) scale(1.1);opacity:1}100%{transform:translate(-50%,-50%) scale(.1);opacity:0}}
+#app[data-effects="off"] .choice:focus .choice-bubble,#app[data-effects="off"] .choice.tv-focus .choice-bubble{animation:none!important;transform:translate(-50%,-50%) scale(1.025)}
+@media (max-height:620px){.choice{--choice-bubble-h:78%;--choice-art-h:60%;--choice-center-y:39%}.choice[data-size-visual="small"]{--choice-bubble-h:62%;--choice-art-h:48%}.choice[data-size-visual="medium"]{--choice-bubble-h:71%;--choice-art-h:55%}.choice[data-size-visual="big"]{--choice-bubble-h:84%;--choice-art-h:65%;--choice-center-y:38%}}
