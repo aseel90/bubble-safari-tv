@@ -72,10 +72,11 @@ jobs:
 
       - name: Upload APK and build reports
         if: steps.build.outputs.exit_code == '0'
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: bubble-safari-defold-prototype
-          if-no-files-found: error
+          if-no-files-found: warn
           path: |
             defold-prototype/dist/bubble-safari-defold-prototype.apk
             defold-prototype/dist/SHA256SUMS.txt
@@ -91,6 +92,7 @@ jobs:
 
   android-tv-smoke:
     needs: android-apk
+    if: always()
     runs-on: macos-15
     timeout-minutes: 35
     steps:
@@ -105,7 +107,10 @@ jobs:
           mkdir -p defold-prototype/dist
           printf 'Bubble Safari Android TV CI smoke\nUTC: %s\nRunner: macos-15 arm64\nStage: checkout_ok\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > defold-prototype/dist/android-tv-smoke.txt
           uname -a >> defold-prototype/dist/android-tv-smoke.txt 2>&1 || true
-          test -f defold-prototype/dist/bubble-safari-defold-prototype.apk
+          if [ ! -f defold-prototype/dist/bubble-safari-defold-prototype.apk ]; then
+            echo 'FAIL: published APK missing' >> defold-prototype/dist/android-tv-smoke.txt
+            exit 11
+          fi
           echo 'Stage: published_apk_found' >> defold-prototype/dist/android-tv-smoke.txt
 
       - name: Boot Android TV ARM64 and run smoke test
@@ -145,6 +150,7 @@ jobs:
 
       - name: Upload smoke evidence
         if: always()
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: defold-android-tv-smoke
