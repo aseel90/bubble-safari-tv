@@ -9,6 +9,7 @@ const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 const screens = { home:$('#homeScreen'), age:$('#ageScreen'), world:$('#worldScreen'), settings:$('#settingsScreen'), game:$('#gameScreen'), finish:$('#finishScreen') };
 const app=$('#app'), worldDecor=$('#worldDecor'), hud=$('#hud'), settingsButton=$('#settingsButton'), starCount=$('#starCount'), roundText=$('#roundText'), progressMeter=$('#progressMeter'), progressFill=$('#progressFill'), worldName=$('#worldName'), worldIcon=$('#worldIcon'), choicesEl=$('#choices'), questionText=$('#questionText'), questionKicker=$('#questionKicker'), questionVisual=$('#questionVisual'), replayButton=$('#replayButton'), soundButton=$('#soundButton'), soundIcon=$('#soundIcon'), feedback=$('#feedback'), feedbackTitle=$('#feedbackTitle'), feedbackSubtitle=$('#feedbackSubtitle'), feedbackIcon=$('#feedbackIcon'), confetti=$('#confetti'), finalStars=$('#finalStars');
+const updateStatus=$('#updateStatus'), updateProgress=$('#updateProgress'), updateProgressFill=$('#updateProgressFill'), updateProgressPercent=$('#updateProgressPercent'), currentVersion=$('#currentVersion'), latestVersion=$('#latestVersion'), checkUpdateButton=$('#checkUpdateButton'), otaOverlay=$('#otaOverlay'), otaOverlayLabel=$('#otaOverlayLabel'), otaOverlayPercent=$('#otaOverlayPercent'), otaOverlayFill=$('#otaOverlayFill');
 
 const state={age:'2-3',world:'jungle',round:0,totalRounds:12,stars:0,streak:0,muted:localStorage.getItem('bubbleSafariMuted')==='1',effects:localStorage.getItem('bubbleSafariEffects')!=='0',quality:localStorage.getItem('bubbleSafariQuality')||'auto',settingsReturn:'home',currentQuestion:null,locked:false,typePlan:[],usedTargets:{},feedbackHistory:[],lastSize:null,flowId:0};
 const voice=createVoiceEngine({isMuted:()=>state.muted});
@@ -41,7 +42,19 @@ function showScreen(name){
   });
 }
 function activeScreenName(){return Object.entries(screens).find(([,el])=>el.classList.contains('screen-active'))?.[0]||'home'}
-function handleBack(){state.flowId++;voice.stop();state.locked=false;if(screens.settings.classList.contains('screen-active'))return showScreen(state.settingsReturn||'home');if(screens.game.classList.contains('screen-active'))return showScreen('world');if(screens.world.classList.contains('screen-active'))return showScreen('age');if(screens.age.classList.contains('screen-active')||screens.finish.classList.contains('screen-active'))showScreen('home')}
+function clearTransientUi(){
+  feedback?.classList.remove('show');
+  feedback?.setAttribute('aria-hidden','true');
+  if(confetti)confetti.innerHTML='';
+  $$('.choice.correct-pop,.choice.wrong-shake').forEach(el=>el.classList.remove('correct-pop','wrong-shake'));
+}
+function handleBack(){
+  state.flowId++;voice.stop();state.locked=false;clearTransientUi();
+  if(screens.settings.classList.contains('screen-active'))return showScreen(state.settingsReturn||'home');
+  if(screens.game.classList.contains('screen-active'))return showScreen('world');
+  if(screens.world.classList.contains('screen-active'))return showScreen('age');
+  if(screens.age.classList.contains('screen-active')||screens.finish.classList.contains('screen-active'))return showScreen('home');
+}
 
 function installTvRuntimeHotfix(){
   if(window.__bubbleTvRuntimeHotfix)return;
@@ -108,37 +121,18 @@ function symbolPool(){const animals=WORLDS[state.world].animals;return animals.l
 function makeAnimalQuestion(){const animals=WORLDS[state.world].animals;if(!animals.length)return makeShapeQuestion();const target=freshFrom(animals,'animal');return{type:'animal',kicker:'ابحث عن الحيوان',prompt:`أين ${target.name}؟`,voiceKey:target.audio,options:pickUnique(animals,choiceCount(),target).map((animal,i)=>({id:animal.id,label:animal.name,visualId:animal.id,visualKind:'animal',color:COLORS[(state.round+i)%COLORS.length].hex,correct:animal.id===target.id,kind:'animal'}))}}
 function makeColorQuestion(){const target=freshFrom(COLORS,'color'),selected=pickUnique(COLORS,choiceCount(),target),icon=randomFrom(symbolPool());return{type:'color',kicker:'ابحث عن اللون',prompt:`أين الفقاعة ${target.name}؟`,voiceKey:target.audio,options:shuffle(selected.map(color=>({id:color.id,label:color.label,visualId:icon.id,visualKind:icon.kind,color:color.hex,correct:color.id===target.id,kind:'color'})))}}
 function makeShapeQuestion(){const target=freshFrom(SHAPES,'shape'),selected=pickUnique(SHAPES,choiceCount(),target);return{type:'shape',kicker:'ابحث عن الشكل',prompt:`أين ${target.name}؟`,voiceKey:target.audio,options:shuffle(selected.map((shape,i)=>({id:shape.id,label:shape.name,visualId:shape.id,visualKind:'shape',color:COLORS[(state.round+i+1)%COLORS.length].hex,correct:shape.id===target.id,kind:'shape'})))}}
-function makeNumberQuestion(){const target=freshFrom(NUMBERS,'number'),selected=pickUnique(NUMBERS,choiceCount(),target);return{type:'number',kicker:'ابحث عن الرقم',prompt:`أين الرقم ${target.value}؟`,voiceKey:target.audio,options:shuffle(selected.map((number,i)=>({id:number.id,label:`الرقم ${number.value}`,value:number.value,color:COLORS[(state.round+i+2)%COLORS.length].hex,correct:number.id===target.id,kind:'number'})))}}
-function makeSizeQuestion(){const base=freshFrom(symbolPool(),'size-symbol'),big=state.lastSize===null?Math.random()>.5:!state.lastSize;state.lastSize=big;const young=state.age==='2-3',targetId=big?'big':'small',scales=young?[.68,1.34]:(big?[.72,1,1.38]:[.62,1,1.28]),labels=young?['الصغير','الكبير']:['الصغير','المتوسط','الكبير'],correctIndex=big?scales.length-1:0;return{type:'size',kicker:'قارن الأحجام',prompt:big?'أين الكبير؟':'أين الصغير؟',voiceKey:big?'size_big':'size_small',options:scales.map((scale,i)=>({id:`${targetId}-${i}`,label:labels[i],visualId:base.id,visualKind:base.kind,color:COLORS[(state.round+i)%COLORS.length].hex,correct:i===correctIndex,kind:'size',scale}))}}
-function makeMatchQuestion(){const pool=symbolPool(),target=freshFrom(pool,'match'),options=pickUnique(pool,choiceCount(),target).map((item,i)=>({id:item.id,label:item.name,visualId:item.id,visualKind:item.kind,color:COLORS[(state.round+i)%COLORS.length].hex,correct:item.id===target.id,kind:'match'}));return{type:'match',kicker:'طابق الصورة',prompt:'اختر نفس الصورة',voiceKey:'prompt_match',reference:{id:target.id,kind:target.kind},options}}
-function makeOddQuestion(){const pool=symbolPool(),base=freshFrom(pool,'odd-base');let odd=freshFrom(pool.filter(item=>item.id!==base.id),'odd-item');if(!odd)odd=SHAPES.find(s=>s.id!==base.id);const oddIndex=Math.floor(Math.random()*3);return{type:'odd',kicker:'لغز صغير',prompt:'أي واحد مختلف؟',voiceKey:'prompt_odd',options:[0,1,2].map((_,i)=>{const item=i===oddIndex?odd:base;return{id:`${item.id}-${i}`,label:item.name,visualId:item.id,visualKind:item.kind||(WORLDS[state.world].animals.some(a=>a.id===item.id)?'animal':'shape'),color:COLORS[(state.round+i)%COLORS.length].hex,correct:i===oddIndex,kind:'odd'}})}}
-function makeQuestion(){const type=state.typePlan[state.round]||'animal';if(type==='animal')return makeAnimalQuestion();if(type==='color')return makeColorQuestion();if(type==='shape')return makeShapeQuestion();if(type==='number')return makeNumberQuestion();if(type==='size')return makeSizeQuestion();if(type==='match')return makeMatchQuestion();return makeOddQuestion()}
-
-function shade(hex,percent){const num=parseInt(hex.slice(1),16),amt=Math.round(2.55*percent),r=Math.max(0,Math.min(255,(num>>16)+amt)),g=Math.max(0,Math.min(255,((num>>8)&255)+amt)),b=Math.max(0,Math.min(255,(num&255)+amt));return`#${(0x1000000+r*0x10000+g*0x100+b).toString(16).slice(1)}`}
-function renderOptionVisual(option){
-  if(option.kind==='number')return `<span class="choice-number">${option.value}</span>`;
-  const kind=option.visualKind;
-  const art=choiceArt(kind,option.visualId);
-  const classes=['choice-art',kind==='shape'?'choice-art-shape':''];
-  const layout=kind==='animal'?getAnimalLayout(option.visualId):{scale:1,x:0,y:0};
-  const finalScale=layout.scale||1;
-  if(option.kind==='size')classes.push('choice-size-art');
-  const style=` style="--art-scale:${finalScale.toFixed(3)};--art-x:${layout.x||0}%;--art-y:${layout.y||0}%"`;
-  const data=kind==='animal'?` data-animal="${option.visualId}"`:'';
-  return `<span class="${classes.filter(Boolean).join(' ')}"${data}${style}>${art}</span>`;
-}
+function makeNumberQuestion(){const available=state.age==='2-3'?NUMBERS.slice(0,3):NUMBERS,target=freshFrom(available,'number'),selected=pickUnique(available,choiceCount(),target);return{type:'number',kicker:'ابحث عن الرقم',prompt:`أين الرقم ${target.value}؟`,voiceKey:target.audio,options:shuffle(selected.map((number,i)=>({id:number.id,label:String(number.value),number:number.value,visualKind:'number',color:COLORS[(state.round+i+2)%COLORS.length].hex,correct:number.id===target.id,kind:'number'})))}}
+function makeSizeQuestion(){const pool=symbolPool(),target=freshFrom(pool,'size'),askBig=state.lastSize==='big'?false:state.lastSize==='small'?true:Math.random()>.5;state.lastSize=askBig?'big':'small';const options=state.age==='2-3'?[{id:'small',scale:.72,label:'صغير'},{id:'big',scale:1.3,label:'كبير'}]:[{id:'small',scale:.72,label:'صغير'},{id:'medium',scale:1,label:'وسط'},{id:'big',scale:1.3,label:'كبير'}];return{type:'size',kicker:'قارن الأحجام',prompt:askBig?'أين الصورة الكبيرة؟':'أين الصورة الصغيرة؟',voiceKey:askBig?'size_big':'size_small',options:shuffle(options.map((size,i)=>({id:size.id,label:size.label,visualId:target.id,visualKind:target.kind,color:COLORS[(state.round+i+3)%COLORS.length].hex,scale:size.scale,correct:size.id===(askBig?'big':'small'),kind:'size'})))}}
+function makeMatchQuestion(){const pool=symbolPool(),target=freshFrom(pool,'match'),options=pickUnique(pool,choiceCount(),target);return{type:'match',kicker:'طابق الصورة',prompt:'اختر الصورة',voiceKey:'prompt_match',questionVisual:{kind:target.kind,id:target.id},options:shuffle(options.map((item,i)=>({id:item.id,label:item.name||item.label,visualId:item.id,visualKind:item.kind,color:COLORS[(state.round+i)%COLORS.length].hex,correct:item.id===target.id,kind:'match'})))}}
+function makeOddQuestion(){const pool=symbolPool();if(pool.length<3)return makeMatchQuestion();const base=freshFrom(pool,'oddBase'),odd=freshFrom(pool.filter(item=>item.id!==base.id),'oddTarget');const count=choiceCount(),items=Array.from({length:Math.max(1,count-1)},(_,i)=>({id:`base-${i}`,label:base.name||base.label,visualId:base.id,visualKind:base.kind,color:COLORS[(state.round+i)%COLORS.length].hex,correct:false,kind:'odd'}));items.push({id:'odd',label:odd.name||odd.label,visualId:odd.id,visualKind:odd.kind,color:COLORS[(state.round+count)%COLORS.length].hex,correct:true,kind:'odd'});return{type:'odd',kicker:'لغز صغير',prompt:'أي واحد مختلف؟',voiceKey:'prompt_odd',options:shuffle(items)}}
+function makeQuestion(type){return type==='animal'?makeAnimalQuestion():type==='color'?makeColorQuestion():type==='shape'?makeShapeQuestion():type==='number'?makeNumberQuestion():type==='size'?makeSizeQuestion():type==='match'?makeMatchQuestion():makeOddQuestion()}
+function shade(hex,amount){const value=parseInt(hex.replace('#',''),16),r=Math.max(0,Math.min(255,(value>>16)+amount)),g=Math.max(0,Math.min(255,((value>>8)&255)+amount)),b=Math.max(0,Math.min(255,(value&255)+amount));return`#${((1<<24)+(r<<16)+(g<<8)+b).toString(16).slice(1)}`}
+function renderOptionVisual(option){if(option.visualKind==='number')return`<span class="number-art">${option.number}</span>`;const art=choiceArt(option.visualKind,option.visualId);const layout=option.visualKind==='animal'?getAnimalLayout(option.visualId):{scale:1,x:0,y:0};return`<span class="choice-art choice-art-${option.visualKind}${option.kind==='size'?' choice-size-art':''}" style="--art-scale:${layout.scale};--art-x:${layout.x||0}px;--art-y:${layout.y||0}px">${art}</span>`}
+function updateProgress(){const current=state.round+1,total=state.totalRounds,ratio=Math.max(0,Math.min(1,total?state.round/total:0));roundText.textContent=`${current} / ${total}`;starCount.textContent=state.stars;if(progressMeter){progressMeter.setAttribute('aria-valuemax',String(total));progressMeter.setAttribute('aria-valuenow',String(current))}if(progressFill)progressFill.style.transform=`scaleX(${ratio})`}
 function renderQuestion(){
-  state.currentQuestion=makeQuestion();
-  questionKicker.textContent=state.currentQuestion.kicker;
-  questionText.textContent=state.currentQuestion.prompt;
-  replayButton.disabled=!state.currentQuestion.voiceKey;
-  replayButton.classList.toggle('hidden',!state.currentQuestion.voiceKey);
-  if(state.currentQuestion.reference){questionVisual.innerHTML=choiceArt(state.currentQuestion.reference.kind,state.currentQuestion.reference.id);questionVisual.classList.remove('hidden')}else{questionVisual.innerHTML='';questionVisual.classList.add('hidden')}
-  roundText.textContent=`${state.round+1} / ${state.totalRounds}`;starCount.textContent=state.stars;
-  if(progressFill) progressFill.style.transform=`scaleX(${Math.max(.06,(state.round+1)/state.totalRounds)})`;
-  if(progressMeter){progressMeter.setAttribute('aria-valuemax',String(state.totalRounds));progressMeter.setAttribute('aria-valuenow',String(state.round+1));}
-  choicesEl.innerHTML='';
-  choicesEl.style.gridTemplateColumns=`repeat(${state.currentQuestion.options.length},minmax(0,1fr))`;
+  const type=state.typePlan[state.round]||'animal';state.currentQuestion=makeQuestion(type);questionKicker.textContent=state.currentQuestion.kicker;questionText.textContent=state.currentQuestion.prompt;updateProgress();
+  if(state.currentQuestion.questionVisual){questionVisual.classList.remove('hidden');questionVisual.innerHTML=choiceArt(state.currentQuestion.questionVisual.kind,state.currentQuestion.questionVisual.id)}else{questionVisual.classList.add('hidden');questionVisual.innerHTML=''}
+  choicesEl.innerHTML='';choicesEl.style.gridTemplateColumns=`repeat(${state.currentQuestion.options.length},minmax(0,1fr))`;
   state.currentQuestion.options.forEach((option,index)=>{
     const button=document.createElement('button');button.type='button';button.className='choice focusable';button.dataset.focusable='';button.setAttribute('aria-label',option.label);if(option.kind==='size')button.dataset.sizeVisual=option.scale<.82?'small':option.scale>1.18?'big':'medium';
     const layout=option.visualKind==='animal'?getAnimalLayout(option.visualId):null;if(layout?.labelOffset)button.style.setProperty('--label-offset',`${layout.labelOffset}px`);button.innerHTML=`<span class="choice-bubble" style="--bubble-color:${option.color};--bubble-deep:${shade(option.color,-8)}"></span><span class="choice-content">${renderOptionVisual(option)}</span><span class="choice-label">${option.label}</span>`;
@@ -150,7 +144,7 @@ function renderQuestion(){
 function chooseFeedback(){const recent=new Set(state.feedbackHistory.slice(-2)),candidates=FEEDBACK.filter(item=>!recent.has(item.audio)),chosen=randomFrom(candidates.length?candidates:FEEDBACK);state.feedbackHistory.push(chosen.audio);return chosen}
 async function showSuccess(){
   const msg=state.streak>=4?{title:'مذهل!',sub:'أربع إجابات متتالية',audio:'feedback_wow'}:chooseFeedback();
-  feedbackTitle.textContent=msg.title;feedbackSubtitle.textContent=msg.sub;feedbackIcon.innerHTML=uiArt(state.streak>=4?'medal':'star');feedback.classList.add('show');burstConfetti();voice.success();await sleep(120);return voice.play(msg.audio);
+  feedbackTitle.textContent=msg.title;feedbackSubtitle.textContent=msg.sub;feedbackIcon.innerHTML=uiArt(state.streak>=4?'medal':'star');feedback.setAttribute('aria-hidden','false');feedback.classList.add('show');burstConfetti();voice.success();await sleep(120);return voice.play(msg.audio);
 }
 function burstConfetti(){confetti.innerHTML='';if(!state.effects)return;const colors=['#ffd45b','#ff7c68','#75c9e8','#81c96c','#ad92e8','#ff9fc4'];const count=app.dataset.quality==='full'?26:14;for(let i=0;i<count;i++){const piece=document.createElement('i');piece.className='confetti-piece';piece.style.background=colors[i%colors.length];piece.style.setProperty('--x',`${(Math.random()-.5)*620}px`);piece.style.setProperty('--y',`${(Math.random()-.72)*470}px`);piece.style.setProperty('--r',`${(Math.random()-.5)*720}deg`);confetti.appendChild(piece)}setTimeout(()=>{confetti.innerHTML=''},850)}
 async function selectChoice(button,option){
@@ -166,7 +160,7 @@ async function selectChoice(button,option){
   state.locked=true;state.streak++;button.classList.add('correct-pop');state.stars++;starCount.textContent=state.stars;localStorage.setItem('bubbleSafariBest',String(Math.max(state.stars,Number(localStorage.getItem('bubbleSafariBest')||0))));
   voice.stop();const started=performance.now();await showSuccess();const remain=Math.max(260,1000-(performance.now()-started));await sleep(remain);
   if(flow!==state.flowId||!screens.game.classList.contains('screen-active'))return;
-  feedback.classList.remove('show');state.round++;
+  feedback.classList.remove('show');feedback.setAttribute('aria-hidden','true');state.round++;
   if(state.round>=state.totalRounds)finishGame();else{state.locked=false;renderQuestion()}
 }
 
@@ -194,22 +188,72 @@ function updateSoundUi(){
 }
 function openSettings(){state.settingsReturn=activeScreenName();voice.stop();showScreen('settings');applyPreferences();updateSoundUi()}
 function closeSettings(){showScreen(state.settingsReturn||'home');setTimeout(()=>tv?.ensureFocus(),60)}
-async function checkForUpdates(){
-  const button=$('#checkUpdateButton'),status=$('#updateStatus'),currentEl=$('#currentVersion'),latestEl=$('#latestVersion');
-  if(!button||!status)return;
-  button.disabled=true;status.textContent='جاري التحقق من التحديثات…';
+function isNativeTvApp(){return location.hostname==='appassets.androidplatform.net'||/BubbleSafariTV/i.test(navigator.userAgent)}
+function setUpdatePercent(percent){
+  const safe=Math.max(0,Math.min(100,Number(percent)||0)),scale=String(safe/100),text=`${Math.round(safe)}%`;
+  if(updateProgressFill)updateProgressFill.style.transform=`scaleX(${scale})`;
+  if(updateProgressPercent)updateProgressPercent.textContent=text;
+  if(updateProgress){updateProgress.setAttribute('aria-valuenow',String(Math.round(safe)));updateProgress.dataset.percent=String(Math.round(safe))}
+  if(otaOverlayFill)otaOverlayFill.style.transform=`scaleX(${scale})`;
+  if(otaOverlayPercent)otaOverlayPercent.textContent=text;
+}
+function renderUpdateState(detail={}){
+  const phase=String(detail.phase||'idle'),percent=Number(detail.percent||0),message=String(detail.message||''),version=String(detail.version||'');
+  const active=['checking','available','downloading','verifying','installing'].includes(phase);
+  const indeterminate=['checking','available','verifying','installing'].includes(phase)&&percent<=0;
+  if(updateStatus&&message)updateStatus.textContent=message;
+  if(latestVersion&&version)latestVersion.textContent=version.slice(0,8);
+  if(updateProgress){updateProgress.dataset.phase=phase;updateProgress.classList.toggle('indeterminate',indeterminate)}
+  if(otaOverlay){
+    otaOverlay.classList.toggle('hidden',phase==='idle');
+    otaOverlay.classList.toggle('indeterminate',indeterminate);
+    otaOverlay.classList.toggle('is-ready',phase==='ready'||phase==='upToDate');
+    otaOverlay.classList.toggle('is-error',phase==='error');
+  }
+  if(otaOverlayLabel&&message)otaOverlayLabel.textContent=message;
+  setUpdatePercent(indeterminate?0:percent);
+  if(checkUpdateButton){
+    checkUpdateButton.disabled=active;
+    checkUpdateButton.textContent=active?'جاري التحديث…':phase==='ready'?'التحديث جاهز':'تحقق من وجود تحديث';
+  }
+  if(phase==='upToDate'||phase==='ready')setUpdatePercent(100);
+  if(phase==='upToDate')setTimeout(()=>otaOverlay?.classList.add('hidden'),2300);
+  if(phase==='error')setTimeout(()=>otaOverlay?.classList.add('hidden'),4500);
+}
+window.BubbleSafariNativeUpdate=renderUpdateState;
+window.addEventListener('bubbleSafariUpdate',event=>renderUpdateState(event.detail||{}));
+
+async function readCurrentVersion(){
   let current='';
   try{const response=await fetch('./.bubble-safari-version',{cache:'no-store'});if(response.ok)current=(await response.text()).trim()}catch{}
+  if(currentVersion)currentVersion.textContent=current?current.slice(0,8):'النسخة الأساسية';
+  return current;
+}
+async function checkForUpdates(){
+  if(!checkUpdateButton||!updateStatus)return;
+  renderUpdateState({phase:'checking',percent:0,message:'جاري التحقق من التحديثات…'});
+  const current=await readCurrentVersion();
+  if(isNativeTvApp()){
+    try{
+      await fetch(`https://appassets.androidplatform.net/native/check-update?t=${Date.now()}`,{cache:'no-store'});
+      return;
+    }catch{
+      renderUpdateState({phase:'error',percent:0,message:'تعذر بدء فحص التحديث الآن.'});
+      return;
+    }
+  }
   try{
     const response=await fetch(`https://aseel90.github.io/bubble-safari-tv/updates/manifest.json?t=${Date.now()}`,{cache:'no-store'});
     if(!response.ok)throw new Error('manifest');
-    const manifest=await response.json();const latest=String(manifest.version||'').trim();
-    currentEl.textContent=current?current.slice(0,8):'النسخة الأساسية';latestEl.textContent=latest?latest.slice(0,8):'—';
-    if(current&&latest&&current===latest)status.textContent='اللعبة محدثة بالكامل.';
-    else if(latest)status.textContent='يوجد إصدار أحدث أو تحديث جاهز. أغلق اللعبة وافتحها ليتم تنزيله/تفعيله تلقائيًا.';
-    else status.textContent='لم أتمكن من قراءة رقم الإصدار الأحدث.';
-  }catch{currentEl.textContent=current?current.slice(0,8):'النسخة الأساسية';latestEl.textContent='—';status.textContent='تعذر الاتصال بخادم التحديثات الآن. اللعبة ستستمر بالعمل دون مشكلة.'}
-  button.disabled=false;
+    const manifest=await response.json(),latest=String(manifest.version||'').trim();
+    if(latestVersion)latestVersion.textContent=latest?latest.slice(0,8):'—';
+    if(current&&latest&&current===latest)renderUpdateState({phase:'upToDate',percent:100,message:'اللعبة محدثة بالكامل.',version:latest});
+    else if(latest)renderUpdateState({phase:'available',percent:0,message:'يوجد تحديث أحدث. داخل تطبيق التلفزيون سيظهر تقدم التنزيل الحقيقي.',version:latest});
+    else renderUpdateState({phase:'error',percent:0,message:'لم أتمكن من قراءة رقم الإصدار الأحدث.'});
+  }catch{
+    if(latestVersion)latestVersion.textContent='—';
+    renderUpdateState({phase:'error',percent:0,message:'تعذر الاتصال بخادم التحديثات الآن. اللعبة ستستمر بالعمل دون مشكلة.'});
+  }finally{if(checkUpdateButton)checkUpdateButton.disabled=false}
 }
 
 $('#startButton').addEventListener('click',()=>{voice.ensureAudio();voice.play('ui_start');showScreen('age')});
@@ -230,5 +274,5 @@ $('#worldButton').addEventListener('click',()=>showScreen('world'));
 $('#homeButton').addEventListener('click',()=>showScreen('home'));
 document.addEventListener('pointerdown',()=>voice.ensureAudio(),{once:true});
 
-hydrateStaticArt();applyPreferences();updateSoundUi();setWorld('jungle');showScreen('home');
+hydrateStaticArt();applyPreferences();updateSoundUi();setWorld('jungle');showScreen('home');readCurrentVersion();
 if('serviceWorker'in navigator&&location.hostname.endsWith('github.io'))window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js',{updateViaCache:'none'}).catch(()=>{}));
