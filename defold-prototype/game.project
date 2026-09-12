@@ -1,0 +1,38 @@
+[project]
+title = Bubble Safari TV - Defold Prototype
+version = 0.1.0
+
+[bootstrap]
+main_collection = /main/main.collectionc
+
+[display]
+width = 1280
+height = 720
+high_dpi = 0
+vsync = 1
+update_frequency = 60
+
+[render]
+clear_color_red = 0.015
+clear_color_green = 0.12
+clear_color_blue = 0.22
+clear_color_alpha = 1.0
+
+[input]
+game_binding = /input/game.input_bindingc
+
+[android]
+package = com.bubblesafari.tv.defold
+version_code = 1
+minimum_sdk_version = 26
+target_sdk_version = 36
+immersive_mode = 1
+
+[script]
+shared_state = 1
+
+[collection]
+max_instances = 256
+
+[physics]
+type = 2D
