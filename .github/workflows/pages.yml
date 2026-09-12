@@ -39,6 +39,7 @@ jobs:
           )
           HASH="$(sha256sum _site/updates/game-bundle.zip | awk '{print $1}')"
           SIZE="$(stat -c '%s' _site/updates/game-bundle.zip)"
+          printf '%s' "$HASH" > _site/.bubble-safari-version
           python3 - "$HASH" "$SIZE" <<'PY'
           import json, sys
           digest, size = sys.argv[1], int(sys.argv[2])

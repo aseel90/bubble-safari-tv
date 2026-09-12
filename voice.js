@@ -97,6 +97,10 @@ export function createVoiceEngine({ isMuted }) {
   function tryPlay(key) {
     if (isMuted() || !key) return Promise.resolve(false);
     stop();
+    if (speechFallback[key]) {
+      pendingVoice = null;
+      return speakFallback(key);
+    }
     activeKey = key;
     voicePlayer.src = audioFile(key);
     voicePlayer.preload = 'auto';
