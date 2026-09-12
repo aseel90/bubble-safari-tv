@@ -14,6 +14,7 @@ The prototype contains only the ocean A/B slice:
 - Leda audio resources reused from the repository audio library
 - simple settings overlay
 - internal `BS_METRIC` telemetry for frame/GC/input/question-transition diagnostics
+- Android TV manifest merge fragment with `LEANBACK_LAUNCHER` and no touchscreen requirement
 
 Android package: `com.bubblesafari.tv.defold` so it can coexist with the WebView package on the same TV.
 
@@ -22,6 +23,10 @@ Android package: `com.bubblesafari.tv.defold` so it can coexist with the WebView
 Existing repository assets remain the source of truth. `tools/sync_assets.sh` copies only the audio required by this prototype into `assets/audio/` before a build. Generated copies are ignored by Git.
 
 SVG artwork remains master/source artwork. Runtime packaging should use raster textures/atlases rather than parsing SVG during gameplay.
+
+## Android TV integration
+
+`android_tv/` is a manifest-only Defold extension. It merges TV-specific declarations into Defold's current built-in Android manifest instead of replacing the entire base manifest. This keeps the prototype compatible with Defold manifest updates while adding a Leanback launcher entry and declaring that a touchscreen is not required.
 
 ## Build
 
