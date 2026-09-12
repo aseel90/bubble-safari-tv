@@ -1,4 +1,4 @@
-export const TV_NAV_VERSION = '1.2.2';
+export const TV_NAV_VERSION = '1.3.0';
 
 export function normalizeTvKey(event) {
   const code = event.keyCode || event.which || 0;
@@ -29,13 +29,17 @@ export function createTvNavigation({ getActiveScreen, onBack }) {
     if (target) setFocus(target);
   }
 
+  function isVisibleFocusable(el) {
+    const style = getComputedStyle(el);
+    return style.display !== 'none' && style.visibility !== 'hidden' && el.offsetParent !== null;
+  }
+
   function activeFocusables() {
     const active = getActiveScreen();
     if (!active) return [];
-    return $$('[data-focusable]:not([disabled])', active).filter(el => {
-      const style = getComputedStyle(el);
-      return style.display !== 'none' && style.visibility !== 'hidden' && el.offsetParent !== null;
-    });
+    const local = $$('[data-focusable]:not([disabled])', active);
+    const globals = $$('#settingsButton[data-focusable]:not([disabled]), #soundButton[data-focusable]:not([disabled])', document);
+    return [...new Set([...local, ...globals])].filter(isVisibleFocusable);
   }
 
   function spatialNavigate(direction) {
@@ -71,7 +75,7 @@ export function createTvNavigation({ getActiveScreen, onBack }) {
     const active = getActiveScreen();
     if (!active) return;
     const current = document.activeElement;
-    if (current && current.matches?.('[data-focusable]') && active.contains(current)) return;
+    if (current && current.matches?.('[data-focusable]') && (active.contains(current) || current.matches('#settingsButton, #soundButton')) && isVisibleFocusable(current)) return;
     focusFirst(active);
   }
 
