@@ -121,30 +121,37 @@ jobs:
           sha1: stable
 
       - name: Build matching x86_64 APK for emulator
+        id: x86build
         shell: bash
         run: |
           bash ./defold-prototype/tools/sync_assets.sh
           rm -rf defold-prototype/out/smoke-x86_64
           mkdir -p defold-prototype/out/smoke-x86_64 defold-prototype/build
-          cd defold-prototype
+          echo '--- x86_64 Defold build ---' >> defold-prototype/dist/android-tv-smoke.txt
           set +e
-          java -jar "$BOB" \
-            --platform armv7-android \
-            --architectures x86_64-android \
-            --variant release \
-            --archive \
-            --bundle-format apk \
-            --bundle-output "$GITHUB_WORKSPACE/defold-prototype/out/smoke-x86_64" \
-            resolve distclean build bundle 2>&1 | tee -a "$GITHUB_WORKSPACE/defold-prototype/dist/android-tv-smoke.txt"
-          bob_status=${PIPESTATUS[0]}
+          (
+            cd defold-prototype
+            java -jar "$BOB" \
+              --platform armv7-android \
+              --architectures x86_64-android \
+              --variant release \
+              --archive \
+              --bundle-format apk \
+              --bundle-output "$GITHUB_WORKSPACE/defold-prototype/out/smoke-x86_64" \
+              resolve distclean build bundle
+          ) >> defold-prototype/dist/android-tv-smoke.txt 2>&1
+          status=$?
           set -e
-          cd "$GITHUB_WORKSPACE"
-          if [ "$bob_status" -ne 0 ]; then
-            echo "Stage: x86_64_smoke_build_failed code=$bob_status" >> defold-prototype/dist/android-tv-smoke.txt
-            exit "$bob_status"
+          echo "x86_build_exit=$status" >> defold-prototype/dist/android-tv-smoke.txt
+          if [ "$status" -ne 0 ]; then
+            echo 'Stage: x86_64_smoke_build_failed' >> defold-prototype/dist/android-tv-smoke.txt
+            exit "$status"
           fi
           apk="$(find defold-prototype/out/smoke-x86_64 -type f -name '*.apk' -print -quit)"
-          test -n "$apk"
+          if [ -z "$apk" ]; then
+            echo 'Stage: x86_64_smoke_apk_missing' >> defold-prototype/dist/android-tv-smoke.txt
+            exit 24
+          fi
           cp "$apk" defold-prototype/dist/bubble-safari-defold-smoke-x86_64.apk
           echo 'Stage: x86_64_smoke_apk_built' >> defold-prototype/dist/android-tv-smoke.txt
 
