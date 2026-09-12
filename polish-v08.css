@@ -50,13 +50,10 @@
 @media (max-height:620px){.world-card .world-art{width:64px;height:64px}.world-card strong{font-size:21px}.world-card small{font-size:12px;padding:3px 8px}.world-card.tv-focus,.world-card:focus{transform:translateY(-3px) scale(1.035)}.hud-progress{height:44px;min-width:104px;padding:0 9px}.hud-progress-track{width:84px;height:10px}.question-card{border-radius:26px}.choice-label{padding:5px 12px}.choice.tv-focus,.choice:focus{transform:translateY(-2px) scale(1.015)}}
 @media (prefers-reduced-motion:reduce){#progressFill,.choice:focus .choice-bubble,.choice.tv-focus .choice-bubble{transition:none;animation:none}}
 
-
 /* Bubble Safari TV v0.9 — performance-first polish without losing identity */
 .top-actions{display:flex;align-items:center;gap:.8vw;pointer-events:auto;direction:ltr}
 .settings-button{flex:0 0 50px;background:rgba(255,255,255,.94)!important}
 .settings-button .mini-ui-art{width:29px;height:29px}
-
-/* Avoid expensive full-surface readbacks on TV WebView. */
 .hud-pill,.icon-button,.panel,.feedback{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
 .hud-pill,.icon-button{background:rgba(255,255,255,.94)}
 .panel{background:rgba(255,255,255,.94)}
@@ -68,29 +65,22 @@
 .world-art,.choice-content,.choice-art,.world-decor .world-scene-art{filter:none!important}
 .world-art .game-art,.choice-art .game-art,.world-decor .game-art{filter:none!important}
 .screen-active .world-art{will-change:auto}
-
-/* Lighter bubble paint: one body gradient, a border, one inset depth cue, one soft shadow. */
 .choice-bubble{background:linear-gradient(145deg,var(--bubble-color,#79cee0),var(--bubble-deep,#5bb4c8))!important;border:5px solid rgba(255,255,255,.76);box-shadow:inset 0 -13px 20px rgba(28,103,127,.10),0 12px 28px rgba(36,87,71,.13);transition:transform .18s ease,box-shadow .18s ease}
 .choice-bubble::before{width:18%;height:9%;left:23%;top:16%;background:rgba(255,255,255,.72);filter:none!important;transform:rotate(-24deg)}
 .choice-bubble::after{width:7%;right:18%;bottom:18%;background:rgba(255,255,255,.28);box-shadow:none}
 .choice:focus .choice-bubble,.choice.tv-focus .choice-bubble{box-shadow:inset 0 -13px 20px rgba(28,103,127,.10),0 0 0 8px rgba(255,216,101,.88),0 14px 30px rgba(36,87,71,.17);transform:scale(1.035);animation:focusBreath 1.7s ease-in-out infinite alternate}
 .choice-label{bottom:calc(4.2% + var(--label-offset,0px));box-shadow:0 4px 12px rgba(30,73,57,.10)}
-
-/* Per-character transforms keep ears, fins and long necks inside the circular safe area. */
 .choice-content{width:74%;height:74%;filter:none!important;transition:transform .18s ease}
 .choice-art,.choice-size-art{width:min(96%,220px);height:min(96%,220px);filter:none!important;transform:translate(var(--art-x,0),var(--art-y,0)) scale(var(--art-scale,1));transform-origin:center;transition:transform .18s ease}
 .choice-art-shape{--art-scale:1;width:min(100%,234px);height:min(100%,234px)}
 .choice.tv-focus .choice-art,.choice:focus .choice-art{animation:none!important}
 #app[data-quality="full"][data-effects="on"] .choice.tv-focus .choice-content,#app[data-quality="full"][data-effects="on"] .choice:focus .choice-content{animation:choiceContentHello .82s ease-in-out infinite alternate}
 @keyframes choiceContentHello{from{transform:translateY(0) scale(1)}to{transform:translateY(-3px) scale(1.015)}}
-
-/* Balanced retains the signature bubble breathing but drops secondary continuous art motion. */
 #app[data-quality="balanced"] .world-card.tv-focus .world-art,#app[data-quality="balanced"] .world-card:focus .world-art{animation:none!important}
 #app[data-quality="balanced"] .mascot-art .game-art{filter:none!important}
 #app[data-effects="off"] .choice:focus .choice-bubble,#app[data-effects="off"] .choice.tv-focus .choice-bubble,#app[data-effects="off"] .mascot-art,#app[data-effects="off"] .mini-bubble,#app[data-effects="off"] .world-card.tv-focus .world-art,#app[data-effects="off"] .world-card:focus .world-art{animation:none!important}
 #app[data-effects="off"] .screen-active{animation:none}
 
-/* Settings: 10-foot UI, remote first. */
 .settings-panel{width:min(980px,84vw);padding:3.2vh 4vw 3.6vh}
 .settings-heading h2{font-size:clamp(34px,3.4vw,54px)}
 .settings-heading p{margin-bottom:2vh}
@@ -103,9 +93,7 @@
 .quality-card{align-items:center}.quality-options{display:flex;gap:9px;direction:rtl;flex-wrap:wrap;justify-content:flex-start}.quality-button{min-width:112px}
 .update-card{align-items:center}.update-copy{display:flex;flex-direction:column;gap:4px;flex:1}.version-line{font-size:13px;color:#6a8579;font-weight:700;margin-top:2px;direction:rtl}.version-line b{color:#315b50}.update-button{width:auto!important;min-width:210px;margin:0!important;padding:0 18px}
 .setting-toggle:focus,.setting-toggle.tv-focus,.quality-button:focus,.quality-button.tv-focus,.update-button:focus,.update-button.tv-focus{transform:scale(1.045);box-shadow:0 0 0 6px rgba(255,216,101,.75)}
-
 @media (max-height:650px){.settings-panel{padding:2vh 3vw}.settings-heading p{margin-bottom:1vh}.settings-grid{gap:9px}.setting-card{min-height:76px;padding:10px 14px}.setting-copy strong,.update-copy strong{font-size:18px}.setting-copy small,.update-copy small{font-size:12px}.setting-toggle,.quality-button{height:43px;min-width:90px}.quality-button{min-width:98px}.update-button{height:45px!important;min-width:190px}.version-line{font-size:11px}}
-
 
 /* Bubble Safari v0.9 circular TV choice geometry: keep art inside the bubble without clipping character identity. */
 .choice{--choice-bubble-h:82%;--choice-art-h:64%;--choice-center-y:40%}
@@ -121,3 +109,15 @@
 @keyframes bubblePopCentered{0%{transform:translate(-50%,-50%) scale(1);opacity:1}50%{transform:translate(-50%,-50%) scale(1.1);opacity:1}100%{transform:translate(-50%,-50%) scale(.1);opacity:0}}
 #app[data-effects="off"] .choice:focus .choice-bubble,#app[data-effects="off"] .choice.tv-focus .choice-bubble{animation:none!important;transform:translate(-50%,-50%) scale(1.025)}
 @media (max-height:620px){.choice{--choice-bubble-h:78%;--choice-art-h:60%;--choice-center-y:39%}.choice[data-size-visual="small"]{--choice-bubble-h:62%;--choice-art-h:48%}.choice[data-size-visual="medium"]{--choice-bubble-h:71%;--choice-art-h:55%}.choice[data-size-visual="big"]{--choice-bubble-h:84%;--choice-art-h:65%;--choice-center-y:38%}}
+
+/* v0.9 polish: real OTA progress + transient feedback safety */
+.update-progress{display:flex;align-items:center;gap:10px;margin-top:8px;min-height:18px;direction:ltr}
+.update-progress-track,.ota-overlay-track{display:block;position:relative;overflow:hidden;border-radius:999px;background:#dceee5;box-shadow:inset 0 1px 2px rgba(39,90,69,.12)}
+.update-progress-track{width:min(320px,28vw);height:10px}.update-progress b{min-width:38px;font-size:12px;color:#53776a;font-variant-numeric:tabular-nums}
+#updateProgressFill,#otaOverlayFill{display:block;width:100%;height:100%;border-radius:inherit;background:linear-gradient(90deg,#62c783,#67c6e9,#ffd768);transform:scaleX(0);transform-origin:left center;transition:transform .18s linear}
+.update-progress.indeterminate #updateProgressFill,.ota-overlay.indeterminate #otaOverlayFill{animation:otaIndeterminate 1.05s ease-in-out infinite;transform-origin:center}
+@keyframes otaIndeterminate{0%{transform:translateX(-72%) scaleX(.24)}50%{transform:translateX(0) scaleX(.48)}100%{transform:translateX(72%) scaleX(.24)}}
+.ota-overlay{position:fixed;left:50%;bottom:max(24px,4vh);transform:translateX(-50%);z-index:1200;width:min(620px,82vw);padding:14px 17px;border-radius:20px;background:#fffdf6;border:2px solid rgba(89,151,119,.18);box-shadow:0 16px 42px rgba(31,73,57,.22);direction:rtl;transition:opacity .18s ease,transform .18s ease}
+.ota-overlay.hidden{display:none}.ota-overlay-head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:9px;color:#315b50}.ota-overlay-head strong{font-size:16px}.ota-overlay-head b{font-size:14px;min-width:40px;text-align:left;font-variant-numeric:tabular-nums}.ota-overlay-track{height:11px}.ota-overlay.is-ready{border-color:rgba(87,178,111,.38)}.ota-overlay.is-error{border-color:rgba(222,102,92,.38)}.ota-overlay.is-error #otaOverlayFill{background:#df7369}
+.feedback{pointer-events:none}.feedback-card{will-change:auto}.feedback.show .feedback-card{will-change:transform,opacity}
+@media(max-height:650px){.update-progress-track{width:min(250px,25vw)}.ota-overlay{bottom:18px;padding:11px 14px}.ota-overlay-head strong{font-size:14px}}
