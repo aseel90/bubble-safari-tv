@@ -2,6 +2,8 @@
 
 This directory is an isolated native 2D prototype. It does not replace or restructure the existing WebView application.
 
+Project-level decisions, current APK behavior, known gaps, and the Go/No-Go plan are documented in [`../ROADMAP.md`](../ROADMAP.md).
+
 ## Scope
 
 The prototype contains only the ocean A/B slice:
@@ -17,6 +19,26 @@ The prototype contains only the ocean A/B slice:
 - Android TV manifest merge fragment with `LEANBACK_LAUNCHER` and no touchscreen requirement
 
 Android package: `com.bubblesafari.tv.defold` so it can coexist with the WebView package on the same TV.
+
+## Current APK
+
+A real APK is produced by CI and published to:
+
+`dist/bubble-safari-defold-prototype.apk`
+
+Current SHA-256:
+
+`8ba34a78c1aca0f4dd8d28e33cffb06c43324570acbc4b576cd373d44e476ad3`
+
+The APK build is validated. Xiaomi TV Stick runtime/performance validation is intentionally deferred.
+
+## What the current runtime actually does
+
+The current build is not a full game port. It boots directly into the native ocean prototype with three looping questions: fish, big size, and blue color.
+
+Correct answers show the native success overlay, confetti, and `feedback_welldone` audio. Wrong answers animate the selected bubble. Back opens a minimal Sound ON/OFF overlay.
+
+Audio resources for question/choice prompts are bundled, but the current GUI script does not yet trigger those prompt/choice sounds. Only the success sound is currently wired into gameplay logic.
 
 ## Asset policy
 
@@ -51,7 +73,7 @@ The build also writes JSON and HTML build reports. These reports are intended to
 
 ## Benchmark stage
 
-Device testing is intentionally kept outside this directory. The repository-level runner is:
+Device testing is intentionally deferred. The repository-level runner is already prepared for the later Xiaomi stage:
 
 ```bash
 bash ./benchmark_tv.sh webview
