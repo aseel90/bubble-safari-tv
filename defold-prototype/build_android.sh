@@ -4,7 +4,7 @@ set -euo pipefail
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BOB_JAR="${BOB_JAR:-${BOB:-}}"
 JAVA_BIN="${JAVA_BIN:-java}"
-VARIANT="${VARIANT:-debug}"
+VARIANT="${VARIANT:-release}"
 OUT_DIR="${OUT_DIR:-$PROJECT_DIR/out/android}"
 ARCHITECTURES="${ARCHITECTURES:-armv7-android,arm64-android}"
 

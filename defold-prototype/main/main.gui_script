@@ -1,4 +1,25 @@
-local telemetry = require "main.telemetry"
+local telemetry
+do
+    local ok, module_or_error = pcall(require, "main.telemetry")
+    if ok then
+        telemetry = module_or_error
+    else
+        print("BS_TELEMETRY disabled require_error=" .. tostring(module_or_error))
+    end
+end
+
+local function telemetry_call(self, name, ...)
+    if not telemetry or not self.telemetry then return nil end
+    local fn = telemetry[name]
+    if not fn then return nil end
+    local ok, result = pcall(fn, self.telemetry, ...)
+    if not ok then
+        print("BS_TELEMETRY disabled runtime_error=" .. tostring(result))
+        self.telemetry = nil
+        return nil
+    end
+    return result
+end
 
 local W, H = 1280, 720
 local BUBBLE_X = { 310, 640, 970 }
@@ -48,7 +69,7 @@ local function set_focus(self, index)
     end
     if old ~= self.focus then
         metric("focus_changed", { from = old or 0, to = self.focus, q = self.question_index })
-        telemetry.record_focus(self.telemetry)
+        telemetry_call(self, "record_focus")
     end
 end
 
@@ -114,7 +135,7 @@ local function render_question(self)
     set_focus(self, 1)
     hide_feedback(self)
     metric("question_visible", { id = q.id, index = self.question_index, t_ms = math.floor(now_ms()) })
-    telemetry.record_question(self.telemetry)
+    telemetry_call(self, "record_question")
 end
 
 local function next_question(self)
@@ -123,14 +144,14 @@ local function next_question(self)
     render_question(self)
     local transition_ms = now_ms() - t0
     metric("question_transition", { ms = string.format("%.3f", transition_ms), index = self.question_index })
-    telemetry.record_transition(self.telemetry, transition_ms)
+    telemetry_call(self, "record_transition", transition_ms)
 end
 
 local function answer(self)
     local q = self.questions[self.question_index]
     local correct = (self.focus - 1) == q.correct
     metric("answer", { q = q.id, choice = self.focus, correct = correct and 1 or 0, t_ms = math.floor(now_ms()) })
-    telemetry.record_answer(self.telemetry, correct)
+    telemetry_call(self, "record_answer", correct)
     if correct then
         show_feedback(self)
         timer.delay(0.85, false, function() next_question(self) end)
@@ -151,13 +172,13 @@ local function set_settings(self, visible)
         gui.set_text(self.settings_sound, "Sound: " .. (self.sound_enabled and "ON" or "OFF") .. "   [OK to toggle]")
     end
     metric("settings", { open = visible and 1 or 0 })
-    if visible then telemetry.record_settings_open(self.telemetry) end
+    if visible then telemetry_call(self, "record_settings_open") end
 end
 
 function init(self)
     msg.post(".", "acquire_input_focus")
     self.started_ms = now_ms()
-    self.telemetry = telemetry.new()
+    self.telemetry = nil
     self.frame_count = 0
     self.slow_frames = 0
     self.max_dt_ms = 0
@@ -168,10 +189,26 @@ function init(self)
     self.settings_open = false
     self.confetti = {}
 
+    local fallback_questions = {
+        { id = "animal_fish", type = "animal", prompt = "Choose the fish", correct = 0, choices = {
+            { label = "Fish" }, { label = "Turtle" }, { label = "Crab" } } },
+        { id = "size_big", type = "size", prompt = "Choose the big one", correct = 1, choices = {
+            { label = "Small" }, { label = "Big" }, { label = "Small" } } },
+        { id = "color_blue", type = "color", prompt = "Choose blue", correct = 2, choices = {
+            { label = "Yellow", hex = "#F4D03F" }, { label = "Red", hex = "#E74C3C" }, { label = "Blue", hex = "#3498DB" } } },
+    }
+    self.questions = fallback_questions
     local raw = sys.load_resource("/data/ocean_questions.json")
-    assert(raw, "Missing /data/ocean_questions.json")
-    local data = json.decode(raw)
-    self.questions = assert(data.questions, "Invalid question JSON")
+    if raw then
+        local ok, data_or_error = pcall(json.decode, raw)
+        if ok and data_or_error and data_or_error.questions then
+            self.questions = data_or_error.questions
+        else
+            print("BS_STARTUP question_json_fallback error=" .. tostring(data_or_error))
+        end
+    else
+        print("BS_STARTUP question_json_fallback missing_resource=1")
+    end
 
     self.title = new_text("BUBBLE SAFARI - OCEAN NATIVE", W / 2, 650, 1.25)
     self.prompt = new_text("", W / 2, 545, 1.55)
@@ -202,16 +239,27 @@ function init(self)
     set_settings(self, false)
     render_question(self)
     local startup_ms = now_ms() - self.started_ms
-    telemetry.set_startup(self.telemetry, startup_ms)
     metric("native_ready", { startup_internal_ms = string.format("%.3f", startup_ms) })
-    telemetry.flush_pending(self.telemetry)
-    timer.delay(1.0, false, function() telemetry.send(self.telemetry, "session_start") end)
-    self.telemetry_timer = timer.delay(15.0, true, function() telemetry.send(self.telemetry, "periodic") end)
+
+    -- Telemetry must never be able to prevent the game UI from starting.
+    -- Initialise it only after the first question is already visible and disable it on any error.
+    if telemetry and telemetry.new then
+        local ok, t_or_error = pcall(telemetry.new)
+        if ok then
+            self.telemetry = t_or_error
+            telemetry_call(self, "set_startup", startup_ms)
+            telemetry_call(self, "flush_pending")
+            timer.delay(2.0, false, function() telemetry_call(self, "send", "session_start") end)
+            self.telemetry_timer = timer.delay(15.0, true, function() telemetry_call(self, "send", "periodic") end)
+        else
+            print("BS_TELEMETRY disabled init_error=" .. tostring(t_or_error))
+        end
+    end
 end
 
 function update(self, dt)
     local dt_ms = dt * 1000
-    telemetry.record_frame(self.telemetry, dt_ms)
+    telemetry_call(self, "record_frame", dt_ms)
     self.frame_count = self.frame_count + 1
     if dt_ms > self.max_dt_ms then self.max_dt_ms = dt_ms end
     if dt_ms > 25 then
@@ -240,7 +288,7 @@ function on_input(self, action_id, action)
     if action_id == hash("back") then
         set_settings(self, not self.settings_open)
         local handled_ms = now_ms() - input_t
-        telemetry.record_input(self.telemetry, handled_ms)
+        telemetry_call(self, "record_input", handled_ms)
         metric("input", { key = "back", handled_ms = string.format("%.3f", handled_ms) })
         return true
     end
@@ -251,7 +299,7 @@ function on_input(self, action_id, action)
             gui.set_text(self.settings_sound, "Sound: " .. (self.sound_enabled and "ON" or "OFF") .. "   [OK to toggle]")
             metric("settings_sound", { enabled = self.sound_enabled and 1 or 0 })
             local handled_ms = now_ms() - input_t
-            telemetry.record_input(self.telemetry, handled_ms)
+            telemetry_call(self, "record_input", handled_ms)
             metric("input", { key = "settings_ok", handled_ms = string.format("%.3f", handled_ms) })
             return true
         end
@@ -269,14 +317,14 @@ function on_input(self, action_id, action)
     end
 
     local handled_ms = now_ms() - input_t
-    telemetry.record_input(self.telemetry, handled_ms)
+    telemetry_call(self, "record_input", handled_ms)
     metric("input", { key = tostring(action_id), handled_ms = string.format("%.3f", handled_ms) })
     return true
 end
 
 function final(self)
     if self.telemetry_timer then timer.cancel(self.telemetry_timer) end
-    telemetry.final(self.telemetry)
+    telemetry_call(self, "final")
     metric("session_end", { frames = self.frame_count })
     msg.post(".", "release_input_focus")
 end
