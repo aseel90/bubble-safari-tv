@@ -19,10 +19,16 @@ mkdir -p "$OUT"
 command -v "$ADB" >/dev/null || { echo "adb not found" >&2; exit 3; }
 "$ADB" get-state >/dev/null
 
+ACTIVITY="$($ADB shell cmd package resolve-activity --brief "$PACKAGE" 2>/dev/null | tr -d '\r' | tail -n 1)"
+if [[ -z "$ACTIVITY" || "$ACTIVITY" != */* ]]; then
+  echo "Unable to resolve launcher activity for $PACKAGE. Is it installed?" >&2
+  exit 4
+fi
+
 DEVICE="$($ADB shell getprop ro.product.model | tr -d '\r')"
 SDK="$($ADB shell getprop ro.build.version.sdk | tr -d '\r')"
 REFRESH="$($ADB shell dumpsys display 2>/dev/null | grep -m1 -Eo 'refreshRate=[0-9.]+' | cut -d= -f2 || true)"
-printf 'mode=%s\npackage=%s\ndevice=%s\nsdk=%s\nrefresh_hz=%s\nruns=%s\n' "$MODE" "$PACKAGE" "$DEVICE" "$SDK" "${REFRESH:-unknown}" "$RUNS" > "$OUT/device.txt"
+printf 'mode=%s\npackage=%s\nactivity=%s\ndevice=%s\nsdk=%s\nrefresh_hz=%s\nruns=%s\n' "$MODE" "$PACKAGE" "$ACTIVITY" "$DEVICE" "$SDK" "${REFRESH:-unknown}" "$RUNS" > "$OUT/device.txt"
 
 run_scenario() {
   local dir="$1"
@@ -30,7 +36,6 @@ run_scenario() {
   "$ADB" shell dumpsys gfxinfo "$PACKAGE" reset >/dev/null 2>&1 || true
   "$ADB" logcat -c || true
 
-  # Same deterministic remote sequence for both engines.
   sleep 1
   "$ADB" shell input keyevent KEYCODE_DPAD_RIGHT
   sleep .35
@@ -77,14 +82,15 @@ for kind in cold warm; do
     echo "[$MODE] $kind run $run/$RUNS"
 
     if [[ "$kind" == "cold" ]]; then
+      # Cold = app process does not exist before launch. App data is preserved.
       "$ADB" shell am force-stop "$PACKAGE" || true
-      "$ADB" shell pm clear "$PACKAGE" > "$DIR/pm-clear.txt" 2>&1 || true
     else
-      "$ADB" shell am force-stop "$PACKAGE" || true
+      # Warm = keep the process resident, move to launcher, then resume Activity.
+      "$ADB" shell input keyevent KEYCODE_HOME || true
+      sleep .6
     fi
 
-    # am start -W supplies ThisTime/TotalTime/WaitTime startup metrics.
-    "$ADB" shell am start -W -S "$PACKAGE" > "$DIR/startup.txt" 2>&1 || true
+    "$ADB" shell am start -W -n "$ACTIVITY" > "$DIR/startup.txt" 2>&1 || true
     run_scenario "$DIR"
     python3 "$ROOT/benchmark/parse_run.py" "$DIR" "$PACKAGE" > "$DIR/summary.json"
   done
