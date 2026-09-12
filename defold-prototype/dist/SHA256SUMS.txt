@@ -1,1 +1,1 @@
-6d5636f1986369ad5f81de187f30cfe4bd5d4013597d96efdabe154ff685cab8  defold-prototype/dist/bubble-safari-defold-prototype.apk
+0e4fc132b3b1e9bcd26a0decff1b7e758dbb5034e0fe28c5898bec7a021aa998  defold-prototype/dist/bubble-safari-defold-prototype.apk
