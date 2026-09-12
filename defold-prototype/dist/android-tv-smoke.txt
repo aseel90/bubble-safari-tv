@@ -1,8 +1,9 @@
 Bubble Safari Android runtime + TV launcher smoke
-UTC: 2026-09-12T19:22:08Z
+UTC: 2026-09-12T19:22:37Z
 Runner: ubuntu-latest x86_64, Android API 35
 Stage: checkout_ok
 Stage: published_arm_apk_found
+--- x86_64 Defold build ---
 WARNING: A restricted method in java.lang.System has been called
 WARNING: java.lang.System::load has been called by com.dynamo.bob.pipeline.ModelImporterJni in an unnamed module (file:/home/runner/work/bubble-safari-tv/bubble-safari-tv/.defold/bob.jar)
 WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
@@ -12,5 +13,6 @@ WARNING: Restricted methods will be blocked in a future release unless native ac
  20% Downloading 0 archives
 ERROR! x86_64-android is not a supported architecture for armv7-android platform. Available architectures: arm64-android, armv7-android
 100% Downloading 0 archives
-Stage: x86_64_smoke_build_failed code=1
+x86_build_exit=1
+Stage: x86_64_smoke_build_failed
 Stage: failed_before_smoke_script
