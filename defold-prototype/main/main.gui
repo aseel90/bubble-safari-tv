@@ -3,6 +3,22 @@ fonts {
   name: "system_font"
   font: "/builtins/fonts/default.font"
 }
+textures {
+  name: "bg_art"
+  texture: "/generated/ocean_bg.tilesource"
+}
+textures {
+  name: "objects_art"
+  texture: "/generated/ui_objects.tilesource"
+}
+textures {
+  name: "text_art"
+  texture: "/generated/ui_text.tilesource"
+}
+textures {
+  name: "labels_art"
+  texture: "/generated/ui_labels.tilesource"
+}
 background_color {
   x: 0.015
   y: 0.12
@@ -10,36 +26,11 @@ background_color {
   w: 1.0
 }
 nodes {
-  position {
-    x: 640.0
-    y: 360.0
-    z: 1.0
-    w: 1.0
-  }
-  rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 1.0
-  }
-  scale {
-    x: 1.0
-    y: 1.0
-    z: 1.0
-    w: 1.0
-  }
-  size {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 1.0
-  }
-  color {
-    x: 1.0
-    y: 1.0
-    z: 1.0
-    w: 1.0
-  }
+  position { x: 640.0 y: 360.0 z: 1.0 w: 1.0 }
+  rotation { x: 0.0 y: 0.0 z: 0.0 w: 1.0 }
+  scale { x: 1.0 y: 1.0 z: 1.0 w: 1.0 }
+  size { x: 0.0 y: 0.0 z: 0.0 w: 1.0 }
+  color { x: 1.0 y: 1.0 z: 1.0 w: 1.0 }
   type: TYPE_TEXT
   blend_mode: BLEND_MODE_ALPHA
   text: "BUBBLE SAFARI LOADING..."
@@ -48,18 +39,8 @@ nodes {
   xanchor: XANCHOR_NONE
   yanchor: YANCHOR_NONE
   pivot: PIVOT_CENTER
-  outline {
-    x: 1.0
-    y: 1.0
-    z: 1.0
-    w: 1.0
-  }
-  shadow {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 1.0
-  }
+  outline { x: 1.0 y: 1.0 z: 1.0 w: 1.0 }
+  shadow { x: 0.0 y: 0.0 z: 0.0 w: 1.0 }
   adjust_mode: ADJUST_MODE_FIT
   line_break: false
   layer: ""

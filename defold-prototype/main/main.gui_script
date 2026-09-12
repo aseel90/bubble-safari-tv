@@ -4,342 +4,134 @@ do
     if ok then telemetry = module_or_error else print("BS_TELEMETRY disabled require_error=" .. tostring(module_or_error)) end
 end
 
-local assets = require "main.visual_assets"
-
 local function telemetry_call(self, name, ...)
     if not telemetry or not self.telemetry then return nil end
     local fn = telemetry[name]
     if not fn then return nil end
     local ok, result = pcall(fn, self.telemetry, ...)
-    if not ok then
-        print("BS_TELEMETRY disabled runtime_error=" .. tostring(result))
-        self.telemetry = nil
-        return nil
-    end
+    if not ok then print("BS_TELEMETRY disabled runtime_error=" .. tostring(result)); self.telemetry = nil; return nil end
     return result
 end
 
 local W, H = 1280, 720
 local CARD_X = { 310, 640, 970 }
 local CARD_Y = 333
-local WHITE = vmath.vector4(1, 1, 1, 1)
-local DIM = vmath.vector4(0.015, 0.045, 0.08, 0.95)
-local SUCCESS = vmath.vector4(0.035, 0.42, 0.30, 0.97)
+local WHITE = vmath.vector4(1,1,1,1)
+local DIM = vmath.vector4(.015,.045,.08,.95)
+local SUCCESS = vmath.vector4(.035,.42,.30,.97)
 
-local function now_ms()
-    return socket and socket.gettime and socket.gettime() * 1000 or os.clock() * 1000
-end
-
+local function now_ms() return socket and socket.gettime and socket.gettime()*1000 or os.clock()*1000 end
 local function metric(name, fields)
-    local parts = { "BS_METRIC", name }
-    if fields then for k, v in pairs(fields) do parts[#parts + 1] = tostring(k) .. "=" .. tostring(v) end end
-    print(table.concat(parts, " "))
+    local parts={"BS_METRIC",name}
+    if fields then for k,v in pairs(fields) do parts[#parts+1]=tostring(k).."="..tostring(v) end end
+    print(table.concat(parts," "))
 end
 
-local function new_text(text, x, y, scale, z)
-    local node = gui.new_text_node(vmath.vector3(x, y, z or 6), text)
-    gui.set_font(node, "system_font")
-    gui.set_color(node, WHITE)
-    gui.set_scale(node, vmath.vector3(scale or 1.0, scale or 1.0, 1))
-    return node
+local function new_text(text,x,y,scale,z)
+    local n=gui.new_text_node(vmath.vector3(x,y,z or 6),text)
+    gui.set_font(n,"system_font"); gui.set_color(n,WHITE); gui.set_scale(n,vmath.vector3(scale or 1,scale or 1,1)); return n
 end
-
-local function new_image(name, x, y, width, height, z)
-    local tex = assets.get(name)
-    local node = gui.new_box_node(vmath.vector3(x, y, z or 1), vmath.vector3(width or tex.width, height or tex.height, 0))
-    gui.set_texture(node, tex.id)
-    gui.set_color(node, WHITE)
-    return node
+local function new_art(texture,animation,x,y,w,h,z)
+    local n=gui.new_box_node(vmath.vector3(x,y,z or 1),vmath.vector3(w,h,0))
+    gui.set_texture(n,texture); gui.play_flipbook(n,animation); gui.set_color(n,WHITE); return n
 end
-
-local function set_image(node, name, width, height)
-    local tex = assets.get(name)
-    gui.set_texture(node, tex.id)
-    gui.set_size(node, vmath.vector3(width or tex.width, height or tex.height, 0))
-    gui.set_color(node, WHITE)
+local function set_art(n,texture,animation,w,h)
+    gui.set_texture(n,texture); gui.play_flipbook(n,animation); if w and h then gui.set_size(n,vmath.vector3(w,h,0)) end; gui.set_color(n,WHITE)
 end
-
-local function play_sound_component(component)
-    if component then pcall(function() msg.post("/main#" .. component, "play_sound") end) end
-end
+local function play_sound_component(component) if component then pcall(function() msg.post("/main#"..component,"play_sound") end) end end
 
 local function clear_confetti(self)
-    for _, node in ipairs(self.confetti) do if node then gui.delete_node(node) end end
-    self.confetti = {}
+    for _,n in ipairs(self.confetti) do if n then gui.delete_node(n) end end
+    self.confetti={}
 end
-
 local function spawn_confetti(self)
     clear_confetti(self)
-    local colors = { vmath.vector4(1,.35,.32,1), vmath.vector4(.35,1,.55,1), vmath.vector4(.35,.75,1,1), vmath.vector4(1,.84,.24,1) }
-    for i = 1, 22 do
-        local x = 155 + ((i * 149) % 970)
-        local y = 645 + ((i * 47) % 55)
-        local n = gui.new_box_node(vmath.vector3(x, y, 12), vmath.vector3(10 + (i % 3) * 4, 18, 0))
-        gui.set_color(n, colors[(i % #colors) + 1])
-        self.confetti[#self.confetti + 1] = n
-        local tx = x + ((i % 2 == 0) and 62 or -62)
-        local ty = 125 + ((i * 31) % 170)
-        gui.animate(n, gui.PROP_POSITION, vmath.vector3(tx, ty, 12), gui.EASING_INQUAD, .72 + (i % 5) * .04, 0, function() gui.set_enabled(n, false) end)
-        gui.animate(n, gui.PROP_EULER, vmath.vector3(0, 0, i * 62), gui.EASING_LINEAR, .82)
+    local colors={vmath.vector4(1,.35,.32,1),vmath.vector4(.35,1,.55,1),vmath.vector4(.35,.75,1,1),vmath.vector4(1,.84,.24,1)}
+    for i=1,22 do
+        local x=155+((i*149)%970); local y=645+((i*47)%55)
+        local n=gui.new_box_node(vmath.vector3(x,y,12),vmath.vector3(10+(i%3)*4,18,0)); gui.set_color(n,colors[(i%#colors)+1]); self.confetti[#self.confetti+1]=n
+        local tx=x+((i%2==0) and 62 or -62); local ty=125+((i*31)%170)
+        gui.animate(n,gui.PROP_POSITION,vmath.vector3(tx,ty,12),gui.EASING_INQUAD,.72+(i%5)*.04,0,function() gui.set_enabled(n,false) end)
+        gui.animate(n,gui.PROP_EULER,vmath.vector3(0,0,i*62),gui.EASING_LINEAR,.82)
     end
 end
-
-local function hide_feedback(self)
-    gui.set_enabled(self.feedback_panel, false)
-    gui.set_enabled(self.success_image, false)
-    gui.set_enabled(self.tryagain_image, false)
-end
-
+local function hide_feedback(self) gui.set_enabled(self.feedback_panel,false); gui.set_enabled(self.success_image,false); gui.set_enabled(self.tryagain_image,false) end
 local function show_success(self)
-    gui.set_enabled(self.feedback_panel, true)
-    gui.set_enabled(self.success_image, true)
-    gui.set_scale(self.feedback_panel, vmath.vector3(.72,.72,1))
-    gui.set_scale(self.success_image, vmath.vector3(.72,.72,1))
-    gui.animate(self.feedback_panel, gui.PROP_SCALE, vmath.vector3(1,1,1), gui.EASING_OUTBACK, .20)
-    gui.animate(self.success_image, gui.PROP_SCALE, vmath.vector3(1,1,1), gui.EASING_OUTBACK, .23)
-    spawn_confetti(self)
-    if self.sound_enabled then play_sound_component("well_done") end
+    gui.set_enabled(self.feedback_panel,true); gui.set_enabled(self.success_image,true)
+    gui.set_scale(self.feedback_panel,vmath.vector3(.72,.72,1)); gui.set_scale(self.success_image,vmath.vector3(.72,.72,1))
+    gui.animate(self.feedback_panel,gui.PROP_SCALE,vmath.vector3(1,1,1),gui.EASING_OUTBACK,.20); gui.animate(self.success_image,gui.PROP_SCALE,vmath.vector3(1,1,1),gui.EASING_OUTBACK,.23)
+    spawn_confetti(self); if self.sound_enabled then play_sound_component("well_done") end
 end
-
 local function show_tryagain(self)
-    gui.set_enabled(self.tryagain_image, true)
-    gui.set_scale(self.tryagain_image, vmath.vector3(.86,.86,1))
-    gui.animate(self.tryagain_image, gui.PROP_SCALE, vmath.vector3(1,1,1), gui.EASING_OUTBACK, .15)
+    gui.set_enabled(self.tryagain_image,true); gui.set_scale(self.tryagain_image,vmath.vector3(.86,.86,1)); gui.animate(self.tryagain_image,gui.PROP_SCALE,vmath.vector3(1,1,1),gui.EASING_OUTBACK,.15)
     if self.tryagain_timer then timer.cancel(self.tryagain_timer) end
-    self.tryagain_timer = timer.delay(.65, false, function() if self.tryagain_image then gui.set_enabled(self.tryagain_image, false) end end)
+    self.tryagain_timer=timer.delay(.65,false,function() if self.tryagain_image then gui.set_enabled(self.tryagain_image,false) end end)
 end
-
-local function label_asset(choice)
-    local id = choice.id or ""
-    if id == "small_2" then id = "small" end
-    return "label_" .. id
-end
-
+local function label_animation(choice) local id=choice.id or ""; if id=="small_2" then id="small" end; return "label_"..id end
 local function play_focus_audio(self)
     if not self.sound_enabled then return end
-    local q = self.questions and self.questions[self.question_index]
-    local c = q and q.choices and q.choices[self.focus]
+    local q=self.questions and self.questions[self.question_index]; local c=q and q.choices and q.choices[self.focus]
     if c and c.audio then play_sound_component(c.audio) end
 end
-
-local function set_focus(self, index, speak)
-    local old = self.focus
-    self.focus = math.max(1, math.min(3, index))
-    gui.cancel_animation(self.focus_ring, gui.PROP_POSITION)
-    gui.animate(self.focus_ring, gui.PROP_POSITION, vmath.vector3(CARD_X[self.focus], CARD_Y, 7), gui.EASING_OUTBACK, .13)
-    for i = 1, 3 do
-        local target = (i == self.focus) and vmath.vector3(1.035,1.035,1) or vmath.vector3(1,1,1)
-        gui.cancel_animation(self.cards[i], gui.PROP_SCALE)
-        gui.animate(self.cards[i], gui.PROP_SCALE, target, gui.EASING_OUTQUAD, .10)
-    end
-    if old ~= self.focus then
-        metric("focus_changed", { from = old or 0, to = self.focus, q = self.question_index })
-        telemetry_call(self, "record_focus")
-        if speak ~= false then play_focus_audio(self) end
-    end
+local function set_focus(self,index,speak)
+    local old=self.focus; self.focus=math.max(1,math.min(3,index))
+    gui.cancel_animation(self.focus_ring,gui.PROP_POSITION); gui.animate(self.focus_ring,gui.PROP_POSITION,vmath.vector3(CARD_X[self.focus],CARD_Y,7),gui.EASING_OUTBACK,.13)
+    for i=1,3 do local target=(i==self.focus) and vmath.vector3(1.035,1.035,1) or vmath.vector3(1,1,1); gui.cancel_animation(self.cards[i],gui.PROP_SCALE); gui.animate(self.cards[i],gui.PROP_SCALE,target,gui.EASING_OUTQUAD,.10) end
+    if old~=self.focus then metric("focus_changed",{from=old or 0,to=self.focus,q=self.question_index}); telemetry_call(self,"record_focus"); if speak~=false then play_focus_audio(self) end end
 end
-
 local function render_question(self)
-    local q = self.questions[self.question_index]
-    set_image(self.prompt, "prompt" .. tostring(self.question_index), 560, 88)
-    gui.set_text(self.progress, string.format("%d / %d", self.question_index, #self.questions))
-    for i = 1, 3 do
-        local choice = q.choices[i]
-        set_image(self.labels[i], label_asset(choice), 230, 64)
-        gui.set_position(self.labels[i], vmath.vector3(CARD_X[i], 240, 5))
-        if q.type == "animal" then
-            set_image(self.choice_images[i], choice.id, 220, 220)
-            gui.set_position(self.choice_images[i], vmath.vector3(CARD_X[i], 355, 4))
-        elseif q.type == "size" then
-            local size = (i == 2) and 225 or 145
-            set_image(self.choice_images[i], "fish", size, size)
-            gui.set_position(self.choice_images[i], vmath.vector3(CARD_X[i], 355, 4))
-        elseif q.type == "color" then
-            set_image(self.choice_images[i], "swatch_" .. choice.id, 176, 176)
-            gui.set_position(self.choice_images[i], vmath.vector3(CARD_X[i], 360, 4))
-        end
+    local q=self.questions[self.question_index]; set_art(self.prompt,"text_art","prompt"..tostring(self.question_index),640,160); gui.set_text(self.progress,string.format("%d / %d",self.question_index,#self.questions))
+    for i=1,3 do
+        local choice=q.choices[i]; set_art(self.labels[i],"labels_art",label_animation(choice),260,80); gui.set_position(self.labels[i],vmath.vector3(CARD_X[i],240,5)); gui.set_scale(self.choice_images[i],vmath.vector3(1,1,1))
+        if q.type=="animal" then set_art(self.choice_images[i],"objects_art",choice.id,360,360)
+        elseif q.type=="size" then set_art(self.choice_images[i],"objects_art","fish",360,360); local s=(i==2) and 1 or .65; gui.set_scale(self.choice_images[i],vmath.vector3(s,s,1))
+        elseif q.type=="color" then set_art(self.choice_images[i],"objects_art","swatch_"..choice.id,360,360) end
+        gui.set_position(self.choice_images[i],vmath.vector3(CARD_X[i],355,4))
     end
-    self.focus = 1
-    gui.set_position(self.focus_ring, vmath.vector3(CARD_X[1], CARD_Y, 7))
-    set_focus(self, 1, false)
-    hide_feedback(self)
-    clear_confetti(self)
-    metric("question_visible", { id = q.id, index = self.question_index, t_ms = math.floor(now_ms()) })
-    telemetry_call(self, "record_question")
-    timer.delay(.12, false, function() play_focus_audio(self) end)
+    self.focus=1; gui.set_position(self.focus_ring,vmath.vector3(CARD_X[1],CARD_Y,7)); set_focus(self,1,false); hide_feedback(self); clear_confetti(self)
+    metric("question_visible",{id=q.id,index=self.question_index,t_ms=math.floor(now_ms())}); telemetry_call(self,"record_question"); timer.delay(.12,false,function() play_focus_audio(self) end)
 end
-
 local function next_question(self)
-    local t0 = now_ms()
-    self.question_index = self.question_index % #self.questions + 1
-    render_question(self)
-    local transition_ms = now_ms() - t0
-    metric("question_transition", { ms = string.format("%.3f", transition_ms), index = self.question_index })
-    telemetry_call(self, "record_transition", transition_ms)
+    local t0=now_ms(); self.question_index=self.question_index%#self.questions+1; render_question(self); local ms=now_ms()-t0
+    metric("question_transition",{ms=string.format("%.3f",ms),index=self.question_index}); telemetry_call(self,"record_transition",ms)
 end
-
 local function answer(self)
-    local q = self.questions[self.question_index]
-    local correct = (self.focus - 1) == q.correct
-    metric("answer", { q = q.id, choice = self.focus, correct = correct and 1 or 0, t_ms = math.floor(now_ms()) })
-    telemetry_call(self, "record_answer", correct)
-    if correct then
-        show_success(self)
-        timer.delay(.88, false, function() next_question(self) end)
-    else
-        show_tryagain(self)
-        local x = CARD_X[self.focus]
-        gui.cancel_animation(self.focus_ring, "position.x")
-        gui.animate(self.focus_ring, "position.x", x - 14, gui.EASING_OUTQUAD, .055, 0, function()
-            gui.animate(self.focus_ring, "position.x", x + 13, gui.EASING_INOUTQUAD, .07, 0, function()
-                gui.animate(self.focus_ring, "position.x", x, gui.EASING_OUTQUAD, .055)
-            end)
-        end)
-    end
+    local q=self.questions[self.question_index]; local correct=(self.focus-1)==q.correct; metric("answer",{q=q.id,choice=self.focus,correct=correct and 1 or 0,t_ms=math.floor(now_ms())}); telemetry_call(self,"record_answer",correct)
+    if correct then show_success(self); timer.delay(.88,false,function() next_question(self) end)
+    else show_tryagain(self); local x=CARD_X[self.focus]; gui.cancel_animation(self.focus_ring,"position.x"); gui.animate(self.focus_ring,"position.x",x-14,gui.EASING_OUTQUAD,.055,0,function() gui.animate(self.focus_ring,"position.x",x+13,gui.EASING_INOUTQUAD,.07,0,function() gui.animate(self.focus_ring,"position.x",x,gui.EASING_OUTQUAD,.055) end) end) end
 end
-
-local function set_settings(self, visible)
-    self.settings_open = visible
-    gui.set_enabled(self.settings_bg, visible)
-    gui.set_enabled(self.settings_title, visible)
-    gui.set_enabled(self.settings_sound, visible)
-    if visible then gui.set_text(self.settings_sound, "Sound: " .. (self.sound_enabled and "ON" or "OFF") .. "   [OK to toggle]") end
-    metric("settings", { open = visible and 1 or 0 })
-    if visible then telemetry_call(self, "record_settings_open") end
+local function set_settings(self,visible)
+    self.settings_open=visible; gui.set_enabled(self.settings_bg,visible); gui.set_enabled(self.settings_title,visible); gui.set_enabled(self.settings_sound,visible)
+    if visible then gui.set_text(self.settings_sound,"Sound: "..(self.sound_enabled and "ON" or "OFF").."   [OK to toggle]") end
+    metric("settings",{open=visible and 1 or 0}); if visible then telemetry_call(self,"record_settings_open") end
 end
-
 local function load_questions()
-    local fallback = {
-        { id="animal_fish", type="animal", correct=0, choices={ {id="fish",audio="animal_fish"}, {id="turtle",audio="animal_turtle"}, {id="crab",audio="animal_crab"} } },
-        { id="size_big", type="size", correct=1, choices={ {id="small",audio="size_small"}, {id="big",audio="size_big"}, {id="small_2",audio="size_small"} } },
-        { id="color_blue", type="color", correct=2, choices={ {id="yellow",audio="color_yellow"}, {id="red",audio="color_red"}, {id="blue",audio="color_blue"} } },
-    }
-    local raw = sys.load_resource("/data/ocean_questions.json")
-    if not raw then return fallback end
-    local ok, decoded = pcall(json.decode, raw)
-    if ok and decoded and decoded.questions then return decoded.questions end
-    print("BS_STARTUP question_json_fallback error=" .. tostring(decoded))
-    return fallback
+    local fallback={{id="animal_fish",type="animal",correct=0,choices={{id="fish",audio="animal_fish"},{id="turtle",audio="animal_turtle"},{id="crab",audio="animal_crab"}}},{id="size_big",type="size",correct=1,choices={{id="small",audio="size_small"},{id="big",audio="size_big"},{id="small_2",audio="size_small"}}},{id="color_blue",type="color",correct=2,choices={{id="yellow",audio="color_yellow"},{id="red",audio="color_red"},{id="blue",audio="color_blue"}}}}
+    local raw=sys.load_resource("/data/ocean_questions.json"); if not raw then return fallback end; local ok,decoded=pcall(json.decode,raw); if ok and decoded and decoded.questions then return decoded.questions end; print("BS_STARTUP question_json_fallback error="..tostring(decoded)); return fallback
 end
-
 local function init_impl(self)
-    msg.post(".", "acquire_input_focus")
-    self.started_ms = now_ms()
-    self.telemetry = nil
-    self.frame_count = 0
-    self.slow_frames = 0
-    self.max_dt_ms = 0
-    self.last_gc_kb = collectgarbage("count")
-    self.question_index = 1
-    self.focus = 1
-    self.sound_enabled = true
-    self.settings_open = false
-    self.confetti = {}
-
-    assets.install()
-    self.questions = load_questions()
-    self.background = new_image("ocean_bg", W/2, H/2, W, H, 0)
-    self.title = new_image("title", W/2, 647, 520, 76, 5)
-    self.prompt = new_image("prompt1", W/2, 561, 560, 88, 5)
-    self.hint = new_image("hint", W/2, 52, 620, 56, 5)
-    self.progress = new_text("1 / 3", 1145, 652, .88, 6)
-
-    self.cards, self.choice_images, self.labels = {}, {}, {}
-    for i = 1, 3 do
-        self.cards[i] = new_image("card", CARD_X[i], CARD_Y, 300, 285, 2)
-        self.choice_images[i] = new_image("fish", CARD_X[i], 355, 220, 220, 4)
-        self.labels[i] = new_image("label_fish", CARD_X[i], 240, 230, 64, 5)
-    end
-    self.focus_ring = new_image("focus", CARD_X[1], CARD_Y, 326, 311, 7)
-
-    self.feedback_panel = gui.new_box_node(vmath.vector3(W/2,370,9), vmath.vector3(500,175,0))
-    gui.set_color(self.feedback_panel, SUCCESS)
-    self.success_image = new_image("success", W/2, 370, 380, 120, 10)
-    self.tryagain_image = new_image("tryagain", W/2, 145, 440, 100, 8)
-
-    self.settings_bg = gui.new_box_node(vmath.vector3(W/2,H/2,20), vmath.vector3(760,430,0))
-    gui.set_color(self.settings_bg, DIM)
-    self.settings_title = new_text("Settings", W/2, 455, 1.5, 21)
-    self.settings_sound = new_text("", W/2, 350, 1.0, 21)
-    set_settings(self, false)
-    render_question(self)
-
-    local startup_ms = now_ms() - self.started_ms
-    metric("native_ready", { startup_internal_ms = string.format("%.3f", startup_ms) })
-    if telemetry and telemetry.new then
-        local ok, t_or_error = pcall(telemetry.new)
-        if ok then
-            self.telemetry = t_or_error
-            telemetry_call(self, "set_startup", startup_ms)
-            telemetry_call(self, "flush_pending")
-            timer.delay(2.0, false, function() telemetry_call(self, "send", "session_start") end)
-            self.telemetry_timer = timer.delay(15.0, true, function() telemetry_call(self, "send", "periodic") end)
-        else print("BS_TELEMETRY disabled init_error=" .. tostring(t_or_error)) end
-    end
+    msg.post(".","acquire_input_focus"); self.started_ms=now_ms(); self.telemetry=nil; self.frame_count=0; self.slow_frames=0; self.max_dt_ms=0; self.last_gc_kb=collectgarbage("count"); self.question_index=1; self.focus=1; self.sound_enabled=true; self.settings_open=false; self.confetti={}; self.questions=load_questions()
+    self.background=new_art("bg_art","background",W/2,H/2,1280,720,0); self.title=new_art("text_art","title",W/2,647,640,160,5); self.prompt=new_art("text_art","prompt1",W/2,561,640,160,5); self.hint=new_art("text_art","hint",W/2,52,640,160,5); self.progress=new_text("1 / 3",1145,652,.88,6)
+    self.cards,self.choice_images,self.labels={},{},{}; for i=1,3 do self.cards[i]=new_art("objects_art","card",CARD_X[i],CARD_Y,360,360,2); self.choice_images[i]=new_art("objects_art","fish",CARD_X[i],355,360,360,4); self.labels[i]=new_art("labels_art","label_fish",CARD_X[i],240,260,80,5) end
+    self.focus_ring=new_art("objects_art","focus",CARD_X[1],CARD_Y,360,360,7); self.feedback_panel=gui.new_box_node(vmath.vector3(W/2,370,9),vmath.vector3(500,175,0)); gui.set_color(self.feedback_panel,SUCCESS); self.success_image=new_art("text_art","success",W/2,370,640,160,10); self.tryagain_image=new_art("text_art","tryagain",W/2,145,640,160,8)
+    self.settings_bg=gui.new_box_node(vmath.vector3(W/2,H/2,20),vmath.vector3(760,430,0)); gui.set_color(self.settings_bg,DIM); self.settings_title=new_text("Settings",W/2,455,1.5,21); self.settings_sound=new_text("",W/2,350,1,21); set_settings(self,false); render_question(self)
+    local startup_ms=now_ms()-self.started_ms; metric("native_ready",{startup_internal_ms=string.format("%.3f",startup_ms)})
+    if telemetry and telemetry.new then local ok,t=pcall(telemetry.new); if ok then self.telemetry=t; telemetry_call(self,"set_startup",startup_ms); telemetry_call(self,"flush_pending"); timer.delay(2,false,function() telemetry_call(self,"send","session_start") end); self.telemetry_timer=timer.delay(15,true,function() telemetry_call(self,"send","periodic") end) else print("BS_TELEMETRY disabled init_error="..tostring(t)) end end
 end
-
 function init(self)
-    self.boot_status = gui.get_node("boot_status")
-    self.startup_failed = false
-    local ok, err = xpcall(function() init_impl(self) end, function(e)
-        if debug and debug.traceback then return debug.traceback(tostring(e), 2) end
-        return tostring(e)
-    end)
-    if ok then gui.set_enabled(self.boot_status, false)
-    else
-        self.startup_failed = true
-        print("BS_FATAL_INIT " .. tostring(err))
-        gui.set_text(self.boot_status, "STARTUP ERROR")
-        gui.set_color(self.boot_status, vmath.vector4(1,.35,.25,1))
-        gui.set_enabled(self.boot_status, true)
-    end
+    self.boot_status=gui.get_node("boot_status"); self.startup_failed=false; local ok,err=xpcall(function() init_impl(self) end,function(e) if debug and debug.traceback then return debug.traceback(tostring(e),2) end return tostring(e) end)
+    if ok then gui.set_enabled(self.boot_status,false) else self.startup_failed=true; print("BS_FATAL_INIT "..tostring(err)); gui.set_text(self.boot_status,"STARTUP ERROR"); gui.set_color(self.boot_status,vmath.vector4(1,.35,.25,1)); gui.set_enabled(self.boot_status,true) end
 end
-
-function update(self, dt)
-    if self.startup_failed then return end
-    local dt_ms = dt * 1000
-    telemetry_call(self, "record_frame", dt_ms)
-    self.frame_count = self.frame_count + 1
-    if dt_ms > self.max_dt_ms then self.max_dt_ms = dt_ms end
-    if dt_ms > 25 then self.slow_frames = self.slow_frames + 1 end
-    if self.frame_count % 300 == 0 then
-        local gc = collectgarbage("count")
-        metric("runtime_sample", { frames=self.frame_count, max_dt_ms=string.format("%.3f",self.max_dt_ms), slow=self.slow_frames, gc_kb=string.format("%.1f",gc), gc_delta_kb=string.format("%.1f",gc-self.last_gc_kb) })
-        self.last_gc_kb, self.max_dt_ms, self.slow_frames = gc, 0, 0
-    end
+function update(self,dt)
+    if self.startup_failed then return end; local ms=dt*1000; telemetry_call(self,"record_frame",ms); self.frame_count=self.frame_count+1; if ms>self.max_dt_ms then self.max_dt_ms=ms end; if ms>25 then self.slow_frames=self.slow_frames+1 end
+    if self.frame_count%300==0 then local gc=collectgarbage("count"); metric("runtime_sample",{frames=self.frame_count,max_dt_ms=string.format("%.3f",self.max_dt_ms),slow=self.slow_frames,gc_kb=string.format("%.1f",gc),gc_delta_kb=string.format("%.1f",gc-self.last_gc_kb)}); self.last_gc_kb,self.max_dt_ms,self.slow_frames=gc,0,0 end
 end
-
-function on_input(self, action_id, action)
-    if self.startup_failed or not action.pressed then return false end
-    local input_t = now_ms()
-    if action_id == hash("back") then
-        set_settings(self, not self.settings_open)
-        telemetry_call(self, "record_input", now_ms() - input_t)
-        return true
-    end
-    if self.settings_open then
-        if action_id == hash("ok") then
-            self.sound_enabled = not self.sound_enabled
-            gui.set_text(self.settings_sound, "Sound: " .. (self.sound_enabled and "ON" or "OFF") .. "   [OK to toggle]")
-        end
-        telemetry_call(self, "record_input", now_ms() - input_t)
-        return true
-    end
-    if action_id == hash("left") or action_id == hash("up") then set_focus(self, self.focus - 1, true)
-    elseif action_id == hash("right") or action_id == hash("down") then set_focus(self, self.focus + 1, true)
-    elseif action_id == hash("ok") then answer(self)
-    else return false end
-    local handled_ms = now_ms() - input_t
-    telemetry_call(self, "record_input", handled_ms)
-    metric("input", { key=tostring(action_id), handled_ms=string.format("%.3f",handled_ms) })
-    return true
+function on_input(self,action_id,action)
+    if self.startup_failed or not action.pressed then return false end; local t=now_ms(); if action_id==hash("back") then set_settings(self,not self.settings_open); telemetry_call(self,"record_input",now_ms()-t); return true end
+    if self.settings_open then if action_id==hash("ok") then self.sound_enabled=not self.sound_enabled; gui.set_text(self.settings_sound,"Sound: "..(self.sound_enabled and "ON" or "OFF").."   [OK to toggle]") end; telemetry_call(self,"record_input",now_ms()-t); return true end
+    if action_id==hash("left") or action_id==hash("up") then set_focus(self,self.focus-1,true) elseif action_id==hash("right") or action_id==hash("down") then set_focus(self,self.focus+1,true) elseif action_id==hash("ok") then answer(self) else return false end
+    local ms=now_ms()-t; telemetry_call(self,"record_input",ms); metric("input",{key=tostring(action_id),handled_ms=string.format("%.3f",ms)}); return true
 end
-
 function final(self)
-    if self.startup_failed then msg.post(".", "release_input_focus"); return end
-    if self.telemetry_timer then timer.cancel(self.telemetry_timer) end
-    if self.tryagain_timer then timer.cancel(self.tryagain_timer) end
-    telemetry_call(self, "final")
-    metric("session_end", { frames=self.frame_count })
-    msg.post(".", "release_input_focus")
+    if self.startup_failed then msg.post(".","release_input_focus"); return end; if self.telemetry_timer then timer.cancel(self.telemetry_timer) end; if self.tryagain_timer then timer.cancel(self.tryagain_timer) end; telemetry_call(self,"final"); metric("session_end",{frames=self.frame_count}); msg.post(".","release_input_focus")
 end
