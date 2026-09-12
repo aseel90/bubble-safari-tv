@@ -39,13 +39,15 @@ jobs:
           )
           HASH="$(sha256sum _site/updates/game-bundle.zip | awk '{print $1}')"
           SIZE="$(stat -c '%s' _site/updates/game-bundle.zip)"
-          printf '%s' "$HASH" > _site/.bubble-safari-version
-          python3 - "$HASH" "$SIZE" <<'PY'
+          VERSION="$GITHUB_SHA"
+          printf '%s' "$VERSION" > _site/.bubble-safari-version
+          python3 - "$VERSION" "$HASH" "$SIZE" <<'PY'
           import json, sys
-          digest, size = sys.argv[1], int(sys.argv[2])
+          version, digest, size = sys.argv[1], sys.argv[2], int(sys.argv[3])
           with open('_site/updates/manifest.json', 'w', encoding='utf-8') as f:
-              json.dump({"format":1,"version":digest,"sha256":digest,"size":size}, f, separators=(',', ':'))
-          print('OTA game version:', digest)
+              json.dump({"format":1,"version":version,"sha256":digest,"size":size}, f, separators=(',', ':'))
+          print('OTA game version:', version)
+          print('OTA bundle sha256:', digest)
           print('OTA bundle bytes:', size)
           PY
 
