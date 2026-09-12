@@ -24,6 +24,10 @@ tasks.register('syncWebAssets', Sync) {
         include 'audio/**'
     }
     into(generatedWebAssets)
+    doLast {
+        def marker = new File(generatedWebAssets.get().asFile, ".bubble-safari-version")
+        marker.text = (System.getenv("GITHUB_SHA") ?: "bundled").trim()
+    }
 }
 
 android {
