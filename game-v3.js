@@ -43,7 +43,8 @@ function showScreen(name){
     const preferred=selector?$(selector,root):null;
     if(preferred&&preferred.offsetParent!==null)tv?.setFocus(preferred); else tv?.focusFirst(root);
   };
-  requestAnimationFrame(()=>{focusScreen();setTimeout(focusScreen,70)});
+  requestAnimationFrame(focusScreen);
+  setTimeout(focusScreen,70);
 }
 function activeScreenName(){return Object.entries(screens).find(([,el])=>el.classList.contains('screen-active'))?.[0]||'home'}
 function clearTransientUi(){
