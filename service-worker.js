@@ -1,9 +1,10 @@
-const CACHE = 'bubble-safari-v27';
+const CACHE = 'bubble-safari-v28';
 const CORE = [
   './', './index.html', './styles.css', './art.css', './worlds.css', './polish-v08.css',
   './game-v3.js', './game-data.js', './tv-nav.js', './voice.js', './art.js', './scene-art.js',
   './manifest.webmanifest', './favicon.svg'
 ];
+
 const CORE_NAMES = new Set(CORE.map(path => new URL(path, self.location.href).pathname));
 
 self.addEventListener('install', event => {
