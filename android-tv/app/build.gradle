@@ -21,12 +21,12 @@ tasks.register('syncWebAssets', Sync) {
         include 'service-worker.js'
         include 'manifest.webmanifest'
         include 'favicon.svg'
-        include 'audio/**'
+        include 'audio/**/*.wav'
     }
     into(generatedWebAssets)
     doLast {
         def marker = new File(generatedWebAssets.get().asFile, "bubble-safari-version.txt")
-        marker.text = (System.getenv("GITHUB_SHA") ?: "bundled").trim()
+        marker.text = (System.getenv("BUBBLE_SAFARI_GAME_VERSION") ?: System.getenv("GITHUB_SHA") ?: "bundled").trim()
     }
 }
 
