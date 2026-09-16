@@ -30,16 +30,20 @@ function showScreen(name){
   Object.entries(screens).forEach(([key,el])=>{el.classList.toggle('screen-active',key===name);el.setAttribute('aria-hidden',key===name?'false':'true')});
   hud.classList.toggle('hidden',name!=='game');
   settingsButton?.classList.toggle('hidden',name==='settings');
-  requestAnimationFrame(()=>{
+  $('.tv-focus').forEach(el=>el.classList.remove('tv-focus'));
+  const focusScreen=()=>{
+    const root=screens[name];
+    if(!root?.classList.contains('screen-active'))return;
     let selector=null;
     if(name==='home')selector='#startButton';
     if(name==='age')selector=`[data-age="${state.age}"]`;
     if(name==='world')selector=`[data-world="${state.world}"]`;
     if(name==='settings')selector='#settingsBackButton';
     if(name==='finish')selector='#playAgainButton';
-    const preferred=selector?$(selector,screens[name]):null;
-    if(preferred)tv?.setFocus(preferred); else tv?.focusFirst(screens[name]);
-  });
+    const preferred=selector?$(selector,root):null;
+    if(preferred&&preferred.offsetParent!==null)tv?.setFocus(preferred); else tv?.focusFirst(root);
+  };
+  requestAnimationFrame(()=>{focusScreen();setTimeout(focusScreen,70)});
 }
 function activeScreenName(){return Object.entries(screens).find(([,el])=>el.classList.contains('screen-active'))?.[0]||'home'}
 function clearTransientUi(){
