@@ -30,7 +30,7 @@ function showScreen(name){
   Object.entries(screens).forEach(([key,el])=>{el.classList.toggle('screen-active',key===name);el.setAttribute('aria-hidden',key===name?'false':'true')});
   hud.classList.toggle('hidden',name!=='game');
   settingsButton?.classList.toggle('hidden',name==='settings');
-  $('.tv-focus').forEach(el=>el.classList.remove('tv-focus'));
+  document.querySelectorAll('.tv-focus').forEach(el=>el.classList.remove('tv-focus'));
   const focusScreen=()=>{
     const root=screens[name];
     if(!root?.classList.contains('screen-active'))return;
