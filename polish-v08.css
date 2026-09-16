@@ -195,3 +195,8 @@
   #homeScreen.screen-active .mode-grid{gap:10px}
   #homeScreen.screen-active .mode-card{border-radius:21px}
 }
+
+/* v1.0.1 final focus stability */
+#homeScreen.screen-active .home-portal{grid-template-columns:minmax(0,1fr)!important;justify-content:stretch!important;align-content:stretch!important}
+#homeScreen.screen-active .mode-card{transition:border-color .12s ease,filter .12s ease!important}
+#homeScreen.screen-active .mode-card:focus,#homeScreen.screen-active .mode-card.tv-focus{box-shadow:0 0 0 4px rgba(255,255,255,.98),0 0 0 8px rgba(255,205,74,.94),0 17px 34px rgba(39,90,69,.19)!important;border-color:#fff!important;transform:none!important}
