@@ -1,3 +1,11 @@
+
+
+/* v1.0.2 4:3 featured-card safety */
+@media (max-aspect-ratio:4/3){
+  #homeScreen.screen-active .mode-art-bubbles{width:39%;left:4%}
+  #homeScreen.screen-active .mode-card-featured .mode-copy{max-width:54%;width:54%}
+  #homeScreen.screen-active .mode-card-featured .mode-action{display:none}
+}
 /* Bubble Safari TV v0.8 — lightweight Smart TV visual polish */
 .app-shell.world-jungle{--world-accent:#5faa58;--world-accent-soft:#dff3ce;--world-ink:#285f3d}
 .app-shell.world-farm{--world-accent:#e6a34f;--world-accent-soft:#fff0c9;--world-ink:#7b5428}
