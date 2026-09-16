@@ -48,8 +48,9 @@ function clearTransientUi(){
   if(confetti)confetti.innerHTML='';
   $$('.choice.correct-pop,.choice.wrong-shake').forEach(el=>el.classList.remove('correct-pop','wrong-shake'));
 }
+function setGameLocked(value){state.locked=!!value;if(settingsButton)settingsButton.disabled=state.locked}
 function handleBack(){
-  state.flowId++;voice.stop();state.locked=false;clearTransientUi();
+  state.flowId++;voice.stop();setGameLocked(false);clearTransientUi();
   if(screens.settings.classList.contains('screen-active'))return showScreen(state.settingsReturn||'home');
   if(screens.game.classList.contains('screen-active'))return showScreen('world');
   if(screens.world.classList.contains('screen-active'))return showScreen('age');
@@ -115,7 +116,7 @@ function freshFrom(pool,namespace='default'){
   const target=randomFrom(fresh);used.add(target.id);return target;
 }
 
-function buildTypePlan(){const world=WORLDS[state.world],base=state.age==='2-3'?world.youngTypes:world.olderTypes,bag=[];while(bag.length<state.totalRounds)bag.push(...shuffle(base));const plan=bag.slice(0,state.totalRounds);for(let i=1;i<plan.length;i++){if(plan[i]===plan[i-1]){const swap=plan.findIndex((type,j)=>j>i&&type!==plan[i-1]&&type!==plan[i+1]);if(swap>-1)[plan[i],plan[swap]]=[plan[swap],plan[i]]}}return plan}
+function buildTypePlan(){const world=WORLDS[state.world],base=state.age==='2-3'?world.youngTypes:world.olderTypes,plan=[];while(plan.length<state.totalRounds){const batch=shuffle(base);if(plan.length&&batch[0]===plan[plan.length-1]){const swap=batch.findIndex(type=>type!==plan[plan.length-1]);if(swap>0)[batch[0],batch[swap]]=[batch[swap],batch[0]]}plan.push(...batch)}return plan.slice(0,state.totalRounds)}
 function symbolPool(){const animals=WORLDS[state.world].animals;return animals.length?animals.map(a=>({...a,kind:'animal'})):SHAPES.map(s=>({...s,kind:'shape'}))}
 
 function makeAnimalQuestion(){const animals=WORLDS[state.world].animals;if(!animals.length)return makeShapeQuestion();const target=freshFrom(animals,'animal');return{type:'animal',kicker:'ابحث عن الحيوان',prompt:`أين ${target.name}؟`,voiceKey:target.audio,options:pickUnique(animals,choiceCount(),target).map((animal,i)=>({id:animal.id,label:animal.name,visualId:animal.id,visualKind:'animal',color:COLORS[(state.round+i)%COLORS.length].hex,correct:animal.id===target.id,kind:'animal'}))}}
@@ -127,14 +128,14 @@ function makeMatchQuestion(){const pool=symbolPool(),target=freshFrom(pool,'matc
 function makeOddQuestion(){const pool=symbolPool();if(pool.length<3)return makeMatchQuestion();const base=freshFrom(pool,'oddBase'),odd=freshFrom(pool.filter(item=>item.id!==base.id),'oddTarget');const count=choiceCount(),items=Array.from({length:Math.max(1,count-1)},(_,i)=>({id:`base-${i}`,label:base.name||base.label,visualId:base.id,visualKind:base.kind,color:COLORS[(state.round+i)%COLORS.length].hex,correct:false,kind:'odd'}));items.push({id:'odd',label:odd.name||odd.label,visualId:odd.id,visualKind:odd.kind,color:COLORS[(state.round+count)%COLORS.length].hex,correct:true,kind:'odd'});return{type:'odd',kicker:'لغز صغير',prompt:'أي واحد مختلف؟',voiceKey:'prompt_odd',options:shuffle(items)}}
 function makeQuestion(type){return type==='animal'?makeAnimalQuestion():type==='color'?makeColorQuestion():type==='shape'?makeShapeQuestion():type==='number'?makeNumberQuestion():type==='size'?makeSizeQuestion():type==='match'?makeMatchQuestion():makeOddQuestion()}
 function shade(hex,amount){const value=parseInt(hex.replace('#',''),16),r=Math.max(0,Math.min(255,(value>>16)+amount)),g=Math.max(0,Math.min(255,((value>>8)&255)+amount)),b=Math.max(0,Math.min(255,(value&255)+amount));return`#${((1<<24)+(r<<16)+(g<<8)+b).toString(16).slice(1)}`}
-function renderOptionVisual(option){if(option.visualKind==='number')return`<span class="number-art">${option.number}</span>`;const art=choiceArt(option.visualKind,option.visualId);const layout=option.visualKind==='animal'?getAnimalLayout(option.visualId):{scale:1,x:0,y:0};return`<span class="choice-art choice-art-${option.visualKind}${option.kind==='size'?' choice-size-art':''}" style="--art-scale:${layout.scale};--art-x:${layout.x||0}px;--art-y:${layout.y||0}px">${art}</span>`}
-function updateProgress(){const current=state.round+1,total=state.totalRounds,ratio=Math.max(0,Math.min(1,total?state.round/total:0));roundText.textContent=`${current} / ${total}`;starCount.textContent=state.stars;if(progressMeter){progressMeter.setAttribute('aria-valuemax',String(total));progressMeter.setAttribute('aria-valuenow',String(current))}if(progressFill)progressFill.style.transform=`scaleX(${ratio})`}
+function renderOptionVisual(option){if(option.visualKind==='number')return`<span class="choice-number">${option.number}</span>`;const art=choiceArt(option.visualKind,option.visualId);const layout=option.visualKind==='animal'?getAnimalLayout(option.visualId):{scale:1,x:0,y:0};return`<span class="choice-art choice-art-${option.visualKind}${option.kind==='size'?' choice-size-art':''}" style="--art-scale:${layout.scale};--art-x:${layout.x||0}px;--art-y:${layout.y||0}px">${art}</span>`}
+function updateProgress(){const current=state.round+1,total=state.totalRounds,ratio=Math.max(0,Math.min(1,total?current/total:0));roundText.textContent=`${current} / ${total}`;starCount.textContent=state.stars;if(progressMeter){progressMeter.setAttribute('aria-valuemax',String(total));progressMeter.setAttribute('aria-valuenow',String(current))}if(progressFill)progressFill.style.transform=`scaleX(${ratio})`}
 function renderQuestion(){
   const type=state.typePlan[state.round]||'animal';state.currentQuestion=makeQuestion(type);questionKicker.textContent=state.currentQuestion.kicker;questionText.textContent=state.currentQuestion.prompt;updateProgress();
   if(state.currentQuestion.questionVisual){questionVisual.classList.remove('hidden');questionVisual.innerHTML=choiceArt(state.currentQuestion.questionVisual.kind,state.currentQuestion.questionVisual.id)}else{questionVisual.classList.add('hidden');questionVisual.innerHTML=''}
   choicesEl.innerHTML='';choicesEl.style.gridTemplateColumns=`repeat(${state.currentQuestion.options.length},minmax(0,1fr))`;
   state.currentQuestion.options.forEach((option,index)=>{
-    const button=document.createElement('button');button.type='button';button.className='choice focusable';button.dataset.focusable='';button.setAttribute('aria-label',option.label);if(option.kind==='size')button.dataset.sizeVisual=option.scale<.82?'small':option.scale>1.18?'big':'medium';
+    const button=document.createElement('button');button.type='button';button.className='choice focusable';button.dataset.focusable='';button.dataset.kind=option.kind;button.setAttribute('aria-label',option.label);if(option.kind==='size')button.dataset.sizeVisual=option.scale<.82?'small':option.scale>1.18?'big':'medium';
     const layout=option.visualKind==='animal'?getAnimalLayout(option.visualId):null;if(layout?.labelOffset)button.style.setProperty('--label-offset',`${layout.labelOffset}px`);button.innerHTML=`<span class="choice-bubble" style="--bubble-color:${option.color};--bubble-deep:${shade(option.color,-8)}"></span><span class="choice-content">${renderOptionVisual(option)}</span><span class="choice-label">${option.label}</span>`;
     button.addEventListener('click',()=>selectChoice(button,option));choicesEl.appendChild(button);if(index===0)setTimeout(()=>tv.setFocus(button),50);
   });
@@ -152,21 +153,21 @@ async function selectChoice(button,option){
   voice.ensureAudio();
   const flow=state.flowId;
   if(!option.correct){
-    state.locked=true;state.streak=0;button.classList.remove('wrong-shake');void button.offsetWidth;button.classList.add('wrong-shake');voice.stop();voice.wrong();
+    setGameLocked(true);state.streak=0;button.classList.remove('wrong-shake');void button.offsetWidth;button.classList.add('wrong-shake');voice.stop();voice.wrong();
     const started=performance.now();await sleep(90);await voice.play('feedback_tryagain');const remain=Math.max(120,850-(performance.now()-started));await sleep(remain);
     if(flow!==state.flowId||!screens.game.classList.contains('screen-active'))return;
-    button.classList.remove('wrong-shake');state.locked=false;return;
+    button.classList.remove('wrong-shake');setGameLocked(false);return;
   }
-  state.locked=true;state.streak++;button.classList.add('correct-pop');state.stars++;starCount.textContent=state.stars;localStorage.setItem('bubbleSafariBest',String(Math.max(state.stars,Number(localStorage.getItem('bubbleSafariBest')||0))));
+  setGameLocked(true);state.streak++;button.classList.add('correct-pop');state.stars++;starCount.textContent=state.stars;localStorage.setItem('bubbleSafariBest',String(Math.max(state.stars,Number(localStorage.getItem('bubbleSafariBest')||0))));
   voice.stop();const started=performance.now();await showSuccess();const remain=Math.max(260,1000-(performance.now()-started));await sleep(remain);
   if(flow!==state.flowId||!screens.game.classList.contains('screen-active'))return;
   feedback.classList.remove('show');feedback.setAttribute('aria-hidden','true');state.round++;
-  if(state.round>=state.totalRounds)finishGame();else{state.locked=false;renderQuestion()}
+  if(state.round>=state.totalRounds)finishGame();else{setGameLocked(false);renderQuestion()}
 }
 
 function setWorld(id){state.world=id;const world=WORLDS[id];app.classList.remove('world-jungle','world-farm','world-ocean','world-bubblecity','world-rainbow');app.classList.add(world.className);worldName.textContent=world.name;worldIcon.innerHTML=worldArt(world.art);if(worldDecor)worldDecor.innerHTML=sceneArt(world.art)}
-function startGame(worldId=state.world){state.flowId++;setWorld(worldId);state.round=0;state.totalRounds=state.age==='2-3'?12:15;state.stars=0;state.streak=0;state.locked=false;state.usedTargets={};state.feedbackHistory=[];state.lastSize=null;state.typePlan=buildTypePlan();starCount.textContent='0';if(progressFill)progressFill.style.transform='scaleX(0)';const world=WORLDS[state.world];voice.preload([...world.animals.map(a=>a.audio),...COLORS.map(c=>c.audio),...SHAPES.map(s=>s.audio),...NUMBERS.map(n=>n.audio),'size_big','size_small','prompt_match','prompt_odd','feedback_tryagain',...FEEDBACK.map(f=>f.audio)]);showScreen('game');setTimeout(renderQuestion,180)}
-function finishGame(){state.flowId++;voice.stop();state.locked=false;finalStars.textContent=state.stars;showScreen('finish');voice.success(true);setTimeout(()=>voice.play('ui_finish'),220)}
+function startGame(worldId=state.world){state.flowId++;setWorld(worldId);state.round=0;state.totalRounds=state.age==='2-3'?12:15;state.stars=0;state.streak=0;setGameLocked(false);state.usedTargets={};state.feedbackHistory=[];state.lastSize=null;state.typePlan=buildTypePlan();starCount.textContent='0';if(progressFill)progressFill.style.transform='scaleX(0)';const world=WORLDS[state.world];voice.preload([...world.animals.map(a=>a.audio),...COLORS.map(c=>c.audio),...SHAPES.map(s=>s.audio),...NUMBERS.map(n=>n.audio),'size_big','size_small','prompt_match','prompt_odd','feedback_tryagain',...FEEDBACK.map(f=>f.audio)]);showScreen('game');setTimeout(renderQuestion,180)}
+function finishGame(){state.flowId++;voice.stop();setGameLocked(false);finalStars.textContent=state.stars;showScreen('finish');voice.success(true);setTimeout(()=>voice.play('ui_finish'),220)}
 function resolveQuality(){
   if(state.quality!=='auto')return state.quality;
   const tv=/BubbleSafariTV|Android TV|TV/i.test(navigator.userAgent);
@@ -186,7 +187,7 @@ function updateSoundUi(){
   const text=$('#settingsSoundText');if(text)text.textContent=state.muted?'إيقاف':'تشغيل';
   const toggle=$('#settingsSoundToggle');if(toggle)toggle.setAttribute('aria-pressed',state.muted?'false':'true');
 }
-function openSettings(){state.settingsReturn=activeScreenName();voice.stop();showScreen('settings');applyPreferences();updateSoundUi()}
+function openSettings(){if(state.locked&&screens.game.classList.contains('screen-active'))return;state.settingsReturn=activeScreenName();voice.stop();showScreen('settings');applyPreferences();updateSoundUi()}
 function closeSettings(){showScreen(state.settingsReturn||'home');setTimeout(()=>tv?.ensureFocus(),60)}
 function isNativeTvApp(){return location.hostname==='appassets.androidplatform.net'||/BubbleSafariTV/i.test(navigator.userAgent)}
 function setUpdatePercent(percent){
@@ -226,6 +227,7 @@ window.addEventListener('bubbleSafariUpdate',event=>renderUpdateState(event.deta
 async function readCurrentVersion(){
   let current='';
   try{const response=await fetch('./.bubble-safari-version',{cache:'no-store'});if(response.ok)current=(await response.text()).trim()}catch{}
+  if(!current&&isNativeTvApp()){try{const response=await fetch('./bubble-safari-version.txt',{cache:'no-store'});if(response.ok)current=(await response.text()).trim()}catch{}}
   if(currentVersion)currentVersion.textContent=current?current.slice(0,8):'النسخة الأساسية';
   return current;
 }
