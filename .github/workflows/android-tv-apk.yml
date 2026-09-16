@@ -20,7 +20,7 @@ on:
       - 'service-worker.js'
       - 'manifest.webmanifest'
       - 'favicon.svg'
-      - 'audio/**'
+      - 'audio/**/*.wav'
       - '.github/workflows/android-tv-apk.yml'
 
 jobs:
@@ -31,6 +31,37 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Resolve game content version
+        shell: bash
+        run: |
+          set -euo pipefail
+          GAME_VERSION="$(python3 - <<'PY'
+          import hashlib
+          from pathlib import Path
+          root = Path('.')
+          runtime = [
+              'index.html','styles.css','art.css','worlds.css','polish-v08.css',
+              'game-v3.js','game-data.js','tv-nav.js','voice.js','art.js','scene-art.js',
+              'service-worker.js','manifest.webmanifest','favicon.svg',
+          ]
+          paths = [root / name for name in runtime]
+          paths += sorted((root / 'audio').rglob('*.wav'))
+          h = hashlib.sha256()
+          for path in sorted(paths, key=lambda p: p.as_posix()):
+              if not path.is_file():
+                  raise SystemExit(f'Missing runtime file: {path}')
+              data = path.read_bytes()
+              h.update(path.as_posix().encode('utf-8'))
+              h.update(b'\0')
+              h.update(len(data).to_bytes(8, 'big'))
+              h.update(data)
+              h.update(b'\0')
+          print(h.hexdigest())
+          PY
+          )"
+          echo "BUBBLE_SAFARI_GAME_VERSION=$GAME_VERSION" >> "$GITHUB_ENV"
+          echo "Resolved game version: $GAME_VERSION"
 
       - name: Java 17
         uses: actions/setup-java@v5
@@ -71,9 +102,9 @@ jobs:
           grep -Fq "uses-feature-not-required: name='android.hardware.touchscreen'" "$BADGING"
           grep -Fq "leanback-launchable-activity: name='com.bubblesafari.tv.MainActivity'" "$BADGING"
 
-          python3 - "$APK" "$APK_FILES" <<'PY'
+          python3 - "$APK" "$APK_FILES" "$BUBBLE_SAFARI_GAME_VERSION" <<'PY'
           import sys, zipfile
-          apk, listing_path = sys.argv[1], sys.argv[2]
+          apk, listing_path, expected_version = sys.argv[1], sys.argv[2], sys.argv[3]
           required = {
               'assets/index.html',
               'assets/game-v3.js',
@@ -83,6 +114,7 @@ jobs:
           }
           with zipfile.ZipFile(apk) as zf:
               names = set(zf.namelist())
+              bundled_version = zf.read('assets/bubble-safari-version.txt').decode('utf-8').strip()
           with open(listing_path, 'w', encoding='utf-8') as f:
               for name in sorted(names):
                   f.write(name + '\n')
@@ -90,6 +122,10 @@ jobs:
           if missing:
               print('Missing required APK assets:', *missing, sep='\n - ')
               raise SystemExit(1)
+          if bundled_version != expected_version:
+              print('Bundled version mismatch:', bundled_version, '!=', expected_version)
+              raise SystemExit(1)
+          print('Verified game version:', bundled_version)
           print('Verified bundled game assets:', *sorted(required), sep='\n - ')
           PY
 
