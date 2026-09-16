@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800;900&display=swap');
-
 :root {
   --forest: #154f3d;
   --forest-deep: #0d3d31;
@@ -21,7 +19,7 @@
 * { box-sizing: border-box; }
 html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
 body {
-  font-family: "Tajawal", system-ui, sans-serif;
+  font-family: "Tajawal", "Noto Sans Arabic", "Noto Kufi Arabic", Tahoma, Arial, system-ui, sans-serif;
   background: #d8f2d2;
   color: var(--ink);
   user-select: none;
