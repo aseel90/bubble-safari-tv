@@ -1,4 +1,4 @@
-const CACHE = 'bubble-safari-v28';
+const CACHE = 'bubble-safari-v29';
 const CORE = [
   './', './index.html', './styles.css', './art.css', './worlds.css', './polish-v08.css',
   './game-v3.js', './game-data.js', './tv-nav.js', './voice.js', './art.js', './scene-art.js',
@@ -34,6 +34,19 @@ async function cachePut(request, response) {
   return response;
 }
 
+async function networkFirst(request) {
+  try {
+    const response = await fetch(request, { cache: 'no-store' });
+    if (response.status === 200) return cachePut(request, response);
+    return response;
+  } catch {
+    const cached = await caches.match(request, { ignoreSearch: true });
+    if (cached) return cached;
+    if (request.mode === 'navigate') return (await caches.match('./index.html')) || Response.error();
+    return Response.error();
+  }
+}
+
 self.addEventListener('fetch', event => {
   const request = event.request;
   if (request.method !== 'GET') return;
@@ -45,26 +58,18 @@ self.addEventListener('fetch', event => {
     const isAudio = url.pathname.includes('/audio/');
     const isCoreAsset = CORE_NAMES.has(url.pathname);
 
-    if (isAudio || isCoreAsset) {
+    if (isAudio) {
       const cached = await caches.match(request, { ignoreSearch: true });
       if (cached) return cached;
       try {
-        const response = await fetch(request);
-        if (response.status === 200) return cachePut(request, response);
-        return response;
+        const response = await fetch(request, { cache: 'no-store' });
+        return response.status === 200 ? cachePut(request, response) : response;
       } catch {
         return Response.error();
       }
     }
 
-    try {
-      const response = await fetch(request, { cache: 'no-store' });
-      return cachePut(request, response);
-    } catch {
-      const cached = await caches.match(request, { ignoreSearch: true });
-      if (cached) return cached;
-      if (request.mode === 'navigate') return (await caches.match('./index.html')) || Response.error();
-      return Response.error();
-    }
+    if (isCoreAsset) return networkFirst(request);
+    return networkFirst(request);
   })());
 });
