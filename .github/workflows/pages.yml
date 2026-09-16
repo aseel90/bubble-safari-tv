@@ -3,6 +3,24 @@ name: Deploy Bubble Safari TV
 on:
   push:
     branches: [main]
+    paths:
+      - 'index.html'
+      - 'styles.css'
+      - 'art.css'
+      - 'worlds.css'
+      - 'polish-v08.css'
+      - 'game-v3.js'
+      - 'game-data.js'
+      - 'tv-nav.js'
+      - 'voice.js'
+      - 'art.js'
+      - 'scene-art.js'
+      - 'service-worker.js'
+      - 'manifest.webmanifest'
+      - 'favicon.svg'
+      - 'audio/**/*.wav'
+      - 'android-tv/**'
+      - '.github/workflows/pages.yml'
   workflow_dispatch:
 
 permissions:
@@ -25,6 +43,37 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Resolve game content version
+        shell: bash
+        run: |
+          set -euo pipefail
+          GAME_VERSION="$(python3 - <<'PY'
+          import hashlib
+          from pathlib import Path
+          root = Path('.')
+          runtime = [
+              'index.html','styles.css','art.css','worlds.css','polish-v08.css',
+              'game-v3.js','game-data.js','tv-nav.js','voice.js','art.js','scene-art.js',
+              'service-worker.js','manifest.webmanifest','favicon.svg',
+          ]
+          paths = [root / name for name in runtime]
+          paths += sorted((root / 'audio').rglob('*.wav'))
+          h = hashlib.sha256()
+          for path in sorted(paths, key=lambda p: p.as_posix()):
+              if not path.is_file():
+                  raise SystemExit(f'Missing runtime file: {path}')
+              data = path.read_bytes()
+              h.update(path.as_posix().encode('utf-8'))
+              h.update(b'\0')
+              h.update(len(data).to_bytes(8, 'big'))
+              h.update(data)
+              h.update(b'\0')
+          print(h.hexdigest())
+          PY
+          )"
+          echo "BUBBLE_SAFARI_GAME_VERSION=$GAME_VERSION" >> "$GITHUB_ENV"
+          echo "Resolved game version: $GAME_VERSION"
+
       - name: Prepare web site and in-app update bundle
         shell: bash
         run: |
@@ -32,14 +81,14 @@ jobs:
           rm -rf _site
           mkdir -p _site/audio _site/updates _site/downloads
           cp index.html styles.css art.css worlds.css polish-v08.css game-v3.js game-data.js tv-nav.js voice.js art.js scene-art.js service-worker.js manifest.webmanifest favicon.svg _site/
-          cp -a audio/. _site/audio/
+          cp audio/*.wav _site/audio/
           (
             cd _site
             zip -qr updates/game-bundle.zip index.html styles.css art.css worlds.css polish-v08.css game-v3.js game-data.js tv-nav.js voice.js art.js scene-art.js service-worker.js manifest.webmanifest favicon.svg audio
           )
           HASH="$(sha256sum _site/updates/game-bundle.zip | awk '{print $1}')"
           SIZE="$(stat -c '%s' _site/updates/game-bundle.zip)"
-          VERSION="$GITHUB_SHA"
+          VERSION="$BUBBLE_SAFARI_GAME_VERSION"
           printf '%s' "$VERSION" > _site/.bubble-safari-version
           python3 - "$VERSION" "$HASH" "$SIZE" <<'PY'
           import json, sys
