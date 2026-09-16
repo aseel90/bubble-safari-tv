@@ -127,3 +127,71 @@
 .choice[data-kind="number"] .choice-content{height:min(72%,230px);width:min(72%,230px)}
 .choice[data-kind="number"] .choice-number{display:grid;place-items:center;width:100%;height:100%;font-family:"Tajawal",Arial,sans-serif;font-size:clamp(96px,11vw,184px);font-weight:900;line-height:.9;color:#fff;font-variant-numeric:lining-nums tabular-nums;text-align:center;text-shadow:0 7px 0 rgba(44,74,56,.13),0 12px 25px rgba(42,76,61,.16);transform:translateY(-1%)}
 @media (max-height:620px){.choice[data-kind="number"] .choice-content{height:min(68%,172px);width:min(68%,172px)}.choice[data-kind="number"] .choice-number{font-size:clamp(78px,10vw,138px)}}
+
+/* v1.0 home portal responsive final pass — centered TV layout, stable focus, no text overlap. */
+#homeScreen.screen-active{display:flex;align-items:center;justify-content:center;padding:0!important;overflow:visible;direction:rtl}
+#homeScreen.screen-active .home-portal{box-sizing:border-box;width:min(1360px,calc(100vw - clamp(72px,9vw,180px)));max-width:100%;height:min(680px,100%);margin:0 auto;padding:clamp(6px,1vh,12px) clamp(10px,1.25vw,18px);display:grid;grid-template-rows:auto minmax(0,1fr);gap:clamp(16px,2.1vh,24px);position:relative;direction:rtl}
+#homeScreen.screen-active .home-heading{width:100%;display:flex;align-items:flex-end;justify-content:space-between;gap:clamp(18px,2.2vw,34px);padding-inline:4px;min-height:62px}
+#homeScreen.screen-active .home-heading-main{min-width:0;display:flex;flex-direction:column;gap:5px;text-align:right}
+#homeScreen.screen-active .home-heading h1{margin:0;font-size:clamp(34px,3.15vw,54px);line-height:1;letter-spacing:-1px;white-space:nowrap}
+#homeScreen.screen-active .home-heading p{margin:0;font-size:clamp(12px,1.02vw,17px);line-height:1.3}
+#homeScreen.screen-active .home-heading-chip{flex:0 0 auto;white-space:nowrap}
+#homeScreen.screen-active .mode-grid{width:100%;height:100%;min-width:0;min-height:0;display:grid;grid-template-columns:minmax(0,1.16fr) minmax(0,1fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr) minmax(0,1fr);gap:clamp(14px,1.35vw,20px);direction:rtl;max-height:none}
+#homeScreen.screen-active .mode-card{min-width:0;min-height:0;transform:none!important;transition:box-shadow .16s ease,border-color .16s ease,filter .16s ease}
+#homeScreen.screen-active .mode-card:focus,#homeScreen.screen-active .mode-card.tv-focus{transform:none!important;box-shadow:0 0 0 4px rgba(255,255,255,.98),0 0 0 8px rgba(255,205,74,.94),0 17px 34px rgba(39,90,69,.19);border-color:#fff;z-index:12;filter:saturate(1.03)}
+#homeScreen.screen-active .mode-card-featured{grid-row:1 / 3;padding:clamp(20px,1.8vw,28px)}
+#homeScreen.screen-active .mode-card-featured .mode-copy{max-width:none;width:100%;padding-left:clamp(68px,6.4vw,92px);padding-right:2px}
+#homeScreen.screen-active .mode-card-featured .mode-copy strong{font-size:clamp(28px,2.3vw,39px)}
+#homeScreen.screen-active .mode-card-featured .mode-copy small{font-size:clamp(12px,1.03vw,17px)}
+#homeScreen.screen-active .mode-art-bubbles{top:clamp(42px,5.5vh,62px);right:50%;left:auto;transform:translateX(50%);width:78%;height:56%}
+#homeScreen.screen-active .mode-bubble-main{width:min(66%,222px);right:50%;transform:translateX(50%)}
+#homeScreen.screen-active .mode-bubble-a{left:4%;top:25%}
+#homeScreen.screen-active .mode-bubble-b{left:20%;top:8%}
+
+@media (min-width:1600px) and (min-height:850px){
+  #homeScreen.screen-active .home-portal{height:min(720px,100%);gap:24px}
+  #homeScreen.screen-active .home-heading{min-height:76px}
+  #homeScreen.screen-active .home-heading h1{font-size:56px}
+  #homeScreen.screen-active .home-heading p{font-size:17px}
+  #homeScreen.screen-active .mode-grid{gap:20px}
+  #homeScreen.screen-active .mode-card{border-radius:32px;padding:24px}
+  #homeScreen.screen-active .mode-card-featured{padding:30px}
+  #homeScreen.screen-active .mode-card-featured .mode-copy strong{font-size:42px}
+  #homeScreen.screen-active .mode-art-bubbles{top:66px;height:57%}
+  #homeScreen.screen-active .mode-bubble-main{width:min(67%,245px)}
+}
+
+@media (min-aspect-ratio:4/3) and (max-height:650px){
+  #homeScreen.screen-active .home-portal{width:min(1180px,calc(100vw - clamp(62px,8vw,120px)));height:100%;padding:3px 8px;gap:12px}
+  #homeScreen.screen-active .home-heading{min-height:52px}
+  #homeScreen.screen-active .home-heading h1{font-size:clamp(29px,2.8vw,40px)}
+  #homeScreen.screen-active .home-heading p{font-size:11px}
+  #homeScreen.screen-active .mode-grid{gap:10px}
+  #homeScreen.screen-active .mode-card{border-radius:22px;padding:12px 14px}
+  #homeScreen.screen-active .mode-card-featured{padding:16px 18px}
+  #homeScreen.screen-active .mode-art-bubbles{top:38px;height:52%;width:72%}
+  #homeScreen.screen-active .mode-bubble-main{width:min(61%,176px)}
+  #homeScreen.screen-active .mode-card-featured .mode-copy strong{font-size:clamp(23px,2.05vw,31px)}
+  #homeScreen.screen-active .mode-card-featured .mode-copy small{font-size:11.5px}
+  #homeScreen.screen-active .mode-card:focus,#homeScreen.screen-active .mode-card.tv-focus{box-shadow:0 0 0 3px #fff,0 0 0 6px rgba(255,205,74,.94),0 12px 24px rgba(39,90,69,.16)}
+}
+
+@media (max-aspect-ratio:4/3){
+  #homeScreen.screen-active .home-portal{width:min(920px,calc(100vw - 48px));height:100%;padding:4px 8px;gap:12px}
+  #homeScreen.screen-active .home-heading{min-height:54px}
+  #homeScreen.screen-active .home-heading-chip{display:none}
+  #homeScreen.screen-active .home-heading h1{font-size:clamp(30px,4.3vw,44px)}
+  #homeScreen.screen-active .home-heading p{font-size:12px}
+  #homeScreen.screen-active .mode-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:minmax(150px,.92fr) repeat(2,minmax(105px,.7fr));gap:12px}
+  #homeScreen.screen-active .mode-card-featured{grid-column:1 / 3;grid-row:auto;padding:16px 20px}
+  #homeScreen.screen-active .mode-art-bubbles{width:43%;height:86%;right:auto;left:3%;top:7%;transform:none}
+  #homeScreen.screen-active .mode-bubble-main{width:min(68%,178px);right:50%;transform:translateX(50%)}
+  #homeScreen.screen-active .mode-card-featured .mode-copy{max-width:55%;width:55%;padding-left:0}
+  #homeScreen.screen-active .mode-copy{max-width:66%}
+}
+
+@media (max-width:900px){
+  #homeScreen.screen-active .home-portal{width:calc(100vw - 34px);padding-inline:4px}
+  #homeScreen.screen-active .mode-grid{gap:10px}
+  #homeScreen.screen-active .mode-card{border-radius:21px}
+}
