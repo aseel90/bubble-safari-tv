@@ -273,3 +273,139 @@
 @media (max-aspect-ratio:4/3){#storyScreen .story-shell{width:min(930px,calc(100vw - 48px));height:100%;gap:10px;padding:0}#storyScreen .story-topbar{grid-template-columns:54px minmax(0,1fr) 150px;min-height:58px;gap:9px}#storyScreen .story-heading .eyebrow{display:none}#storyScreen .story-heading h2{font-size:clamp(23px,3vw,32px)}#storyScreen .story-heading p{font-size:11px}#storyScreen .story-progress{min-width:140px;width:150px;padding:7px 8px}#storyScreen .story-card{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(150px,1fr) auto}#storyScreen .story-visual{min-height:190px}#storyScreen .story-copy{padding:12px 18px;gap:6px;min-height:115px}#storyScreen #storyNarration{font-size:clamp(16px,2.2vw,21px);line-height:1.38}#storyScreen .story-path-note{font-size:9.5px;padding:5px 8px}#storyScreen .story-kicker{font-size:10px;padding:3px 8px;min-height:24px}#storyScreen .story-choices{min-height:65px;gap:9px}#storyScreen .story-choice{min-height:65px;border-radius:18px;padding:8px 10px}#storyScreen .story-choice-icon{width:42px;height:42px;flex-basis:42px;font-size:23px}#storyScreen .story-choice-copy strong{font-size:15px}#storyScreen .story-choice-copy small{font-size:9px}#storyScreen .story-character{width:min(24%,145px);height:min(45%,150px)}#storyScreen .story-hero{left:26%}#storyScreen .story-friend{right:17%}}
 @media (max-width:900px){#storyScreen .story-shell{width:calc(100vw - 34px)}}
 @media (prefers-reduced-motion:reduce){#storyScreen #storyProgressFill,#storyScreen .story-butterfly,#storyScreen .story-hero,#storyScreen .story-sparkle{transition:none!important;animation:none!important}}
+
+/* v1.2 Android TV final UI polish — safe-area, readable text, stable focus, responsive landscape */
+:root{
+  --tv-safe-x:clamp(24px,3.2vw,68px);
+  --tv-safe-y:clamp(14px,2.2vh,30px);
+  --tv-topbar-h:clamp(78px,12vh,104px);
+  --tv-focus-inner:#fffdf7;
+  --tv-focus-ring:#ffd865;
+  --tv-focus-shadow:0 0 0 3px var(--tv-focus-inner),0 0 0 7px rgba(255,216,101,.96),0 12px 28px rgba(35,72,58,.18);
+  --tv-panel-bg:rgba(255,253,247,.97);
+  --tv-text:#173a32;
+  --tv-muted:#4f7466;
+}
+html,body,#app{width:100%;height:100%;min-width:0!important;min-height:0!important}
+body{overflow:hidden;background:#d8f2d2;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}
+.app-shell{min-width:0!important;min-height:0!important;width:100vw;height:100vh;overflow:hidden}
+.topbar{
+  height:var(--tv-topbar-h);min-height:0!important;
+  padding:max(var(--tv-safe-y),env(safe-area-inset-top,0px)) max(var(--tv-safe-x),env(safe-area-inset-right,0px)) 0 max(var(--tv-safe-x),env(safe-area-inset-left,0px));
+  align-items:flex-start;
+}
+.stage{
+  inset:0;
+  padding:calc(var(--tv-topbar-h) + 8px) max(var(--tv-safe-x),env(safe-area-inset-right,0px)) max(var(--tv-safe-y),env(safe-area-inset-bottom,0px)) max(var(--tv-safe-x),env(safe-area-inset-left,0px));
+  min-width:0;min-height:0;
+}
+.screen,.screen-active{min-width:0;min-height:0}
+.brand-copy strong,.brand-copy small,.panel-heading,.question-copy,.setting-copy,.update-copy,.mode-copy,.story-cover-copy{position:relative;z-index:3}
+.brand-copy strong{line-height:1.05}.brand-copy small{color:#315f50}
+.panel{max-width:100%;max-height:100%;background:var(--tv-panel-bg)!important;border-color:rgba(255,255,255,.98);overflow:visible}
+.panel-heading h2,.finish-panel h2,.question-copy h2{color:#123d32}
+.panel-heading p,.setting-copy small,.update-copy small,.world-card small,.age-card small{color:var(--tv-muted)}
+
+/* D-pad focus stays outside content: no scaling, no text obstruction. */
+.focusable:focus,.focusable.tv-focus,.age-card:focus,.age-card.tv-focus,.world-card:focus,.world-card.tv-focus,
+.setting-toggle:focus,.setting-toggle.tv-focus,.quality-button:focus,.quality-button.tv-focus,.update-button:focus,.update-button.tv-focus,
+.primary-button:focus,.primary-button.tv-focus,.secondary-button:focus,.secondary-button.tv-focus,.icon-button:focus,.icon-button.tv-focus,
+.back-button:focus,.back-button.tv-focus,.replay-button:focus,.replay-button.tv-focus{
+  transform:none!important;filter:none!important;box-shadow:var(--tv-focus-shadow)!important;z-index:30;
+}
+.world-card:focus,.world-card.tv-focus,.age-card:focus,.age-card.tv-focus{transform:none!important}
+.choice:focus,.choice.tv-focus{transform:none!important;filter:none!important;z-index:20}
+.choice:focus .choice-bubble,.choice.tv-focus .choice-bubble{
+  box-shadow:inset 0 -13px 20px rgba(28,103,127,.10),0 0 0 4px #fffdf7,0 0 0 8px rgba(255,216,101,.96),0 14px 30px rgba(36,87,71,.16)!important;
+  animation:none!important;
+}
+#app[data-quality="full"][data-effects="on"] .choice.tv-focus .choice-content,
+#app[data-quality="full"][data-effects="on"] .choice:focus .choice-content{animation:none!important}
+
+/* Text must always sit above decorative layers. */
+.mode-card,.world-card,.age-card,.question-card,.setting-card{isolation:isolate}
+.mode-card::before,.mode-card::after,.world-card::before,.world-card::after,.question-card::before,.question-card::after{pointer-events:none;z-index:0}
+.mode-card .mode-copy,.mode-card .mode-age,.mode-card .mode-badge,.mode-card .mode-action,.world-card strong,.world-card small,
+.age-card strong,.age-card small,.question-copy,.replay-button,.setting-copy,.update-copy,.quality-options,.update-button{position:relative;z-index:4}
+.mode-card .mode-copy strong,.world-card strong,.age-card strong,.setting-copy strong,.update-copy strong{line-height:1.18;text-wrap:balance}
+.mode-card .mode-copy small,.world-card small,.age-card small,.setting-copy small,.update-copy small{line-height:1.4;overflow-wrap:anywhere}
+.mode-card .mode-copy small{font-size:clamp(13px,1.02vw,17px)}
+.world-card small{font-size:clamp(13px,1.02vw,17px);background:rgba(255,255,255,.76)}
+.age-card small{font-size:clamp(14px,1.15vw,19px)}
+.question-copy>span{font-size:clamp(13px,1vw,16px);font-weight:900}
+.choice-label{background:#fffdf8!important;color:#173f34!important;border-color:rgba(255,255,255,.98)!important;opacity:1!important}
+
+/* Layouts use the Android-TV viewport, not desktop-page assumptions. */
+#homeScreen.screen-active .home-portal{width:min(1360px,100%)!important;max-width:100%;height:100%!important;padding:clamp(4px,.8vh,10px) clamp(4px,.7vw,10px)!important}
+#homeScreen.screen-active .home-heading h1{white-space:normal!important;line-height:1.08!important}
+#homeScreen.screen-active .home-heading p{color:#416d5c;font-weight:800;line-height:1.38}
+#homeScreen.screen-active .home-heading-chip{background:rgba(255,255,255,.9);color:#315f50}
+#homeScreen.screen-active .mode-grid{min-height:0}
+#homeScreen.screen-active .mode-card{overflow:hidden}
+#homeScreen.screen-active .mode-card:focus,#homeScreen.screen-active .mode-card.tv-focus{transform:none!important;filter:none!important;box-shadow:var(--tv-focus-shadow)!important}
+
+.age-panel,.world-panel,.settings-panel,.finish-panel{width:min(1120px,100%)!important}
+.age-grid,.world-grid,.settings-grid{min-width:0;min-height:0}
+.world-card{overflow:hidden}
+.world-card.tv-focus,.world-card:focus{box-shadow:var(--tv-focus-shadow)!important}
+.settings-panel{overflow:hidden}
+.setting-card{min-width:0}
+.setting-toggle,.quality-button,.update-button{flex:0 0 auto}
+.version-line{font-size:clamp(12px,.95vw,14px)}
+.update-progress-track{max-width:100%}
+
+.game-layout{width:min(1220px,100%)!important;max-height:100%;min-width:0;min-height:0;gap:clamp(14px,3vh,28px)}
+.question-card{width:min(880px,100%);min-width:0!important;max-width:100%!important;background:rgba(255,253,247,.98)!important;overflow:hidden}
+.question-copy{min-width:0}
+.question-copy h2{line-height:1.15;text-wrap:balance;overflow-wrap:anywhere}
+.choices{width:min(1140px,100%);min-width:0;min-height:0;gap:clamp(12px,2.1vw,30px)}
+.choice{min-width:0;min-height:0;height:min(39vh,360px)}
+
+.ota-overlay{max-width:calc(100vw - (var(--tv-safe-x) * 2));bottom:max(var(--tv-safe-y),env(safe-area-inset-bottom,0px))}
+.feedback-card strong,.feedback-card span{position:relative;z-index:2}
+
+@media (max-height:650px){
+  :root{--tv-safe-y:clamp(10px,1.6vh,16px);--tv-topbar-h:clamp(66px,11vh,78px)}
+  .brand-mark{width:46px;height:46px}.brand-copy strong{font-size:clamp(17px,1.65vw,24px)}.brand-copy small{font-size:clamp(10px,.8vw,13px);margin-top:4px}
+  .hud-pill,.icon-button,.hud-progress{height:44px}.settings-button{flex-basis:44px;width:44px;min-width:44px}
+  #homeScreen.screen-active .home-heading{min-height:48px}
+  #homeScreen.screen-active .home-heading h1{font-size:clamp(27px,2.7vw,38px)}
+  #homeScreen.screen-active .home-heading p{font-size:clamp(11px,.95vw,14px)}
+  #homeScreen.screen-active .mode-card{padding:11px 13px}
+  #homeScreen.screen-active .mode-card-featured{padding:14px 16px}
+  .panel{padding:clamp(12px,2.2vh,20px) clamp(20px,3vw,34px)}
+  .panel-heading h2,.finish-panel h2{font-size:clamp(30px,3.2vw,43px)}
+  .panel-heading p{font-size:clamp(13px,1.15vw,17px);margin-bottom:clamp(8px,1.4vh,12px)}
+  .age-card{min-height:150px;padding:12px;gap:7px}.age-blob{width:88px;height:68px;font-size:30px}
+  .world-card{min-height:150px!important;padding:10px!important;gap:7px}.world-card .world-art{width:58px!important;height:58px!important}.world-card strong{font-size:clamp(19px,1.65vw,23px)}.world-card small{font-size:clamp(12px,.95vw,14px)}
+  .settings-grid{gap:8px}.setting-card{min-height:70px;padding:9px 12px}.setting-copy strong,.update-copy strong{font-size:clamp(17px,1.45vw,20px)}.setting-copy small,.update-copy small{font-size:clamp(12px,.95vw,14px)}
+  .setting-toggle,.quality-button{height:42px;min-width:86px}.quality-button{min-width:94px}.update-button{min-width:175px!important;height:44px!important}
+  .game-layout{gap:clamp(10px,2vh,16px)}.question-card{padding:8px 12px}.question-copy h2{font-size:clamp(24px,2.45vw,34px)}.choice{height:min(35vh,235px)}
+  .choice-label{font-size:clamp(14px,1.05vw,17px);padding:5px 12px}
+  .finish-panel .primary-button,.finish-panel .secondary-button{min-height:50px;height:52px}
+}
+
+@media (max-aspect-ratio:4/3){
+  :root{--tv-safe-x:clamp(18px,2.4vw,34px)}
+  #homeScreen.screen-active .home-portal{width:100%!important}
+  #homeScreen.screen-active .home-heading{min-height:50px}
+  #homeScreen.screen-active .mode-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+  .age-panel,.world-panel,.settings-panel,.finish-panel{width:100%!important}
+  .world-grid{gap:10px}
+  .game-layout{width:100%!important}
+}
+
+@media (min-width:2200px) and (min-height:1200px){
+  :root{--tv-safe-x:clamp(70px,4vw,150px);--tv-safe-y:clamp(34px,2.6vh,64px);--tv-topbar-h:clamp(116px,10vh,160px)}
+  .brand-mark{width:78px;height:78px}.brand-copy strong{font-size:38px}.brand-copy small{font-size:18px}
+  .hud-pill,.icon-button,.hud-progress{height:66px;border-radius:22px}.icon-button{width:66px;min-width:66px}.settings-button{flex-basis:66px}
+  #homeScreen.screen-active .home-portal{width:min(1840px,100%)!important;max-height:980px}
+  #homeScreen.screen-active .home-heading h1{font-size:68px}
+  #homeScreen.screen-active .home-heading p{font-size:22px}
+  #homeScreen.screen-active .mode-card-featured .mode-copy strong{font-size:50px}
+  #homeScreen.screen-active .mode-card .mode-copy small{font-size:19px}
+  .panel{width:min(1540px,100%)!important;border-radius:48px}
+  .game-layout{width:min(1680px,100%)!important}
+  .question-card{width:min(1180px,100%)}.question-copy h2{font-size:58px}
+  .choice{height:min(37vh,500px)}
+}
