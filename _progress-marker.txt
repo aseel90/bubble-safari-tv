@@ -1,27 +1,22 @@
-Bubble Safari / سفاري الفقاعات — v0.8 + Android TV debug APK verified
+Bubble Safari / سفاري الفقاعات — final story polish pass (2026-09-17)
 
-Web status:
+Story status:
+- Final character polish applied to Arin, mother, fox and forest ranger.
+- Arin hair silhouette/pigtails refined; mother hair shape refined and darkened.
+- Fox paws/hands refined, including the running pose used by scene 9.
+- Forest ranger face/hair/cap/uniform/badge details polished; wave pose now has its own arm pose.
+- Scene 23 audio no longer depends on a live two-file handoff: the browser stitches the apology WAV + the required beginning of scene 24 into one in-memory WAV before playback, avoiding the cut after "يمكنك الاعتذار".
+- Scene 24 still begins at the verified 11.564917s boundary in its original WAV, so narration is not duplicated.
+- Other scenes remain one continuous WAV each and advance only after the active audio completes; no forced early end boundaries were added.
+- Story audio cache version bumped to v36 and service-worker cache bumped to v37-final-polish-audio.
+
+Previous verified platform status:
 - Smart TV remote focus stable across Home → Age → World → Game → Finish → Back.
 - Ages: 2–3 = 12 rounds, 4–5 = 15 rounds.
 - Four worlds and seven challenge types are active.
-- Full 15/15 smoke tests passed in Jungle and Farm with 15 stars.
-- Play Again, Choose Another World and Return Home passed with remote focus.
-- Final browser console: 0 errors, 0 exceptions.
-- 960×540 and 1280×720 gameplay layouts passed without scroll/overflow.
-- Audio completion/compression remains intentionally postponed.
-
-Android TV status:
-- Native Android TV WebView wrapper added under android-tv/.
-- Offline game assets are bundled into the APK at build time.
+- Native Android TV WebView wrapper exists under android-tv/.
 - Package: com.bubblesafari.tv; version 0.8.0-tv1; minSdk 26; targetSdk 36.
-- LEANBACK_LAUNCHER, landscape, no touchscreen requirement, D-pad/OK/Back bridge implemented.
-- GitHub Actions Build debug APK: PASS.
-- APK metadata + bundled asset verification: PASS.
-- Upload artifact: PASS.
-- Verified APK source commit: 333d95f.
-- Verified artifact downloaded locally as bubble-safari-tv-debug-apk (1).zip.
 
-Next:
-- Install app-debug.apk on a real Xiaomi TV Stick.
-- Run full remote/audio/lifecycle QA on device.
-- Then create a signed release APK and finish/compress remaining Arabic audio.
+Next QA:
+- Run the full 27-scene story once on the target Xiaomi TV Stick with sound enabled.
+- Pay special attention to scenes 9, 17–20, 23–26 and app background/resume behavior.
