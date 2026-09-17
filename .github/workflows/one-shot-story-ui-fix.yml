@@ -1,0 +1,42 @@
+name: One-shot story UI repair
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/one-shot-story-ui-fix.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Restore story UI classes and guarded controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('stories-v12.js')
+          s=p.read_text(encoding='utf-8')
+          s=s.replace('<section id="storyLibraryScreen" class="screen"', '<section id="storyLibraryScreen" class="screen story-library-screen"')
+          s=s.replace('<section id="storyNarratedScreen" class="screen"', '<section id="storyNarratedScreen" class="screen story-screen"')
+          s=s.replace('class="story-library-back focusable"', 'class="back-button focusable story-library-back"')
+          s=s.replace('class="story-back focusable"', 'class="back-button focusable story-back"')
+          old="  $('#storyLibraryBackButton').addEventListener('click',returnHome);$('#storyBackButton').addEventListener('click',()=>{stopAudio();setActiveScreen('storyLibraryScreen')});$('#storyPlayPauseButton').addEventListener('click',togglePlayback);$('#storyReplaySegmentButton').addEventListener('click',replaySegment);$('#storyReplayStoryButton').addEventListener('click',replayStory);$('#storyChooseAnotherButton').addEventListener('click',()=>{stopAudio();setActiveScreen('storyLibraryScreen')});"
+          new="  $('#storyLibraryBackButton')?.addEventListener('click',returnHome);$('#storyBackButton')?.addEventListener('click',()=>{stopAudio();setActiveScreen('storyLibraryScreen')});$('#storyPlayPauseButton')?.addEventListener('click',togglePlayback);$('#storyReplaySegmentButton')?.addEventListener('click',replaySegment);$('#storyReplayStoryButton')?.addEventListener('click',replayStory);$('#storyChooseAnotherButton')?.addEventListener('click',()=>{stopAudio();setActiveScreen('storyLibraryScreen')});"
+          s=s.replace(old,new)
+          p.write_text(s,encoding='utf-8')
+          PY
+          node --check stories-v12.js
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add stories-v12.js
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Restore narrated story UI wiring"
+          git push origin HEAD:main
