@@ -1,0 +1,61 @@
+name: One-shot story runtime repair
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/one-shot-story-runtime-fix.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Repair narrated story runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+
+          p = Path('stories-v12.js')
+          s = p.read_text(encoding='utf-8')
+
+          marker = "function installScreens(){\n"
+          legacy_remove = "  $('#storyScreen')?.remove();\n"
+          if legacy_remove not in s:
+              if marker not in s:
+                  raise SystemExit('installScreens marker not found')
+              s = s.replace(marker, marker + legacy_remove, 1)
+
+          s = s.replace('id="storyLibraryBackButton" class="story-library-back focusable" data-focusable data-autofocus',
+                        'id="storyLibraryBackButton" class="story-library-back focusable" data-focusable')
+          s = s.replace('id="storyBackButton" class="story-back focusable" data-focusable data-autofocus',
+                        'id="storyBackButton" class="story-back focusable" data-focusable')
+          s = s.replace('id="storyPlayPauseButton" class="story-control focusable" data-focusable type="button"',
+                        'id="storyPlayPauseButton" class="story-control focusable" data-focusable data-autofocus type="button"')
+
+          p.write_text(s, encoding='utf-8')
+
+          sw = Path('service-worker.js')
+          w = sw.read_text(encoding='utf-8')
+          w = w.replace("const CACHE = 'bubble-safari-v37-final-polish-audio';",
+                        "const CACHE = 'bubble-safari-v38-story-runtime-qa';")
+          sw.write_text(w, encoding='utf-8')
+          PY
+          node --check stories-v12.js
+          node --check service-worker.js
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add stories-v12.js service-worker.js
+          if git diff --cached --quiet; then
+            echo 'No changes needed'
+            exit 0
+          fi
+          git commit -m "Repair narrated story runtime and focus"
+          git push origin HEAD:main
