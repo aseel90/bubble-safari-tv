@@ -1,4 +1,4 @@
-const CACHE = 'bubble-safari-v34-character-polish';
+const CACHE = 'bubble-safari-v35-story-polish';
 const CORE = [
   './', './index.html', './styles.css', './art.css', './worlds.css', './polish-v08.css', './stories-v12.css',
   './game-v3.js', './stories-v12.js', './game-data.js', './tv-nav.js', './voice.js', './art.js', './scene-art.js',
@@ -40,7 +40,7 @@ async function networkFirst(request) {
     if (response.status === 200) return cachePut(request, response);
     return response;
   } catch {
-    const cached = await caches.match(request, { ignoreSearch: true });
+    const cached = await caches.match(request);
     if (cached) return cached;
     if (request.mode === 'navigate') return (await caches.match('./index.html')) || Response.error();
     return Response.error();
@@ -59,12 +59,13 @@ self.addEventListener('fetch', event => {
     const isCoreAsset = CORE_NAMES.has(url.pathname);
 
     if (isAudio) {
-      const cached = await caches.match(request, { ignoreSearch: true });
-      if (cached) return cached;
       try {
         const response = await fetch(request, { cache: 'no-store' });
-        return response.status === 200 ? cachePut(request, response) : response;
+        if (response.status === 200) return cachePut(request, response);
+        return response;
       } catch {
+        const cached = await caches.match(request);
+        if (cached) return cached;
         return Response.error();
       }
     }
