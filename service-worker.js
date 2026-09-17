@@ -1,4 +1,4 @@
-const CACHE = 'bubble-safari-v39-story-runtime-final';
+const CACHE = 'bubble-safari-v40-story-qa-final';
 const CORE = [
   './', './index.html', './styles.css', './art.css', './worlds.css', './polish-v08.css', './stories-v12.css',
   './game-v3.js', './stories-v12.js', './game-data.js', './tv-nav.js', './voice.js', './art.js', './scene-art.js',
