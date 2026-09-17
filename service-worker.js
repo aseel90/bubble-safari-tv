@@ -1,7 +1,7 @@
-const CACHE = 'bubble-safari-v30-stories';
+const CACHE = 'bubble-safari-v31-story-module';
 const CORE = [
-  './', './index.html', './styles.css', './art.css', './worlds.css', './polish-v08.css',
-  './game-v3.js', './game-data.js', './tv-nav.js', './voice.js', './art.js', './scene-art.js',
+  './', './index.html', './styles.css', './art.css', './worlds.css', './polish-v08.css', './stories-v12.css',
+  './game-v3.js', './stories-v12.js', './game-data.js', './tv-nav.js', './voice.js', './art.js', './scene-art.js',
   './manifest.webmanifest', './favicon.svg'
 ];
 
