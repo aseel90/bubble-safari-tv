@@ -336,7 +336,7 @@ body{overflow:hidden;background:#d8f2d2;text-rendering:optimizeLegibility;-webki
 .choice-label{background:#fffdf8!important;color:#173f34!important;border-color:rgba(255,255,255,.98)!important;opacity:1!important}
 
 /* Layouts use the Android-TV viewport, not desktop-page assumptions. */
-#homeScreen.screen-active .home-portal{width:min(1360px,100%)!important;max-width:100%;height:100%!important;padding:clamp(4px,.8vh,10px) clamp(4px,.7vw,10px)!important}
+#homeScreen.screen-active .home-portal{width:min(1360px,100%)!important;max-width:100%;height:min(760px,100%)!important;padding:clamp(4px,.8vh,10px) clamp(4px,.7vw,10px)!important}
 #homeScreen.screen-active .home-heading h1{white-space:normal!important;line-height:1.08!important}
 #homeScreen.screen-active .home-heading p{color:#416d5c;font-weight:800;line-height:1.38}
 #homeScreen.screen-active .home-heading-chip{background:rgba(255,255,255,.9);color:#315f50}
@@ -399,7 +399,7 @@ body{overflow:hidden;background:#d8f2d2;text-rendering:optimizeLegibility;-webki
   :root{--tv-safe-x:clamp(70px,4vw,150px);--tv-safe-y:clamp(34px,2.6vh,64px);--tv-topbar-h:clamp(116px,10vh,160px)}
   .brand-mark{width:78px;height:78px}.brand-copy strong{font-size:38px}.brand-copy small{font-size:18px}
   .hud-pill,.icon-button,.hud-progress{height:66px;border-radius:22px}.icon-button{width:66px;min-width:66px}.settings-button{flex-basis:66px}
-  #homeScreen.screen-active .home-portal{width:min(1840px,100%)!important;max-height:980px}
+  #homeScreen.screen-active .home-portal{width:min(1840px,100%)!important;height:min(980px,100%)!important;max-height:980px}
   #homeScreen.screen-active .home-heading h1{font-size:68px}
   #homeScreen.screen-active .home-heading p{font-size:22px}
   #homeScreen.screen-active .mode-card-featured .mode-copy strong{font-size:50px}
