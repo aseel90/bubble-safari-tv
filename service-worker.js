@@ -1,4 +1,4 @@
-const CACHE = 'bubble-safari-v41-story-final';
+const CACHE = 'bubble-safari-v42-story-audio-smooth';
 const CORE = [
   './', './index.html', './styles.css', './art.css', './worlds.css', './polish-v08.css', './stories-v12.css',
   './game-v3.js', './stories-v12.js', './game-data.js', './tv-nav.js', './voice.js', './art.js', './scene-art.js',
@@ -59,13 +59,13 @@ self.addEventListener('fetch', event => {
     const isCoreAsset = CORE_NAMES.has(url.pathname);
 
     if (isAudio) {
+      const cached = await caches.match(request);
+      if (cached) return cached;
       try {
         const response = await fetch(request, { cache: 'no-store' });
         if (response.status === 200) return cachePut(request, response);
         return response;
       } catch {
-        const cached = await caches.match(request);
-        if (cached) return cached;
         return Response.error();
       }
     }
