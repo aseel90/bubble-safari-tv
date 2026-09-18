@@ -1,7 +1,7 @@
-const CACHE = 'bubble-safari-v44-story-visual-polish';
+const CACHE = 'bubble-safari-v45-story-sprites';
 const CORE = [
   './', './index.html', './styles.css', './art.css', './worlds.css', './polish-v08.css', './stories-v12.css',
-  './game-v3.js', './stories-v12.js', './game-data.js', './tv-nav.js', './voice.js', './art.js', './scene-art.js',
+  './game-v3.js', './stories-v12.js', './story-sprites.svg', './game-data.js', './tv-nav.js', './voice.js', './art.js', './scene-art.js',
   './manifest.webmanifest', './favicon.svg'
 ];
 
