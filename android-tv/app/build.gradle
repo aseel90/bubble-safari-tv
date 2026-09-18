@@ -12,7 +12,9 @@ tasks.register('syncWebAssets', Sync) {
         include 'art.css'
         include 'worlds.css'
         include 'polish-v08.css'
+        include 'stories-v12.css'
         include 'game-v3.js'
+        include 'stories-v12.js'
         include 'game-data.js'
         include 'tv-nav.js'
         include 'voice.js'
@@ -38,8 +40,8 @@ android {
         applicationId 'com.bubblesafari.tv'
         minSdk 26
         targetSdk 36
-        versionCode 3
-        versionName '0.9.0-tv3-progress'
+        versionCode 4
+        versionName '0.9.1-tv4'
     }
 
     sourceSets.getByName('main').assets.directories.add(
