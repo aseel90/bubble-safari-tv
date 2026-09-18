@@ -1,6 +1,6 @@
 const $=(selector,root=document)=>root.querySelector(selector);
 const STORY_AUDIO_BASE='./audio/stories/arin-fox/';
-const STORY_AUDIO_VERSION='v36';
+const STORY_AUDIO_VERSION='v37';
 const STORY_AUTO_NOTE='تعمل القصة تلقائيًا من البداية إلى النهاية.';
 
 const ARIN_FOX_SEGMENTS=[
@@ -26,8 +26,8 @@ const ARIN_FOX_SEGMENTS=[
   {file:'arin-fox-20-lesson.wav',chapter:'درس مهم',caption:'قال الحارس: عندما تريد شيئًا، اسأل بأدب ولا تتبع الآخرين.',theme:'forest',actors:['fox','ranger']},
   {file:'arin-fox-21-grandma-opens.wav',chapter:'الباب يفتح',caption:'عندما أصبح المكان آمنًا، فتحت الجدة الباب وعانقت أَرين.',theme:'garden',actors:['arin','grandma','ranger'],basket:true},
   {file:'arin-fox-22-gift.wav',chapter:'الهدية',caption:'وضعت أَرين السلة على الطاولة وقدمت لجدتها الزهرة الجميلة.',theme:'garden',actors:['arin','grandma'],basket:true},
-  {file:'arin-fox-23-fox-apology.wav',chapter:'اعتذار الثعلب',caption:'اعتذر الثعلب، وذكّرته الجدة أن يتعلم من خطئه، فوعد ألا يخيف أحدًا مرة أخرى.',theme:'garden',actors:['arin','grandma','fox'],stitchParts:[{file:'arin-fox-23-fox-apology.wav'},{file:'arin-fox-24-return.wav',endAt:11.564917}],autoAdvanceDelayMs:900},
-  {file:'arin-fox-24-return.wav',chapter:'طريق العودة',caption:'حان وقت العودة، فرافق الحارس أَرين في جزء من الطريق.',theme:'return',actors:['arin','ranger'],basket:true,startAt:11.564917},
+  {file:'arin-fox-23-fox-apology-v2.wav',chapter:'اعتذار الثعلب',caption:'اعتذر الثعلب، وذكّرته الجدة أن يتعلم من خطئه، فوعد ألا يخيف أحدًا مرة أخرى.',theme:'garden',actors:['arin','grandma','fox'],autoAdvanceDelayMs:900},
+  {file:'arin-fox-24-return.wav',chapter:'طريق العودة',caption:'حان وقت العودة، فرافق الحارس أَرين في جزء من الطريق.',theme:'return',actors:['arin','ranger'],basket:true},
   {file:'arin-fox-25-mother-final.wav',chapter:'في البيت',caption:'عادت أَرين إلى أمها وحكت لها عن المغامرة.',theme:'home',actors:['arin','mother']},
   {file:'arin-fox-26-moral.wav',chapter:'ما تعلمته أَرين',caption:'تعلمت أَرين أن اللطف لا يعني الثقة بكل شخص، وأن طلب المساعدة تصرف شجاع.',theme:'ending',actors:['arin','mother']},
   {file:'arin-fox-27-ending.wav',chapter:'النهاية',caption:'أما الثعلب، ففي المرة التالية لوّح من بعيد وقال: صباح الخير! ثم أكمل طريقه.',theme:'ending',actors:['arin','fox']}
@@ -104,7 +104,7 @@ function storyLayout(segment={}){
     case 'arin-fox-20-lesson.wav':add('ranger',385,222,1.02,'right','smile','stop');add('fox',610,250,.82,'left','sorry');break;
     case 'arin-fox-21-grandma-opens.wav':add('arin',390,245,1,'right','smile');add('grandma',550,228,1,'left');add('ranger',710,226,.82,'left');break;
     case 'arin-fox-22-gift.wav':add('arin',420,245,1,'right','smile','hold');add('grandma',560,228,1,'left');break;
-    case 'arin-fox-23-fox-apology.wav':add('fox',280,252,.84,'right','sorry');add('arin',448,245,1,'left');add('grandma',600,228,.98,'left');break;
+    case 'arin-fox-23-fox-apology-v2.wav':add('fox',280,252,.84,'right','sorry');add('arin',448,245,1,'left');add('grandma',600,228,.98,'left');break;
     case 'arin-fox-24-return.wav':add('ranger',260,223,.92,'right','smile','wave');add('arin',470,245,1,'right','smile','walk');out.path=true;out.house=false;break;
     case 'arin-fox-25-mother-final.wav':add('arin',350,242,1,'right','smile','hold');add('mother',525,222,1.05,'left');break;
     case 'arin-fox-26-moral.wav':add('arin',355,242,1,'right','smile');add('mother',525,222,1.05,'left');break;
