@@ -4,7 +4,7 @@ const STORY_AUDIO_VERSION='v37';
 const STORY_AUTO_NOTE='تعمل القصة تلقائيًا من البداية إلى النهاية.';
 
 const STORY_IMAGE_BASE='./assets/stories/arin-fox/';
-const STORY_IMAGE_VERSION='v46';
+const STORY_IMAGE_VERSION='v47';
 const ARIN_FOX_SCENE_IMAGES=[
   'arinfox_scene_01_2026-09-18T18-53-29-720Z.png',
   'arinfox_scene_02_2026-09-18T17-57-24-516Z.png',
@@ -163,7 +163,15 @@ function installScreens(){
   if($('#storyLibraryScreen'))return;
   ($('.stage')||document.body).insertAdjacentHTML('beforeend',`<section id="storyLibraryScreen" class="screen story-library-screen" aria-hidden="true"><div class="story-library-shell"><div class="story-library-topbar"><button id="storyLibraryBackButton" class="back-button focusable story-library-back" data-focusable type="button" aria-label="العودة">←</button><div class="story-library-heading"><span class="eyebrow">استمع وشاهد</span><h2>القصص</h2><p>اختر قصة لتعمل تلقائيًا من البداية حتى النهاية.</p></div><div class="story-library-count"><span>1</span><small>قصة</small></div></div><div id="storyLibraryGrid" class="story-library-grid"></div></div></section><section id="storyNarratedScreen" class="screen story-screen" aria-hidden="true"><div class="story-player-shell"><div class="story-player-topbar"><button id="storyBackButton" class="back-button focusable story-back" data-focusable type="button" aria-label="العودة للقصص">←</button><div class="story-player-heading"><span class="eyebrow">قصة مسموعة</span><h2 id="storyTitle">أرين والثعلب</h2><p id="storyChapterTitle">صباح جميل</p></div><div id="storyProgress" class="story-progress" role="progressbar" aria-valuemin="1" aria-valuemax="27" aria-valuenow="1"><strong id="storyProgressText">1 / 27</strong><span class="story-progress-track"><span id="storyProgressFill"></span></span></div></div><div class="story-stage-card"><div id="storyVisual" class="story-visual"></div><div class="story-caption-panel"><span class="story-kicker">الراوية</span><p id="storyNarration"></p><span id="storyPathNote" class="story-path-note">تعمل القصة تلقائيًا من البداية إلى النهاية.</span></div></div><div id="storyControls" class="story-controls"><button id="storyPlayPauseButton" class="story-control focusable" data-focusable data-autofocus type="button"><span id="storyPlayPauseIcon" class="story-control-icon">Ⅱ</span><span id="storyPlayPauseText">إيقاف مؤقت</span></button><button id="storyReplaySegmentButton" class="story-control focusable" data-focusable type="button"><span class="story-control-icon">↺</span><span>إعادة الجزء</span></button></div><div id="storyEnding" class="story-ending hidden" aria-hidden="true"><strong>أحسنت!</strong><span>انتهت القصة ولن تبدأ قصة أخرى تلقائيًا.</span><div class="story-ending-actions"><button id="storyReplayStoryButton" class="story-control focusable" data-focusable type="button">إعادة القصة</button><button id="storyChooseAnotherButton" class="story-control focusable" data-focusable type="button">اختيار قصة أخرى</button></div></div></div></section>`);
 }
-function renderLibrary(){const grid=$('#storyLibraryGrid');if(!grid)return;preloadSceneImage(0);grid.innerHTML='';STORIES.forEach((story,index)=>{const card=document.createElement('button');card.type='button';card.className='story-cover-card focusable';card.dataset.focusable='';if(index===0)card.dataset.autofocus='';card.innerHTML=`<span class="story-cover-art">${sceneSvg({theme:'forest',actors:['arin','fox'],basket:true})}<span class="story-cover-play">▶</span></span><span class="story-cover-copy"><span class="story-type-badge">${story.typeLabel}</span><strong>${story.title}</strong><small>${story.description}</small><span class="story-duration">◷ ${story.durationLabel}</span></span>`;card.addEventListener('click',()=>openStory(story.id));grid.appendChild(card)});
+function renderLibrary(){
+  const grid=$('#storyLibraryGrid');if(!grid)return;
+  preloadSceneImage(0);grid.innerHTML='';
+  STORIES.forEach((story,index)=>{
+    const card=document.createElement('button');card.type='button';card.className='story-cover-card focusable';card.dataset.focusable='';if(index===0)card.dataset.autofocus='';
+    const coverSrc=sceneImagePath(0);
+    card.innerHTML=`<span class="story-cover-art"><img class="story-cover-image" src="${coverSrc}" alt="" aria-hidden="true" draggable="false"><span class="story-cover-play">▶</span></span><span class="story-cover-copy"><span class="story-type-badge">${story.typeLabel}</span><strong>${story.title}</strong><small>${story.description}</small><span class="story-duration">◷ ${story.durationLabel}</span></span>`;
+    card.addEventListener('click',()=>openStory(story.id));grid.appendChild(card)
+  });
 }
 function setFocus(el){if(!el)return;document.querySelectorAll('.tv-focus').forEach(node=>node.classList.remove('tv-focus'));try{el.focus({preventScroll:true})}catch{el.focus()}el.classList.add('tv-focus')}
 function setActiveScreen(id){document.activeElement?.blur();document.querySelectorAll('.screen').forEach(screen=>{const active=screen.id===id;screen.classList.toggle('screen-active',active);screen.setAttribute('aria-hidden',active?'false':'true')});$('#hud')?.classList.add('hidden');$('#settingsButton')?.classList.add('hidden');$('#soundButton')?.classList.add('hidden');setTimeout(()=>setFocus($(`#${id} [data-autofocus]`)||$(`#${id} [data-focusable]`)),60)}
@@ -185,15 +193,17 @@ function renderSegment(){
   const story=player.story,segment=story?.segments?.[player.index];if(!story||!segment)return;
   setStoryPathNote();$('#storyChapterTitle').textContent=segment.chapter;$('#storyNarration').textContent=segment.caption;
   const visual=$('#storyVisual');visual.className='story-visual story-theme-'+segment.theme;
-  const frame=document.createElement('div');frame.className='story-scene-enter story-static-scene';
+  const frame=document.createElement('div');frame.className='story-scene-enter story-static-scene story-scene-loading';
   const src=sceneImagePath(player.index);
-  if(src){
-    const image=document.createElement('img');image.className='story-scene-image';image.alt='';image.setAttribute('aria-hidden','true');image.decoding='async';image.draggable=false;try{image.fetchPriority='high'}catch{}
-    const fallback=document.createElement('div');fallback.className='story-scene-fallback';fallback.hidden=true;fallback.innerHTML=sceneSvg(segment);
-    image.addEventListener('error',()=>{image.remove();fallback.hidden=false},{once:true});
-    image.src=src;frame.append(image,fallback);
-  }else{frame.innerHTML=sceneSvg(segment)}
-  visual.replaceChildren(frame);preloadSceneImage(player.index+1);
+  const image=document.createElement('img');image.className='story-scene-image';image.alt='';image.setAttribute('aria-hidden','true');image.decoding='async';image.draggable=false;try{image.fetchPriority='high'}catch{}
+  let retried=false;
+  image.addEventListener('load',()=>{frame.classList.remove('story-scene-loading');frame.classList.add('story-scene-ready')});
+  image.addEventListener('error',()=>{
+    if(!retried){retried=true;image.src=src+(src.includes('?')?'&':'?')+'retry='+Date.now();return}
+    frame.classList.remove('story-scene-loading');frame.classList.add('story-scene-error');image.remove();
+    const error=document.createElement('div');error.className='story-scene-error-message';error.textContent='تعذر تحميل صورة المشهد.';frame.appendChild(error);
+  });
+  image.src=src;frame.appendChild(image);visual.replaceChildren(frame);preloadSceneImage(player.index+1);
   const current=player.index+1,total=story.segments.length;$('#storyProgressText').textContent=current+' / '+total;$('#storyProgressFill').style.transform='scaleX('+(current/total)+')';$('#storyProgress').setAttribute('aria-valuenow',String(current));$('#storyEnding').classList.add('hidden');$('#storyEnding').setAttribute('aria-hidden','true');$('#storyControls').classList.remove('hidden');player.finished=false;syncControls()
 }
 async function playCurrentAudioPart({render=false}={}){const segment=player.story?.segments?.[player.index],parts=segmentAudioParts(segment),part=parts[player.partIndex];if(!segment||!part)return;clearAutoAdvanceTimer();const token=++player.token;player.partBoundaryHandled=false;if(render)renderSegment();let source=audioPath(part),start=Number(part.startAt||0);if(segment.stitchParts?.length&&player.partIndex===0){try{source=await stitchedAudioPath(segment);start=0}catch{source=audioPath(part)}}if(token!==player.token)return;const target=source.startsWith('blob:')?source:new URL(source,location.href).href;const sourceChanged=audio.src!==target;if(sourceChanged){audio.src=source;audio.load()}audio.muted=storyMuted();preloadNext();if(audio.muted){audio.pause();syncControls();setStoryPathNote('الصوت مكتوم. اضغط تشغيل الصوت لبدء القصة.');return}if(start<=0){try{await audio.play();if(token===player.token)syncControls()}catch{if(token===player.token){syncControls();setStoryPathNote('اضغط متابعة لبدء صوت الراوية.')}}return}if(audio.readyState<1)await new Promise(resolve=>audio.addEventListener('loadedmetadata',resolve,{once:true}));if(Math.abs((audio.currentTime||0)-start)>.12)audio.currentTime=start;try{await audio.play();if(token===player.token)syncControls()}catch{if(token===player.token){syncControls();setStoryPathNote('اضغط متابعة لبدء صوت الراوية.')}}}
@@ -213,5 +223,5 @@ function wire(){
   audio.addEventListener('timeupdate',()=>{const segment=player.story?.segments?.[player.index],part=segmentAudioParts(segment)[player.partIndex];if(!part?.endAt||player.partBoundaryHandled)return;if(audio.currentTime>=Number(part.endAt)-.04){audio.pause();completeAudioPart()}});audio.addEventListener('ended',completeAudioPart);audio.addEventListener('play',()=>{player.partBoundaryHandled=false;setStoryPathNote();syncControls()});audio.addEventListener('pause',syncControls);audio.addEventListener('error',()=>{clearAutoAdvanceTimer();setStoryPathNote('تعذر تشغيل هذا الجزء الآن. اختر إعادة الجزء للمحاولة.');syncControls()});
 }
 
-async function init(){try{await ensureStorySprites()}catch(error){console.error('Story sprite load failed',error)}installScreens();renderLibrary();wire()}
+async function init(){installScreens();renderLibrary();wire()}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>void init(),0),{once:true});else setTimeout(()=>void init(),0);
