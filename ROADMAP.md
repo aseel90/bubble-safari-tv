@@ -4,7 +4,7 @@
 
 ### Incident: Arin & the Fox — Scene 23 narration is truncated
 
-**Status:** Confirmed source-asset issue. Awaiting a new recording for Scene 23 only.
+**Status:** Fixed in production asset pipeline: Scene 23 was re-recorded as a standalone file and cross-scene stitching was removed.
 
 #### What was verified
 
@@ -14,16 +14,14 @@
 - `arin-fox-24-return.wav` starts with the Scene 24 return narration ("عندما حان وقت العودة..."), so Scene 24 is not the missing continuation of Scene 23.
 - The current runtime workaround stitches the beginning of Scene 24 onto Scene 23 and starts Scene 24 at an offset. This was introduced to compensate for the incomplete Scene 23 asset and must not be kept as the final production design.
 
-#### Required fix
+#### Implemented fix
 
-1. Record a **new complete Scene 23 narration only**.
-2. Keep Scene 24 as its own complete file.
-3. After the new Scene 23 file is reviewed and approved:
-   - replace `arin-fox-23-fox-apology.wav`;
-   - remove `stitchParts` from Scene 23;
-   - remove `startAt` from Scene 24;
-   - bump the story audio cache/version;
-   - verify sequential playback from Scene 22 through Scene 25 on Android TV/WebView.
+1. Re-recorded **Scene 23 only** using the approved Leda narration voice.
+2. Added the complete standalone asset as `arin-fox-23-fox-apology-v2.wav`.
+3. Kept Scene 24 as its own independent complete file.
+4. Removed `stitchParts` from Scene 23 and `startAt` from Scene 24.
+5. Bumped the story audio and service-worker cache versions.
+6. Final acceptance still requires sequential playback verification from Scene 22 through Scene 25 on Android TV/WebView.
 
 #### Scene 23 acceptance criteria
 
@@ -37,6 +35,8 @@ The final Scene 23 asset must:
 - remain compatible with the story audio format used by the app (currently PCM WAV, 24 kHz, mono, 16-bit unless the whole story pipeline is intentionally migrated);
 - include a short natural tail/silence after the final spoken word, rather than depending on runtime cutting;
 - be listened to and approved before being wired into the production story.
+
+**Incident lesson:** if a scene recording is truncated, regenerate that scene as a complete standalone asset. Never borrow speech from the next scene to repair it at runtime.
 
 ### Prevention rules for all future stories
 
