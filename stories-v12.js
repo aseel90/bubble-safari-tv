@@ -3,6 +3,41 @@ const STORY_AUDIO_BASE='./audio/stories/arin-fox/';
 const STORY_AUDIO_VERSION='v37';
 const STORY_AUTO_NOTE='تعمل القصة تلقائيًا من البداية إلى النهاية.';
 
+const STORY_IMAGE_BASE='./assets/stories/arin-fox/';
+const STORY_IMAGE_VERSION='v46';
+const ARIN_FOX_SCENE_IMAGES=[
+  'arinfox_scene_01_2026-09-18T18-53-29-720Z.png',
+  'arinfox_scene_02_2026-09-18T17-57-24-516Z.png',
+  'arinfox_scene_03_2026-09-18T17-58-25-364Z.png',
+  'arinfox_scene_04_2026-09-18T17-58-35-275Z.png',
+  'arinfox_scene_05_2026-09-18T17-58-45-622Z.png',
+  'arinfox_scene_06_2026-09-18T17-58-55-686Z.png',
+  'arinfox_scene_07_2026-09-18T17-59-05-062Z.png',
+  'arinfox_scene_08_2026-09-18T17-59-15-467Z.png',
+  'arinfox_scene_09_2026-09-18T18-55-35-944Z.png',
+  'arinfox_scene_10_2026-09-18T17-59-33-781Z.png',
+  'arinfox_scene_11_2026-09-18T17-59-43-414Z.png',
+  'arinfox_scene_12_2026-09-18T17-59-53-209Z.png',
+  'arinfox_scene_13_2026-09-18T18-00-03-610Z.png',
+  'arinfox_scene_14_2026-09-18T18-00-14-038Z.png',
+  'arinfox_scene_15_2026-09-18T18-00-24-296Z.png',
+  'arinfox_scene_16_2026-09-18T18-00-41-496Z.png',
+  'arinfox_scene_17_2026-09-18T18-01-07-187Z.png',
+  'arinfox_scene_18_2026-09-18T18-01-17-359Z.png',
+  'arinfox_scene_19_2026-09-18T18-01-27-385Z.png',
+  'arinfox_scene_20_2026-09-18T18-01-37-914Z.png',
+  'arinfox_scene_21_2026-09-18T18-01-48-087Z.png',
+  'arinfox_scene_22_2026-09-18T18-02-06-303Z.png',
+  'arinfox_scene_23_2026-09-18T18-02-16-052Z.png',
+  'arinfox_scene_24_2026-09-18T18-02-26-179Z.png',
+  'arinfox_scene_25_2026-09-18T18-02-36-134Z.png',
+  'arinfox_scene_26_2026-09-18T18-02-46-671Z.png',
+  'arinfox_scene_27_2026-09-18T18-02-56-244Z.png'
+];
+const preloadedSceneImages=new Set();
+function sceneImagePath(index){const file=ARIN_FOX_SCENE_IMAGES[index];return file?STORY_IMAGE_BASE+file+'?v='+STORY_IMAGE_VERSION:''}
+function preloadSceneImage(index){const src=sceneImagePath(index);if(!src||preloadedSceneImages.has(src))return;preloadedSceneImages.add(src);const image=new Image();image.decoding='async';try{image.fetchPriority='low'}catch{}image.src=src}
+
 const ARIN_FOX_SEGMENTS=[
   {file:'arin-fox-01-intro.wav',chapter:'صباح جميل',caption:'في قرية صغيرة عاشت طفلة لطيفة اسمها أَرين.',theme:'village',actors:['arin']},
   {file:'arin-fox-02-basket.wav',chapter:'هدية للجدة',caption:'جهزت الأم سلة صغيرة لتأخذها أَرين إلى جدتها.',theme:'home',actors:['arin','mother'],basket:true},
@@ -128,7 +163,7 @@ function installScreens(){
   if($('#storyLibraryScreen'))return;
   ($('.stage')||document.body).insertAdjacentHTML('beforeend',`<section id="storyLibraryScreen" class="screen story-library-screen" aria-hidden="true"><div class="story-library-shell"><div class="story-library-topbar"><button id="storyLibraryBackButton" class="back-button focusable story-library-back" data-focusable type="button" aria-label="العودة">←</button><div class="story-library-heading"><span class="eyebrow">استمع وشاهد</span><h2>القصص</h2><p>اختر قصة لتعمل تلقائيًا من البداية حتى النهاية.</p></div><div class="story-library-count"><span>1</span><small>قصة</small></div></div><div id="storyLibraryGrid" class="story-library-grid"></div></div></section><section id="storyNarratedScreen" class="screen story-screen" aria-hidden="true"><div class="story-player-shell"><div class="story-player-topbar"><button id="storyBackButton" class="back-button focusable story-back" data-focusable type="button" aria-label="العودة للقصص">←</button><div class="story-player-heading"><span class="eyebrow">قصة مسموعة</span><h2 id="storyTitle">أرين والثعلب</h2><p id="storyChapterTitle">صباح جميل</p></div><div id="storyProgress" class="story-progress" role="progressbar" aria-valuemin="1" aria-valuemax="27" aria-valuenow="1"><strong id="storyProgressText">1 / 27</strong><span class="story-progress-track"><span id="storyProgressFill"></span></span></div></div><div class="story-stage-card"><div id="storyVisual" class="story-visual"></div><div class="story-caption-panel"><span class="story-kicker">الراوية</span><p id="storyNarration"></p><span id="storyPathNote" class="story-path-note">تعمل القصة تلقائيًا من البداية إلى النهاية.</span></div></div><div id="storyControls" class="story-controls"><button id="storyPlayPauseButton" class="story-control focusable" data-focusable data-autofocus type="button"><span id="storyPlayPauseIcon" class="story-control-icon">Ⅱ</span><span id="storyPlayPauseText">إيقاف مؤقت</span></button><button id="storyReplaySegmentButton" class="story-control focusable" data-focusable type="button"><span class="story-control-icon">↺</span><span>إعادة الجزء</span></button></div><div id="storyEnding" class="story-ending hidden" aria-hidden="true"><strong>أحسنت!</strong><span>انتهت القصة ولن تبدأ قصة أخرى تلقائيًا.</span><div class="story-ending-actions"><button id="storyReplayStoryButton" class="story-control focusable" data-focusable type="button">إعادة القصة</button><button id="storyChooseAnotherButton" class="story-control focusable" data-focusable type="button">اختيار قصة أخرى</button></div></div></div></section>`);
 }
-function renderLibrary(){const grid=$('#storyLibraryGrid');if(!grid)return;grid.innerHTML='';STORIES.forEach((story,index)=>{const card=document.createElement('button');card.type='button';card.className='story-cover-card focusable';card.dataset.focusable='';if(index===0)card.dataset.autofocus='';card.innerHTML=`<span class="story-cover-art">${sceneSvg({theme:'forest',actors:['arin','fox'],basket:true})}<span class="story-cover-play">▶</span></span><span class="story-cover-copy"><span class="story-type-badge">${story.typeLabel}</span><strong>${story.title}</strong><small>${story.description}</small><span class="story-duration">◷ ${story.durationLabel}</span></span>`;card.addEventListener('click',()=>openStory(story.id));grid.appendChild(card)});
+function renderLibrary(){const grid=$('#storyLibraryGrid');if(!grid)return;preloadSceneImage(0);grid.innerHTML='';STORIES.forEach((story,index)=>{const card=document.createElement('button');card.type='button';card.className='story-cover-card focusable';card.dataset.focusable='';if(index===0)card.dataset.autofocus='';card.innerHTML=`<span class="story-cover-art">${sceneSvg({theme:'forest',actors:['arin','fox'],basket:true})}<span class="story-cover-play">▶</span></span><span class="story-cover-copy"><span class="story-type-badge">${story.typeLabel}</span><strong>${story.title}</strong><small>${story.description}</small><span class="story-duration">◷ ${story.durationLabel}</span></span>`;card.addEventListener('click',()=>openStory(story.id));grid.appendChild(card)});
 }
 function setFocus(el){if(!el)return;document.querySelectorAll('.tv-focus').forEach(node=>node.classList.remove('tv-focus'));try{el.focus({preventScroll:true})}catch{el.focus()}el.classList.add('tv-focus')}
 function setActiveScreen(id){document.activeElement?.blur();document.querySelectorAll('.screen').forEach(screen=>{const active=screen.id===id;screen.classList.toggle('screen-active',active);screen.setAttribute('aria-hidden',active?'false':'true')});$('#hud')?.classList.add('hidden');$('#settingsButton')?.classList.add('hidden');$('#soundButton')?.classList.add('hidden');setTimeout(()=>setFocus($(`#${id} [data-autofocus]`)||$(`#${id} [data-focusable]`)),60)}
@@ -146,7 +181,21 @@ function setStoryPathNote(text=STORY_AUTO_NOTE){const note=$('#storyPathNote');i
 function storyMuted(){return localStorage.getItem('bubbleSafariMuted')==='1'}
 function setStoryMuted(muted){const value=!!muted;localStorage.setItem('bubbleSafariMuted',value?'1':'0');audio.muted=value;try{window.dispatchEvent(new CustomEvent('bubbleSafari:setMuted',{detail:{muted:value}}))}catch{}}
 function syncControls(){const paused=audio.paused||player.finished,muted=storyMuted();const text=$('#storyPlayPauseText'),icon=$('#storyPlayPauseIcon'),button=$('#storyPlayPauseButton');if(!button)return;button.disabled=player.finished;if(text)text.textContent=paused?(muted?'تشغيل الصوت':'متابعة'):'إيقاف مؤقت';if(icon)icon.textContent=paused?(muted?'🔊':'▶'):'Ⅱ'}
-function renderSegment(){const story=player.story,segment=story?.segments?.[player.index];if(!story||!segment)return;setStoryPathNote();$('#storyChapterTitle').textContent=segment.chapter;$('#storyNarration').textContent=segment.caption;const visual=$('#storyVisual');visual.className=`story-visual story-theme-${segment.theme}`;visual.innerHTML=`<div class="story-scene-enter">${sceneSvg(segment)}</div>`;const current=player.index+1,total=story.segments.length;$('#storyProgressText').textContent=`${current} / ${total}`;$('#storyProgressFill').style.transform=`scaleX(${current/total})`;$('#storyProgress').setAttribute('aria-valuenow',String(current));$('#storyEnding').classList.add('hidden');$('#storyEnding').setAttribute('aria-hidden','true');$('#storyControls').classList.remove('hidden');player.finished=false;syncControls()}
+function renderSegment(){
+  const story=player.story,segment=story?.segments?.[player.index];if(!story||!segment)return;
+  setStoryPathNote();$('#storyChapterTitle').textContent=segment.chapter;$('#storyNarration').textContent=segment.caption;
+  const visual=$('#storyVisual');visual.className='story-visual story-theme-'+segment.theme;
+  const frame=document.createElement('div');frame.className='story-scene-enter story-static-scene';
+  const src=sceneImagePath(player.index);
+  if(src){
+    const image=document.createElement('img');image.className='story-scene-image';image.alt='';image.setAttribute('aria-hidden','true');image.decoding='async';image.draggable=false;try{image.fetchPriority='high'}catch{}
+    const fallback=document.createElement('div');fallback.className='story-scene-fallback';fallback.hidden=true;fallback.innerHTML=sceneSvg(segment);
+    image.addEventListener('error',()=>{image.remove();fallback.hidden=false},{once:true});
+    image.src=src;frame.append(image,fallback);
+  }else{frame.innerHTML=sceneSvg(segment)}
+  visual.replaceChildren(frame);preloadSceneImage(player.index+1);
+  const current=player.index+1,total=story.segments.length;$('#storyProgressText').textContent=current+' / '+total;$('#storyProgressFill').style.transform='scaleX('+(current/total)+')';$('#storyProgress').setAttribute('aria-valuenow',String(current));$('#storyEnding').classList.add('hidden');$('#storyEnding').setAttribute('aria-hidden','true');$('#storyControls').classList.remove('hidden');player.finished=false;syncControls()
+}
 async function playCurrentAudioPart({render=false}={}){const segment=player.story?.segments?.[player.index],parts=segmentAudioParts(segment),part=parts[player.partIndex];if(!segment||!part)return;clearAutoAdvanceTimer();const token=++player.token;player.partBoundaryHandled=false;if(render)renderSegment();let source=audioPath(part),start=Number(part.startAt||0);if(segment.stitchParts?.length&&player.partIndex===0){try{source=await stitchedAudioPath(segment);start=0}catch{source=audioPath(part)}}if(token!==player.token)return;const target=source.startsWith('blob:')?source:new URL(source,location.href).href;const sourceChanged=audio.src!==target;if(sourceChanged){audio.src=source;audio.load()}audio.muted=storyMuted();preloadNext();if(audio.muted){audio.pause();syncControls();setStoryPathNote('الصوت مكتوم. اضغط تشغيل الصوت لبدء القصة.');return}if(start<=0){try{await audio.play();if(token===player.token)syncControls()}catch{if(token===player.token){syncControls();setStoryPathNote('اضغط متابعة لبدء صوت الراوية.')}}return}if(audio.readyState<1)await new Promise(resolve=>audio.addEventListener('loadedmetadata',resolve,{once:true}));if(Math.abs((audio.currentTime||0)-start)>.12)audio.currentTime=start;try{await audio.play();if(token===player.token)syncControls()}catch{if(token===player.token){syncControls();setStoryPathNote('اضغط متابعة لبدء صوت الراوية.')}}}
 async function playSegment(restart=true){const segment=player.story?.segments?.[player.index];if(!segment)return;if(restart)player.partIndex=0;await playCurrentAudioPart({render:true})}
 function completeAudioPart(){if(player.finished||!player.story||player.partBoundaryHandled)return;player.partBoundaryHandled=true;const segment=player.story.segments[player.index],parts=segmentAudioParts(segment);if(player.partIndex<parts.length-1){player.partIndex++;playCurrentAudioPart({render:false});return}const delay=segment?.autoAdvanceDelayMs??350;clearAutoAdvanceTimer();autoAdvanceTimer=setTimeout(()=>{if(player.finished||!player.story)return;if(player.index>=player.story.segments.length-1){finishStory();return}player.index++;player.partIndex=0;playSegment(true)},delay)}
