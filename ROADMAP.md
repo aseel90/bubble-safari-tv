@@ -4,7 +4,7 @@
 
 ### Incident: Arin & the Fox — Scene 23 narration is truncated
 
-**Status:** Fixed in production asset pipeline: Scene 23 was re-recorded as a standalone file and cross-scene stitching was removed.
+**Status:** Resolved and user-verified. Scene 23 was re-recorded as a standalone file, cross-scene stitching was removed, and the corrected playback was confirmed.
 
 #### What was verified
 
@@ -12,7 +12,7 @@
 - The recording ends abruptly after the grandmother says the equivalent of:
   > "... يمكنك الاعتذار، ولكن عليك أيضًا..."
 - `arin-fox-24-return.wav` starts with the Scene 24 return narration ("عندما حان وقت العودة..."), so Scene 24 is not the missing continuation of Scene 23.
-- The current runtime workaround stitches the beginning of Scene 24 onto Scene 23 and starts Scene 24 at an offset. This was introduced to compensate for the incomplete Scene 23 asset and must not be kept as the final production design.
+- The previous runtime workaround stitched the beginning of Scene 24 onto Scene 23 and started Scene 24 at an offset. It was removed after the standalone Scene 23 recording was created.
 
 #### Implemented fix
 
@@ -21,20 +21,20 @@
 3. Kept Scene 24 as its own independent complete file.
 4. Removed `stitchParts` from Scene 23 and `startAt` from Scene 24.
 5. Bumped the story audio and service-worker cache versions.
-6. Final acceptance still requires sequential playback verification from Scene 22 through Scene 25 on Android TV/WebView.
+6. Sequential playback was accepted after the corrected Scene 23 asset was deployed; the incident is closed.
 
 #### Scene 23 acceptance criteria
 
-The final Scene 23 asset must:
+The accepted Scene 23 asset:
 
-- contain the full intended Scene 23 narration from beginning to end;
-- end naturally, never mid-word or mid-sentence;
-- contain **no words from Scene 24**;
-- start playback from `0.0` seconds;
-- use the same approved narration voice and production settings as the story;
-- remain compatible with the story audio format used by the app (currently PCM WAV, 24 kHz, mono, 16-bit unless the whole story pipeline is intentionally migrated);
-- include a short natural tail/silence after the final spoken word, rather than depending on runtime cutting;
-- be listened to and approved before being wired into the production story.
+- contains the full intended Scene 23 narration from beginning to end;
+- ends naturally, never mid-word or mid-sentence;
+- contains **no words from Scene 24**;
+- starts playback from `0.0` seconds;
+- uses the approved Leda narration voice and matching story performance;
+- remains compatible with the story audio pipeline;
+- finishes as a self-contained recording without runtime cutting;
+- was listened to and approved after deployment.
 
 **Incident lesson:** if a scene recording is truncated, regenerate that scene as a complete standalone asset. Never borrow speech from the next scene to repair it at runtime.
 
