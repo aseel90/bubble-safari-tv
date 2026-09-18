@@ -40,87 +40,87 @@ let nextAudio=null;
 let autoAdvanceTimer=null;
 let storySvgSeq=0;
 
-function storyActor(id,x,y,scale=1,facing='right',mood='smile',pose='stand'){
-  const flip=facing==='left'?-scale:scale;
-  const wrap=(inner,extra='')=>`<g class="actor actor-${id} ${extra}" transform="translate(${x} ${y}) scale(${flip} ${scale})">${inner}</g>`;
-  if(id==='arin'){
-    const mouth=mood==='worried'?'M-8 43 Q0 37 8 43':mood==='surprised'?'M-3 41 Q0 48 3 41':mood==='smile'?'M-9 42 Q0 49 9 42':'M-6 42 Q0 45 6 42';
-    const leftArm=pose==='wave'?'M-35 98 Q-61 77 -66 52':'M-35 98 Q-54 113 -50 134';
-    const rightArm=pose==='hold'?'M35 98 Q50 108 43 129':'M35 98 Q54 113 50 134';
-    const leftBrow=mood==='worried'?'M-19 22 Q-12 16 -5 19':mood==='surprised'?'M-18 18 Q-11 14 -4 17':'M-18 19 Q-11 14 -4 17';
-    const rightBrow=mood==='worried'?'M19 22 Q12 16 5 19':mood==='surprised'?'M18 18 Q11 14 4 17':'M18 19 Q11 14 4 17';
-    return wrap(`<ellipse cx="0" cy="181" rx="47" ry="10" fill="#335744" opacity=".13"/><path d="M-43 24 Q-47 -8 -17 -18 Q13 -29 35 -8 Q49 6 43 34 Q52 45 46 60 Q42 72 30 77 Q20 82 12 75 Q0 88 -13 76 Q-24 84 -36 77 Q-49 69 -46 56 Q-52 43 -43 24Z" fill="#493631"/><path d="${leftArm}" fill="none" stroke="#f3c8ab" stroke-width="14" stroke-linecap="round"/><path d="${rightArm}" fill="none" stroke="#f3c8ab" stroke-width="14" stroke-linecap="round"/><path d="M-48 80 Q0 53 48 80 L56 155 Q0 166 -56 155Z" fill="#9c8bca"/><path d="M-19 84 Q0 93 19 84 L16 132 L-16 132Z" fill="#fff4e7"/><circle cx="0" cy="36" r="31" fill="#f3c8ab"/><path d="M-31 25 Q-30 -6 -7 -13 Q12 -19 28 -5 Q36 2 34 18 Q25 10 16 10 Q8 11 1 17 Q-7 12 -15 12 Q-24 12 -31 25Z" fill="#493631"/><path d="M-30 30 Q-37 41 -31 54 Q-28 62 -20 66 Q-24 48 -19 31Z" fill="#493631"/><path d="M30 28 Q38 40 32 54 Q29 62 20 67 Q25 47 19 30Z" fill="#493631"/><path d="${leftBrow}" fill="none" stroke="#332a2a" stroke-width="3.2" stroke-linecap="round"/><path d="${rightBrow}" fill="none" stroke="#332a2a" stroke-width="3.2" stroke-linecap="round"/><path d="M-18 28 Q-11 25 -5 28" fill="none" stroke="#8a6657" stroke-width="2.2" stroke-linecap="round"/><path d="M18 28 Q11 25 5 28" fill="none" stroke="#8a6657" stroke-width="2.2" stroke-linecap="round"/><g class="actor-eyes"><circle cx="-11" cy="35" r="4.6" fill="#253646"/><circle cx="11" cy="35" r="4.6" fill="#253646"/><circle cx="-9.8" cy="33.8" r="1.2" fill="#fff"/><circle cx="12.2" cy="33.8" r="1.2" fill="#fff"/></g><path d="M-2 40 Q0 43 2 40" fill="none" stroke="#d49a83" stroke-width="2"/><path d="${mouth}" fill="none" stroke="#8a4e5b" stroke-width="2.8" stroke-linecap="round"/><circle cx="-18" cy="45" r="4.4" fill="#ef9aad" opacity=".45"/><circle cx="18" cy="45" r="4.4" fill="#ef9aad" opacity=".45"/><path d="M-19 155 L-19 181" stroke="#f3c8ab" stroke-width="12" stroke-linecap="round"/><path d="M19 155 L19 181" stroke="#f3c8ab" stroke-width="12" stroke-linecap="round"/><path d="M-30 181 h22" stroke="#755046" stroke-width="9" stroke-linecap="round"/><path d="M8 181 h22" stroke="#755046" stroke-width="9" stroke-linecap="round"/>`,pose==='walk'?'actor-walk':'actor-bob');
-  }
-  if(id==='mother'){
-    const rightArm=pose==='point'?'M43 101 Q69 88 86 67':pose==='wave'?'M43 101 Q72 77 76 51':'M43 101 Q60 114 64 136';
-    return wrap(`<ellipse cx="0" cy="193" rx="51" ry="10" fill="#335744" opacity=".12"/><path d="M-43 101 Q-59 115 -51 136" fill="none" stroke="#efc4a7" stroke-width="15" stroke-linecap="round"/><path class="${pose==='wave'?'actor-arm-wave':''}" d="${rightArm}" fill="none" stroke="#efc4a7" stroke-width="15" stroke-linecap="round"/><path d="M-55 86 Q0 57 55 86 L63 171 L-63 171Z" fill="#72b39d"/><path d="M-20 93 Q0 102 20 93 L17 161 L-17 161Z" fill="#f4f4eb" opacity=".9"/><circle cx="0" cy="37" r="32" fill="#efc4a7"/><path d="M-34 29 Q-32 -7 -4 -14 Q18 -19 31 -1 Q38 10 33 30 Q22 12 10 12 Q2 12 -3 17 Q-12 10 -22 14 Q-29 18 -34 29Z" fill="#27343a"/><path d="M15 -8 Q29 -16 39 -6 Q45 4 38 15 Q30 22 21 15 Q25 6 15 -8Z" fill="#27343a"/><path d="M-23 18 Q-9 7 6 9 Q21 11 28 22" fill="none" stroke="#1f2a30" stroke-width="5" stroke-linecap="round"/><path d="M-16 28 Q-10 25 -4 28" fill="none" stroke="#7e6257" stroke-width="2.2" stroke-linecap="round"/><path d="M16 28 Q10 25 4 28" fill="none" stroke="#7e6257" stroke-width="2.2" stroke-linecap="round"/><g class="actor-eyes"><circle cx="-11" cy="36" r="4" fill="#293b48"/><circle cx="11" cy="36" r="4" fill="#293b48"/><circle cx="-10" cy="35" r="1" fill="#fff"/><circle cx="12" cy="35" r="1" fill="#fff"/></g><path d="M-2 42 Q0 44 2 42" fill="none" stroke="#d39a84" stroke-width="1.8"/><path d="M-8 51 Q0 58 8 51" fill="none" stroke="#895766" stroke-width="2.8" stroke-linecap="round"/><path d="M-20 171 L-20 195" stroke="#efc4a7" stroke-width="12" stroke-linecap="round"/><path d="M20 171 L20 195" stroke="#efc4a7" stroke-width="12" stroke-linecap="round"/><path d="M-31 194 h24" stroke="#547d70" stroke-width="10" stroke-linecap="round"/><path d="M7 194 h24" stroke="#547d70" stroke-width="10" stroke-linecap="round"/>`,'actor-bob');
-  }
-  if(id==='grandma'){
-    if(pose==='window') return `<g class="actor actor-grandma actor-grandma-window"><path d="M${x-24} ${y+16} Q${x} ${y+3} ${x+24} ${y+16} L${x+25} ${y+27} L${x-25} ${y+27}Z" fill="#9e91d9"/><circle cx="${x}" cy="${y}" r="20" fill="#e8c3a8"/><circle cx="${x+15}" cy="${y-14}" r="9" fill="#edf0ef"/><path d="M${x-19} ${y-8} Q${x} ${y-31} ${x+19} ${y-8}" fill="none" stroke="#edf0ef" stroke-width="12" stroke-linecap="round"/><circle cx="${x-8}" cy="${y}" r="7.5" fill="none" stroke="#5b6068" stroke-width="2.5"/><circle cx="${x+8}" cy="${y}" r="7.5" fill="none" stroke="#5b6068" stroke-width="2.5"/><line x1="${x-.5}" y1="${y}" x2="${x+.5}" y2="${y}" stroke="#5b6068" stroke-width="2.5"/><g class="actor-eyes"><circle cx="${x-8}" cy="${y}" r="2.4" fill="#283946"/><circle cx="${x+8}" cy="${y}" r="2.4" fill="#283946"/></g><path d="M${x-6} ${y+10} Q${x} ${y+15} ${x+6} ${y+10}" fill="none" stroke="#845b65" stroke-width="2.2"/></g>`;
-    return wrap(`<ellipse cx="0" cy="184" rx="46" ry="10" fill="#335744" opacity=".12"/><path d="M-40 98 Q-55 113 -47 133" fill="none" stroke="#e8c3a8" stroke-width="13" stroke-linecap="round"/><path d="M40 98 Q56 112 59 132" fill="none" stroke="#e8c3a8" stroke-width="13" stroke-linecap="round"/><path d="M-50 87 Q0 59 50 87 L58 162 L-58 162Z" fill="#9e91d9"/><path d="M-18 90 Q0 103 18 90" fill="none" stroke="#f5f2ea" stroke-width="8" stroke-linecap="round"/><circle cx="0" cy="40" r="30" fill="#e8c3a8"/><circle cx="23" cy="15" r="13" fill="#edf0ef"/><path d="M-29 29 Q0 -7 29 29" fill="none" stroke="#edf0ef" stroke-width="16" stroke-linecap="round"/><circle cx="-11" cy="40" r="11" fill="none" stroke="#5b6068" stroke-width="3"/><circle cx="11" cy="40" r="11" fill="none" stroke="#5b6068" stroke-width="3"/><line x1="-1" y1="40" x2="1" y2="40" stroke="#5b6068" stroke-width="3"/><g class="actor-eyes"><circle cx="-11" cy="40" r="3" fill="#283946"/><circle cx="11" cy="40" r="3" fill="#283946"/></g><path d="M-7 54 Q0 60 7 54" fill="none" stroke="#845b65" stroke-width="2.5"/><path d="M-18 162 L-18 184" stroke="#e8c3a8" stroke-width="11" stroke-linecap="round"/><path d="M18 162 L18 184" stroke="#e8c3a8" stroke-width="11" stroke-linecap="round"/><path d="M-27 184 h19" stroke="#665a82" stroke-width="8" stroke-linecap="round"/><path d="M8 184 h19" stroke="#665a82" stroke-width="8" stroke-linecap="round"/>`,'actor-bob');
-  }
-  if(id==='fox'){
-    const gaze=3;
-    const earTop=mood==='sorry'?-19:-30;
-    const mouth=mood==='sorry'?'M-10 63 Q0 56 10 63':mood==='thinking'?'M-9 61 Q0 58 9 61':'M-12 59 Q0 69 12 59';
-    const leftArm=pose==='wave'?'M-46 111 Q-63 84 -67 58':pose==='run'?'M-46 111 Q-63 97 -69 82':'M-46 111 Q-58 133 -57 157';
-    const rightArm=pose==='run'?'M46 111 Q62 126 67 144':'M46 111 Q58 133 57 157';
-    const legLeft=pose==='run'?'M-22 191 Q-30 207 -37 217':'M-21 190 L-21 216';
-    const legRight=pose==='run'?'M22 191 Q31 201 39 209':'M21 190 L21 216';
-    const leftPaw=pose==='wave'?[-67,58]:pose==='run'?[-69,82]:[-57,157];
-    const rightPaw=pose==='run'?[67,144]:[57,157];
-    return wrap(`<ellipse cx="0" cy="219" rx="51" ry="10" fill="#335744" opacity=".12"/><path class="fox-tail" d="M37 158 Q105 128 119 174 Q108 204 72 203 Q45 199 27 181Z" fill="#f47d43" stroke="#a94c2b" stroke-width="3"/><path d="M79 181 Q102 174 115 186 Q106 200 86 200Z" fill="#fff1cf"/><path d="${leftArm}" fill="none" stroke="#f47d43" stroke-width="18" stroke-linecap="round"/><path d="${rightArm}" fill="none" stroke="#f47d43" stroke-width="18" stroke-linecap="round"/><ellipse cx="${leftPaw[0]}" cy="${leftPaw[1]}" rx="12" ry="10" fill="#4a444e" transform="rotate(-16 ${leftPaw[0]} ${leftPaw[1]})"/><ellipse cx="${rightPaw[0]}" cy="${rightPaw[1]}" rx="12" ry="10" fill="#4a444e" transform="rotate(16 ${rightPaw[0]} ${rightPaw[1]})"/><rect x="-51" y="75" width="102" height="119" rx="36" fill="#f47d43" stroke="#a94c2b" stroke-width="3"/><ellipse cx="0" cy="132" rx="31" ry="50" fill="#f1dfa9"/><circle cx="0" cy="40" r="43" fill="#f47d43" stroke="#a94c2b" stroke-width="3"/><path d="M-31 12 L-19 ${earTop} L-4 10Z" fill="#f47d43" stroke="#a94c2b" stroke-width="3"/><path d="M31 12 L19 ${earTop} L4 10Z" fill="#f47d43" stroke="#a94c2b" stroke-width="3"/><path d="M-24 9 L-18 ${earTop+11} L-9 8Z" fill="#ffd96f"/><path d="M24 9 L18 ${earTop+11} L9 8Z" fill="#ffd96f"/><path d="M-25 17 Q-17 12 -9 17" fill="none" stroke="#c88c35" stroke-width="4" stroke-linecap="round"/><path d="M25 17 Q17 12 9 17" fill="none" stroke="#c88c35" stroke-width="4" stroke-linecap="round"/><g class="actor-eyes"><circle cx="-14" cy="34" r="11.5" fill="#fff"/><circle cx="14" cy="34" r="11.5" fill="#fff"/><circle cx="${-14+gaze}" cy="35" r="4.3" fill="#1e2d37"/><circle cx="${14+gaze}" cy="35" r="4.3" fill="#1e2d37"/><circle cx="${-12+gaze}" cy="32.8" r="1.2" fill="#fff"/><circle cx="${16+gaze}" cy="32.8" r="1.2" fill="#fff"/></g><ellipse cx="0" cy="54" rx="27" ry="21" fill="#f3d46e"/><ellipse cx="0" cy="47" rx="10" ry="8" fill="#4a414a" stroke="#2d2930" stroke-width="2"/><ellipse cx="2" cy="44" rx="4" ry="2.5" fill="#fff" opacity=".75"/><path d="${mouth}" fill="none" stroke="#986235" stroke-width="3" stroke-linecap="round"/><path d="M-24 52 l-18 4" stroke="#6a5258" stroke-width="2.4" stroke-linecap="round"/><path d="M-24 58 l-18 0" stroke="#6a5258" stroke-width="2.4" stroke-linecap="round"/><path d="M24 52 l18 4" stroke="#6a5258" stroke-width="2.4" stroke-linecap="round"/><path d="M24 58 l18 0" stroke="#6a5258" stroke-width="2.4" stroke-linecap="round"/><path d="M-58 156 Q-57 174 -44 181" fill="none" stroke="#4a444e" stroke-width="18" stroke-linecap="round"/><path d="M58 156 Q57 174 44 181" fill="none" stroke="#4a444e" stroke-width="18" stroke-linecap="round"/><path d="${legLeft}" stroke="#f47d43" stroke-width="18" stroke-linecap="round" fill="none"/><path d="${legRight}" stroke="#f47d43" stroke-width="18" stroke-linecap="round" fill="none"/><path d="M-36 216 h27" stroke="#4a444e" stroke-width="14" stroke-linecap="round"/><path d="M9 216 h27" stroke="#4a444e" stroke-width="14" stroke-linecap="round"/>`,pose==='run'?'actor-walk':'actor-bob');
-  }
-  if(id==='ranger'){
-    const arm=pose==='stop'?'M42 105 Q69 91 88 75':pose==='wave'?'M42 105 Q63 84 67 60':'M42 105 Q59 119 61 140';
-    return wrap(`<ellipse cx="0" cy="204" rx="51" ry="10" fill="#335744" opacity=".12"/><path d="M-42 105 Q-58 119 -50 140" fill="none" stroke="#c99672" stroke-width="13" stroke-linecap="round"/><path d="${arm}" fill="none" stroke="#c99672" stroke-width="13" stroke-linecap="round"/><circle cx="-49" cy="141" r="7" fill="#c99672"/><circle cx="88" cy="75" r="7" fill="#c99672" opacity="${pose==='stop'?'1':'0'}"/><path d="M-49 87 Q0 63 49 87 L43 160 Q0 173 -43 160Z" fill="#688d71"/><path d="M-21 93 L0 106 L21 93" fill="none" stroke="#a7bca9" stroke-width="5" stroke-linecap="round"/><rect x="-34" y="112" width="24" height="25" rx="5" fill="#587c64"/><rect x="10" y="112" width="24" height="25" rx="5" fill="#587c64"/><circle cx="27" cy="102" r="6" fill="#f0d45f" stroke="#486650" stroke-width="1.5"/><path d="M0 107 V155" stroke="#52715e" stroke-width="2" opacity=".8"/><path d="M-4 91 L0 106 L4 91" fill="#f0eee2" opacity=".9"/><rect x="-43" y="154" width="86" height="10" rx="5" fill="#3e5949"/><rect x="-30" y="163" width="24" height="34" rx="6" fill="#4d6657"/><rect x="6" y="163" width="24" height="34" rx="6" fill="#4d6657"/><circle cx="0" cy="41" r="30" fill="#c99672"/><path d="M-31 30 Q-34 7 -13 0 Q8 -8 27 5 Q37 14 31 31 Q20 19 9 19 Q0 20 -7 24 Q-18 17 -31 30Z" fill="#26343b"/><path d="M-35 17 H35 L27 6 H-27Z" fill="#557c5a"/><path d="M-29 15 Q0 4 29 15" fill="none" stroke="#71946f" stroke-width="4" stroke-linecap="round"/><circle cx="0" cy="11" r="4.5" fill="#f0d45f" stroke="#426348" stroke-width="1.5"/><path d="M-17 33 Q-10 29 -4 33" fill="none" stroke="#745f55" stroke-width="2" stroke-linecap="round"/><path d="M17 33 Q10 29 4 33" fill="none" stroke="#745f55" stroke-width="2" stroke-linecap="round"/><g class="actor-eyes"><circle cx="-10" cy="41" r="3.7" fill="#293946"/><circle cx="10" cy="41" r="3.7" fill="#293946"/><circle cx="-9" cy="40" r="1" fill="#fff"/><circle cx="11" cy="40" r="1" fill="#fff"/></g><path d="M-7 56 Q0 61 7 56" fill="none" stroke="#80594e" stroke-width="2.6" stroke-linecap="round"/><path d="M-22 197 L-22 204" stroke="#3d5146" stroke-width="14" stroke-linecap="round"/><path d="M22 197 L22 204" stroke="#3d5146" stroke-width="14" stroke-linecap="round"/><path d="M-34 203 h24" stroke="#303c35" stroke-width="10" stroke-linecap="round"/><path d="M10 203 h24" stroke="#303c35" stroke-width="10" stroke-linecap="round"/>`,'actor-bob');
-  }
-  return '';
+const STORY_SPRITES_URL='./story-sprites.svg?v=1';
+
+async function ensureStorySprites(){
+  if(document.getElementById('storySpriteBank'))return;
+  const response=await fetch(STORY_SPRITES_URL,{cache:'force-cache'});
+  if(!response.ok)throw new Error(`Story sprites ${response.status}`);
+  const xml=await response.text();
+  const parsed=new DOMParser().parseFromString(xml,'image/svg+xml');
+  if(parsed.querySelector('parsererror'))throw new Error('Invalid story sprite SVG');
+  const sprite=document.importNode(parsed.documentElement,true);
+  sprite.id='storySpriteBank';
+  sprite.setAttribute('aria-hidden','true');
+  sprite.setAttribute('focusable','false');
+  sprite.style.cssText='position:absolute;width:0;height:0;overflow:hidden;pointer-events:none';
+  document.body.prepend(sprite);
 }
-function storyBasket(x,y,scale=1){return `<g class="story-basket" transform="translate(${x} ${y}) scale(${scale})"><path d="M-25 8 Q0 -9 25 8 L21 36 L-21 36Z" fill="#c79247" stroke="#8b6538" stroke-width="3"/><path d="M-15 8 Q0 -18 15 8" fill="none" stroke="#8b6538" stroke-width="4" stroke-linecap="round"/></g>`}
-function storyFlower(x,y,scale=1){return `<g class="story-flower" transform="translate(${x} ${y}) scale(${scale})"><ellipse cx="0" cy="5" rx="28" ry="7" fill="#335744" opacity=".1"/><path d="M0 0 Q-3 -37 0 -70" fill="none" stroke="#5f9d55" stroke-width="7" stroke-linecap="round"/><path d="M-2 -34 Q-28 -45 -25 -19 Q-11 -15 -2 -27Z" fill="#6caf63"/><path d="M2 -28 Q28 -40 24 -14 Q11 -11 2 -22Z" fill="#5d9e56"/><g transform="translate(0 -76)"><circle cx="0" cy="-14" r="15" fill="#f49caf"/><circle cx="14" cy="0" r="15" fill="#f49caf"/><circle cx="0" cy="14" r="15" fill="#f49caf"/><circle cx="-14" cy="0" r="15" fill="#f49caf"/><circle cx="0" cy="0" r="12" fill="#ffd65d"/></g></g>`}
+
+const STORY_VISUALS={
+  'arin-fox-01-intro.wav':{shot:'solo',actors:['arin-stand']},
+  'arin-fox-02-basket.wav':{shot:'duo',actors:['arin-basket','mother-stand']},
+  'arin-fox-03-advice.wav':{shot:'duo',actors:['arin-basket','mother-point']},
+  'arin-fox-04-leave-home.wav':{shot:'duo',actors:['arin-wave-basket','mother-wave']},
+  'arin-fox-05-forest-road.wav':{shot:'solo',actors:[{id:'arin-walk-basket',anim:'walk'}]},
+  'arin-fox-06-fox-appears.wav':{shot:'duo',actors:['arin-worried-basket','fox-stand']},
+  'arin-fox-07-where-going.wav':{shot:'duo',actors:['arin-worried-basket','fox-stand']},
+  'arin-fox-08-basket-smell.wav':{shot:'duo',actors:['arin-worried-basket','fox-stand']},
+  'arin-fox-09-shortcut.wav':{shot:'solo',actors:[{id:'fox-run',anim:'walk'}]},
+  'arin-fox-10-flower.wav':{shot:'solo-left',actors:['arin-basket'],extras:[{id:'prop-flower',x:520,y:438,s:.82}]},
+  'arin-fox-11-grandma-door.wav':{shot:'house-window',actors:['fox-stand','grandma-window']},
+  'arin-fox-12-tail.wav':{shot:'house-window',actors:['fox-stand','grandma-window']},
+  'arin-fox-13-waiting-fox.wav':{shot:'solo-left',actors:['fox-sorry']},
+  'arin-fox-14-arin-arrives.wav':{shot:'duo',actors:['arin-worried-basket','fox-stand']},
+  'arin-fox-15-arin-refuses.wav':{shot:'duo',actors:['arin-worried-basket','fox-sorry']},
+  'arin-fox-16-grandma-calls.wav':{shot:'house-window',actors:['arin-basket','grandma-window']},
+  'arin-fox-17-ranger-arrives.wav':{shot:'trio',actors:['arin-worried-basket','ranger-stop','fox-stand']},
+  'arin-fox-18-ranger-talks.wav':{shot:'duo',actors:['ranger-stop','fox-stand']},
+  'arin-fox-19-fox-admits.wav':{shot:'duo',actors:['ranger-stand','fox-sorry']},
+  'arin-fox-20-lesson.wav':{shot:'duo',actors:['ranger-stop','fox-sorry']},
+  'arin-fox-21-grandma-opens.wav':{shot:'house-trio',actors:['arin-stand','grandma-stand','ranger-stand'],houseX:625},
+  'arin-fox-22-gift.wav':{shot:'gift',actors:['arin-stand','grandma-stand'],extras:[{id:'prop-table',x:620,y:438,s:.88},{id:'prop-basket',x:592,y:372,s:.58},{id:'prop-flower',x:642,y:365,s:.47}],houseX:630},
+  'arin-fox-23-fox-apology-v2.wav':{shot:'house-trio',actors:['fox-sorry','arin-stand','grandma-stand'],houseX:625},
+  'arin-fox-24-return.wav':{shot:'duo',actors:['ranger-wave',{id:'arin-walk-basket',anim:'walk'}],house:false,path:true},
+  'arin-fox-25-mother-final.wav':{shot:'duo',actors:['arin-stand','mother-stand']},
+  'arin-fox-26-moral.wav':{shot:'duo',actors:['arin-stand','mother-stand']},
+  'arin-fox-27-ending.wav':{shot:'duo',actors:['arin-stand','fox-wave'],house:false,path:true}
+};
+
+const STORY_SHOTS={
+  solo:[{x:450,y:438,s:1}],
+  'solo-left':[{x:360,y:438,s:1}],
+  duo:[{x:300,y:438,s:1},{x:600,y:438,s:1}],
+  trio:[{x:210,y:438,s:.93},{x:450,y:438,s:.93},{x:690,y:438,s:.9}],
+  'house-window':[{x:300,y:438,s:.96},{x:621,y:326,s:1}],
+  'house-trio':[{x:190,y:438,s:.9},{x:365,y:438,s:.9},{x:520,y:438,s:.86}],
+  gift:[{x:275,y:438,s:.96},{x:455,y:438,s:.94}]
+};
+const STORY_CHARACTER_SCALE={arin:.9,fox:.86,grandma:.92,ranger:.9,mother:.92};
+
+function spriteKind(id=''){return id.split('-')[0]||'prop'}
+function spriteUse(id,x,y,scale=1,{flip=false,anim='bob',prop=false}={}){
+  const kind=spriteKind(id),base=prop?1:(STORY_CHARACTER_SCALE[kind]||.9),sx=(flip?-1:1)*base*scale,sy=base*scale;
+  if(prop)return `<g class="story-prop story-${id}" transform="translate(${x} ${y}) scale(${sx} ${sy})"><use href="#${id}"/></g>`;
+  return `<g class="actor actor-${kind}" transform="translate(${x} ${y}) scale(${sx} ${sy})"><g class="story-actor-motion actor-motion-${anim}"><use href="#${id}"/></g></g>`;
+}
 function storyHouse(x=565,y=190,scale=1){return `<g class="story-house" transform="translate(${x} ${y}) scale(${scale})"><ellipse cx="110" cy="214" rx="122" ry="12" fill="#335744" opacity=".1"/><rect x="0" y="40" width="220" height="170" rx="12" fill="#fff5e0" stroke="#c99d69" stroke-width="5"/><path d="M-28 58 L110 -42 L248 58Z" fill="#d67257"/><rect x="96" y="118" width="56" height="92" rx="8" fill="#9b7552"/><rect x="28" y="84" width="56" height="52" rx="8" fill="#bfe4ef" stroke="#8cb8c7" stroke-width="4"/></g>`}
+function normalizeActor(entry){return typeof entry==='string'?{id:entry}:entry}
 function storyLayout(segment={}){
-  const f=segment.file||'cover',theme=segment.theme||'forest';
-  const out={house:['village','home','grandma','garden'].includes(theme),houseX:565,houseY:190,houseScale:1,path:['village','forest','fox','return','ending'].includes(theme),actors:[],basket:!!segment.basket,extras:''};
-  const add=(id,x,y,s=1,face='right',mood='smile',pose='stand')=>out.actors.push({id,x,y,s,face,mood,pose});
-  switch(f){
-    case 'arin-fox-01-intro.wav':add('arin',360,238,1.05);break;
-    case 'arin-fox-02-basket.wav':add('arin',305,240,1,'right','smile','hold');add('mother',500,222,1.06,'left');break;
-    case 'arin-fox-03-advice.wav':add('arin',305,240,1,'right','smile','hold');add('mother',500,222,1.06,'left','smile','point');break;
-    case 'arin-fox-04-leave-home.wav':add('arin',330,240,1,'right','smile','walk');add('mother',650,222,.94,'left','smile','wave');break;
-    case 'arin-fox-05-forest-road.wav':add('arin',370,240,1.02,'right','smile','walk');break;
-    case 'arin-fox-06-fox-appears.wav':add('arin',270,242,1,'right','surprised','hold');add('fox',602,246,.92,'left');break;
-    case 'arin-fox-07-where-going.wav':add('arin',270,242,1,'right','worried','hold');add('fox',602,246,.92,'left','thinking');break;
-    case 'arin-fox-08-basket-smell.wav':add('arin',270,242,1,'right','worried','hold');add('fox',602,246,.92,'left','thinking');break;
-    case 'arin-fox-09-shortcut.wav':add('fox',445,236,.9,'right','smile','run');break;
-    case 'arin-fox-10-flower.wav':add('arin',330,243,1,'right','smile','hold');out.extras=storyFlower(490,422,1.08);break;
-    case 'arin-fox-11-grandma-door.wav':add('fox',345,250,.88,'right');add('grandma',621,301,1,'left','smile','window');break;
-    case 'arin-fox-12-tail.wav':add('fox',345,250,.88,'right','thinking');add('grandma',621,301,1,'left','smile','window');break;
-    case 'arin-fox-13-waiting-fox.wav':add('fox',430,275,.9,'right','thinking');break;
-    case 'arin-fox-14-arin-arrives.wav':add('arin',228,245,1,'right','worried','hold');add('fox',525,250,.88,'left','thinking');break;
-    case 'arin-fox-15-arin-refuses.wav':add('arin',228,245,1,'right','worried','hold');add('fox',525,250,.88,'left','sorry');break;
-    case 'arin-fox-16-grandma-calls.wav':add('arin',265,244,1,'right','smile','hold');add('grandma',621,301,1,'left','smile','window');break;
-    case 'arin-fox-17-ranger-arrives.wav':add('arin',205,245,.95,'right','worried','hold');add('ranger',430,222,1,'right','smile','stop');add('fox',620,250,.82,'left','thinking');break;
-    case 'arin-fox-18-ranger-talks.wav':add('ranger',385,222,1.02,'right','smile','stop');add('fox',610,250,.82,'left','thinking');break;
-    case 'arin-fox-19-fox-admits.wav':add('ranger',385,222,1.02,'right');add('fox',610,250,.82,'left','sorry');break;
-    case 'arin-fox-20-lesson.wav':add('ranger',385,222,1.02,'right','smile','stop');add('fox',610,250,.82,'left','sorry');break;
-    case 'arin-fox-21-grandma-opens.wav':out.houseX=640;add('arin',205,245,.96,'right','smile');add('grandma',355,228,.96,'left');add('ranger',505,226,.86,'left');break;
-    case 'arin-fox-22-gift.wav':add('arin',420,245,1,'right','smile','hold');add('grandma',560,228,1,'left');break;
-    case 'arin-fox-23-fox-apology-v2.wav':add('fox',280,252,.84,'right','sorry');add('arin',448,245,1,'left');add('grandma',600,228,.98,'left');break;
-    case 'arin-fox-24-return.wav':add('ranger',260,223,.92,'right','smile','wave');add('arin',470,245,1,'right','smile','walk');out.path=true;out.house=false;break;
-    case 'arin-fox-25-mother-final.wav':add('arin',350,242,1,'right','smile','hold');add('mother',525,222,1.05,'left');break;
-    case 'arin-fox-26-moral.wav':add('arin',355,242,1,'right','smile');add('mother',525,222,1.05,'left');break;
-    case 'arin-fox-27-ending.wav':add('arin',280,245,.96,'right','smile');add('fox',618,248,.84,'left','smile','wave');out.house=false;break;
-    default:add('arin',300,242,1,'right','smile','hold');add('fox',590,305,.96,'left');out.house=false;out.path=true;
-  }
-  return out;
+  const theme=segment.theme||'forest';
+  const fallbackActors=(segment.actors||['arin']).map(id=>id==='arin'?'arin-stand':id==='fox'?'fox-stand':id==='grandma'?'grandma-stand':id==='ranger'?'ranger-stand':id==='mother'?'mother-stand':'arin-stand');
+  const cfg=STORY_VISUALS[segment.file]||{shot:fallbackActors.length>=3?'trio':fallbackActors.length===2?'duo':'solo',actors:fallbackActors};
+  const slots=STORY_SHOTS[cfg.shot]||STORY_SHOTS.duo;
+  const house=cfg.house??['village','home','grandma','garden'].includes(theme);
+  const path=cfg.path??['village','forest','fox','return','ending'].includes(theme);
+  const actors=(cfg.actors||fallbackActors).map((raw,index)=>{const a=normalizeActor(raw),slot=slots[Math.min(index,slots.length-1)];return{...slot,...a}});
+  return{house,houseX:cfg.houseX??565,houseY:cfg.houseY??190,houseScale:cfg.houseScale??1,path,actors,extras:cfg.extras||[]};
 }
 function sceneSvg(segment={}){
   const theme=segment.theme||'forest',night=theme==='grandma',layout=storyLayout(segment),svgKey=++storySvgSeq,skyId=`storySky-${svgKey}`,groundId=`storyGround-${svgKey}`;
-  const actors=layout.actors.map(a=>storyActor(a.id,a.x,a.y,a.s,a.face,a.mood,a.pose)).join('');
-  const basket=layout.basket?storyBasket(layout.actors.find(a=>a.id==='arin')?.x+44||405,375,.82):'';
-  return `<svg class="story-svg" viewBox="0 0 900 520" aria-hidden="true"><defs><linearGradient id="${skyId}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${night?'#a7d1e3':'#bfeaf4'}"/><stop offset="1" stop-color="${night?'#edf4df':'#f4f7d2'}"/></linearGradient><linearGradient id="${groundId}" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#a9d97d"/><stop offset="1" stop-color="#74ba67"/></linearGradient></defs><rect width="900" height="520" fill="url(#${skyId})"/><circle cx="106" cy="90" r="46" fill="#ffd963" opacity="${night?'.55':'1'}"/><g class="story-cloud-svg" fill="#fff" opacity=".88"><ellipse cx="320" cy="90" rx="60" ry="25"/><ellipse cx="360" cy="84" rx="40" ry="30"/><ellipse cx="399" cy="94" rx="52" ry="23"/></g><path d="M0 330 C130 255 250 290 360 324 C500 258 650 264 900 320 L900 520 L0 520Z" fill="#95ce78"/><path d="M0 382 C170 330 320 348 470 380 C630 330 760 344 900 376 L900 520 L0 520Z" fill="url(#${groundId})"/>${layout.path?'<path d="M362 520 C382 453 420 413 468 384 C516 356 548 330 564 298" fill="none" stroke="#efdaa7" stroke-width="76" stroke-linecap="round" opacity=".92"/>':''}<g class="story-tree-svg"><rect x="88" y="220" width="36" height="176" rx="16" fill="#8a613c"/><circle cx="106" cy="198" r="74" fill="#5fa95a"/><circle cx="63" cy="216" r="50" fill="#6fba63"/><circle cx="148" cy="214" r="52" fill="#6fba63"/></g><g class="story-tree-svg"><rect x="738" y="224" width="34" height="172" rx="16" fill="#8a613c"/><circle cx="756" cy="204" r="70" fill="#5b9f55"/><circle cx="716" cy="220" r="45" fill="#70b866"/><circle cx="796" cy="217" r="47" fill="#70b866"/></g>${layout.house?storyHouse(layout.houseX,layout.houseY,layout.houseScale):''}${layout.extras}${actors}${basket}<g class="story-sparkles-svg" fill="#fff6a5"><circle cx="250" cy="164" r="5"/><circle cx="670" cy="130" r="4"/><circle cx="440" cy="225" r="3"/></g></svg>`;
+  const actors=layout.actors.map(a=>spriteUse(a.id,a.x,a.y,a.s,{flip:!!a.flip,anim:a.anim||'bob'})).join('');
+  const extras=layout.extras.map(p=>spriteUse(p.id,p.x,p.y,p.s||1,{prop:true,flip:!!p.flip})).join('');
+  return `<svg class="story-svg" viewBox="0 0 900 520" aria-hidden="true"><defs><linearGradient id="${skyId}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${night?'#a7d1e3':'#bfeaf4'}"/><stop offset="1" stop-color="${night?'#edf4df':'#f4f7d2'}"/></linearGradient><linearGradient id="${groundId}" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#a9d97d"/><stop offset="1" stop-color="#74ba67"/></linearGradient></defs><rect width="900" height="520" fill="url(#${skyId})"/><circle cx="106" cy="90" r="46" fill="#ffd963" opacity="${night?'.55':'1'}"/><g class="story-cloud-svg" fill="#fff" opacity=".88"><ellipse cx="320" cy="90" rx="60" ry="25"/><ellipse cx="360" cy="84" rx="40" ry="30"/><ellipse cx="399" cy="94" rx="52" ry="23"/></g><path d="M0 330 C130 255 250 290 360 324 C500 258 650 264 900 320 L900 520 L0 520Z" fill="#95ce78"/><path d="M0 382 C170 330 320 348 470 380 C630 330 760 344 900 376 L900 520 L0 520Z" fill="url(#${groundId})"/>${layout.path?'<path d="M362 520 C382 453 420 413 468 384 C516 356 548 330 564 298" fill="none" stroke="#efdaa7" stroke-width="76" stroke-linecap="round" opacity=".92"/>':''}<g class="story-tree-svg"><rect x="88" y="220" width="36" height="176" rx="16" fill="#8a613c"/><circle cx="106" cy="198" r="74" fill="#5fa95a"/><circle cx="63" cy="216" r="50" fill="#6fba63"/><circle cx="148" cy="214" r="52" fill="#6fba63"/></g><g class="story-tree-svg"><rect x="738" y="224" width="34" height="172" rx="16" fill="#8a613c"/><circle cx="756" cy="204" r="70" fill="#5b9f55"/><circle cx="716" cy="220" r="45" fill="#70b866"/><circle cx="796" cy="217" r="47" fill="#70b866"/></g>${layout.house?storyHouse(layout.houseX,layout.houseY,layout.houseScale):''}${extras}${actors}<g class="story-sparkles-svg" fill="#fff6a5"><circle cx="250" cy="164" r="5"/><circle cx="670" cy="130" r="4"/><circle cx="440" cy="225" r="3"/></g></svg>`;
 }
 
 function installScreens(){
@@ -164,5 +164,5 @@ function wire(){
   audio.addEventListener('timeupdate',()=>{const segment=player.story?.segments?.[player.index],part=segmentAudioParts(segment)[player.partIndex];if(!part?.endAt||player.partBoundaryHandled)return;if(audio.currentTime>=Number(part.endAt)-.04){audio.pause();completeAudioPart()}});audio.addEventListener('ended',completeAudioPart);audio.addEventListener('play',()=>{player.partBoundaryHandled=false;setStoryPathNote();syncControls()});audio.addEventListener('pause',syncControls);audio.addEventListener('error',()=>{clearAutoAdvanceTimer();setStoryPathNote('تعذر تشغيل هذا الجزء الآن. اختر إعادة الجزء للمحاولة.');syncControls()});
 }
 
-function init(){installScreens();renderLibrary();wire()}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(init,0),{once:true});else setTimeout(init,0);
+async function init(){try{await ensureStorySprites()}catch(error){console.error('Story sprite load failed',error)}installScreens();renderLibrary();wire()}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>void init(),0),{once:true});else setTimeout(()=>void init(),0);
