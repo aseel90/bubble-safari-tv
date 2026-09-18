@@ -434,3 +434,65 @@ body{overflow:hidden;background:#d8f2d2;text-rendering:optimizeLegibility;-webki
   #homeScreen.screen-active .mode-copy small{font-size:12.5px!important;line-height:1.38!important}
   #homeScreen.screen-active .mode-card-featured .mode-copy small{font-size:13px!important}
 }
+
+/* v1.2.2 Android TV finish screen — compact-height safe layout */
+#finishScreen.screen-active{overflow:visible}
+#finishScreen .finish-panel{
+  width:min(860px,100%)!important;
+  max-height:100%;
+  overflow:hidden;
+}
+#finishScreen .finish-panel h2{line-height:1.08;text-wrap:balance}
+#finishScreen .finish-panel p{
+  margin:clamp(4px,1vh,10px) 0;
+  font-size:clamp(19px,1.65vw,25px);
+}
+#finishScreen .finish-stars{
+  display:flex;align-items:center;justify-content:center;
+  gap:clamp(8px,1vw,14px);letter-spacing:0;
+  margin:clamp(4px,.8vh,10px) 0 clamp(8px,1.3vh,16px);
+}
+#finishScreen .finish-stars span{
+  width:clamp(30px,3vw,42px);height:clamp(30px,3vw,42px);
+  display:grid;place-items:center;
+}
+#finishScreen .primary-button,#finishScreen .secondary-button{
+  transform:none!important;white-space:normal;line-height:1.2;
+}
+@media (max-height:650px){
+  #finishScreen .finish-panel{
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    align-items:center;
+    gap:8px 10px;
+    padding:12px 20px 16px!important;
+  }
+  #finishScreen .trophy-bubble,
+  #finishScreen .eyebrow,
+  #finishScreen .finish-panel h2,
+  #finishScreen .finish-panel p,
+  #finishScreen .finish-stars{grid-column:1/-1}
+  #finishScreen .trophy-bubble{
+    width:76px;height:76px;margin:0 auto 2px;font-size:40px;
+  }
+  #finishScreen .eyebrow{
+    justify-self:center;margin:0;padding:5px 12px;
+  }
+  #finishScreen .finish-panel h2{
+    margin:0!important;font-size:clamp(29px,3vw,37px)!important;
+  }
+  #finishScreen .finish-panel p{
+    margin:0!important;font-size:clamp(17px,1.45vw,20px);
+  }
+  #finishScreen .finish-stars{margin:0 0 2px}
+  #finishScreen .finish-panel .primary-button,
+  #finishScreen .finish-panel .secondary-button{
+    width:100%!important;min-width:0!important;
+    min-height:50px;height:50px!important;
+    margin:0!important;padding:0 12px;
+    border-radius:16px;font-size:clamp(15px,1.25vw,18px);
+  }
+  #finishScreen .finish-panel .primary-button{
+    box-shadow:0 6px 0 #d96539,0 10px 18px rgba(203,101,56,.22);
+  }
+}
