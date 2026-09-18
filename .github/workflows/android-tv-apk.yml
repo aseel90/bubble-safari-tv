@@ -11,7 +11,9 @@ on:
       - 'art.css'
       - 'worlds.css'
       - 'polish-v08.css'
+      - 'stories-v12.css'
       - 'game-v3.js'
+      - 'stories-v12.js'
       - 'game-data.js'
       - 'tv-nav.js'
       - 'voice.js'
@@ -41,8 +43,8 @@ jobs:
           from pathlib import Path
           root = Path('.')
           runtime = [
-              'index.html','styles.css','art.css','worlds.css','polish-v08.css',
-              'game-v3.js','game-data.js','tv-nav.js','voice.js','art.js','scene-art.js',
+              'index.html','styles.css','art.css','worlds.css','polish-v08.css','stories-v12.css',
+              'game-v3.js','stories-v12.js','game-data.js','tv-nav.js','voice.js','art.js','scene-art.js',
               'service-worker.js','manifest.webmanifest','favicon.svg',
           ]
           paths = [root / name for name in runtime]
@@ -108,6 +110,8 @@ jobs:
           required = {
               'assets/index.html',
               'assets/game-v3.js',
+              'assets/stories-v12.css',
+              'assets/stories-v12.js',
               'assets/tv-nav.js',
               'assets/bubble-safari-version.txt',
               'assets/audio/ui_start.wav',
