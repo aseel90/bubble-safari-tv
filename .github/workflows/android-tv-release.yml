@@ -11,7 +11,9 @@ on:
       - 'art.css'
       - 'worlds.css'
       - 'polish-v08.css'
+      - 'stories-v12.css'
       - 'game-v3.js'
+      - 'stories-v12.js'
       - 'game-data.js'
       - 'tv-nav.js'
       - 'voice.js'
@@ -43,8 +45,8 @@ jobs:
           from pathlib import Path
           root = Path('.')
           runtime = [
-              'index.html','styles.css','art.css','worlds.css','polish-v08.css',
-              'game-v3.js','game-data.js','tv-nav.js','voice.js','art.js','scene-art.js',
+              'index.html','styles.css','art.css','worlds.css','polish-v08.css','stories-v12.css',
+              'game-v3.js','stories-v12.js','game-data.js','tv-nav.js','voice.js','art.js','scene-art.js',
               'service-worker.js','manifest.webmanifest','favicon.svg',
           ]
           paths = [root / name for name in runtime]
@@ -86,6 +88,26 @@ jobs:
 
       - name: Build APK
         run: gradle -p android-tv :app:assembleDebug --stacktrace
+
+      - name: Verify bundled story runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import zipfile
+          apk = 'android-tv/app/build/outputs/apk/debug/app-debug.apk'
+          required = {
+              'assets/stories-v12.css',
+              'assets/stories-v12.js',
+          }
+          with zipfile.ZipFile(apk) as zf:
+              names = set(zf.namelist())
+          missing = sorted(required - names)
+          if missing:
+              print('Missing required story assets:', *missing, sep='\n - ')
+              raise SystemExit(1)
+          print('Verified bundled story runtime:', *sorted(required), sep='\n - ')
+          PY
 
       - name: Prepare APK
         shell: bash
