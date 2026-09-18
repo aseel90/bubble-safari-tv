@@ -4,10 +4,10 @@ const STORY_AUDIO_VERSION='v37';
 const STORY_AUTO_NOTE='تعمل القصة تلقائيًا من البداية إلى النهاية.';
 
 const STORY_IMAGE_BASE='./assets/stories/arin-fox/';
-const STORY_IMAGE_VERSION='v49';
+const STORY_IMAGE_VERSION='v50';
 const ARIN_FOX_SCENE_IMAGES=[
   'arinfox_scene_01_2026-09-18T18-53-29-720Z.png',
-  'arinfox_scene_02_2026-09-18T17-57-24-516Z.png',
+  'arinfox_scene_02_v02.png',
   'arinfox_scene_03_2026-09-18T17-58-25-364Z.png',
   'arinfox_scene_04_2026-09-18T17-58-35-275Z.png',
   'arinfox_scene_05_2026-09-18T17-58-45-622Z.png',
