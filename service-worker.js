@@ -1,4 +1,4 @@
-const CACHE = 'bubble-safari-v45-story-sprites';
+const CACHE = 'bubble-safari-v46-static-story-scenes';
 const CORE = [
   './', './index.html', './styles.css', './art.css', './worlds.css', './polish-v08.css', './stories-v12.css',
   './game-v3.js', './stories-v12.js', './story-sprites.svg', './game-data.js', './tv-nav.js', './voice.js', './art.js', './scene-art.js',
@@ -47,6 +47,18 @@ async function networkFirst(request) {
   }
 }
 
+async function cacheFirst(request) {
+  const cached = await caches.match(request);
+  if (cached) return cached;
+  try {
+    const response = await fetch(request, { cache: 'no-store' });
+    if (response.status === 200) return cachePut(request, response);
+    return response;
+  } catch {
+    return Response.error();
+  }
+}
+
 self.addEventListener('fetch', event => {
   const request = event.request;
   if (request.method !== 'GET') return;
@@ -56,7 +68,10 @@ self.addEventListener('fetch', event => {
 
   event.respondWith((async () => {
     const isAudio = url.pathname.includes('/audio/');
+    const isStoryScene = url.pathname.includes('/assets/stories/arin-fox/') && /\.(?:png|jpe?g|webp)$/i.test(url.pathname);
     const isCoreAsset = CORE_NAMES.has(url.pathname);
+
+    if (isStoryScene) return cacheFirst(request);
 
     if (isAudio) {
       const cached = await caches.match(request);
