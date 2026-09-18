@@ -8,59 +8,13 @@ const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-function installStoryScreen(){
-  const stage=$('.stage');
-  if(!stage||$('#storyScreen'))return;
-  const section=document.createElement('section');
-  section.className='screen story-screen';
-  section.id='storyScreen';
-  section.setAttribute('aria-labelledby','storyTitle');
-  section.innerHTML=`
-    <div class="story-shell">
-      <div class="story-topbar">
-        <button class="back-button focusable story-back" id="storyBackButton" type="button" data-focusable aria-label="العودة للرئيسية"><span class="back-icon" data-ui-art="back" aria-hidden="true"></span></button>
-        <div class="story-heading">
-          <span class="eyebrow">قصة تفاعلية</span>
-          <h2 id="storyTitle">ليو والفراشة المضيئة</h2>
-          <p id="storyChapterTitle">صباح في الغابة</p>
-        </div>
-        <div class="story-progress" role="progressbar" aria-label="تقدم القصة" aria-valuemin="1" aria-valuemax="5" aria-valuenow="1">
-          <strong id="storyProgressText">1 / 5</strong>
-          <span class="story-progress-track"><span id="storyProgressFill"></span></span>
-        </div>
-      </div>
-      <div class="story-card">
-        <div class="story-visual story-theme-dawn" id="storyVisual" aria-hidden="true"></div>
-        <div class="story-copy">
-          <span class="story-kicker" id="storyKicker">بداية الحكاية</span>
-          <p id="storyNarration">استيقظ ليو على لمعة صغيرة ترقص بين الأشجار.</p>
-          <span class="story-path-note" id="storyPathNote">اختياراتك تغيّر الطريق، والنهاية دائمًا سعيدة.</span>
-        </div>
-      </div>
-      <div class="story-choices" id="storyChoices" role="group" aria-label="اختيارات القصة"></div>
-    </div>`;
-  stage.insertBefore(section,$('#gameScreen')||null);
-}
-installStoryScreen();
-
-const screens = { home:$('#homeScreen'), age:$('#ageScreen'), world:$('#worldScreen'), story:$('#storyScreen'), settings:$('#settingsScreen'), game:$('#gameScreen'), finish:$('#finishScreen') };
+const screens = { home:$('#homeScreen'), age:$('#ageScreen'), world:$('#worldScreen'), settings:$('#settingsScreen'), game:$('#gameScreen'), finish:$('#finishScreen') };
 const app=$('#app'), worldDecor=$('#worldDecor'), hud=$('#hud'), settingsButton=$('#settingsButton'), starCount=$('#starCount'), roundText=$('#roundText'), progressMeter=$('#progressMeter'), progressFill=$('#progressFill'), worldName=$('#worldName'), worldIcon=$('#worldIcon'), choicesEl=$('#choices'), questionText=$('#questionText'), questionKicker=$('#questionKicker'), questionVisual=$('#questionVisual'), replayButton=$('#replayButton'), soundButton=$('#soundButton'), soundIcon=$('#soundIcon'), feedback=$('#feedback'), feedbackTitle=$('#feedbackTitle'), feedbackSubtitle=$('#feedbackSubtitle'), feedbackIcon=$('#feedbackIcon'), confetti=$('#confetti'), finalStars=$('#finalStars');
 const updateStatus=$('#updateStatus'), updateProgressEl=$('#updateProgress'), updateProgressFill=$('#updateProgressFill'), updateProgressPercent=$('#updateProgressPercent'), currentVersion=$('#currentVersion'), latestVersion=$('#latestVersion'), checkUpdateButton=$('#checkUpdateButton'), otaOverlay=$('#otaOverlay'), otaOverlayLabel=$('#otaOverlayLabel'), otaOverlayPercent=$('#otaOverlayPercent'), otaOverlayFill=$('#otaOverlayFill');
 
 const state={age:'2-3',world:'jungle',round:0,totalRounds:12,stars:0,streak:0,muted:localStorage.getItem('bubbleSafariMuted')==='1',effects:localStorage.getItem('bubbleSafariEffects')!=='0',quality:localStorage.getItem('bubbleSafariQuality')||'auto',settingsReturn:'home',currentQuestion:null,locked:false,typePlan:[],usedTargets:{},feedbackHistory:[],lastSize:null,flowId:0};
 const voice=createVoiceEngine({isMuted:()=>state.muted});
 let tv;
-
-const STORY_TOTAL_STEPS=5;
-const storyState={node:'intro',ending:'calm'};
-const STORY_NODES={
-  intro:{step:1,kicker:'بداية الحكاية',chapter:'صباح في الغابة',text:'استيقظ ليو على لمعة صغيرة ترقص بين الأشجار. كانت فراشة مضيئة تلوّح له ثم تطير ببطء.',theme:'dawn',cue:'animal_lion',choices:[{label:'نتبع اللمعة',hint:'لنرَ إلى أين تذهب الفراشة',next:'crossroads',icon:'✨'}]},
-  crossroads:{step:2,kicker:'اختر الطريق',chapter:'طريقان أمام ليو',text:'وصل ليو إلى طريقين. من جهة النهر سمع نقيق ضفدع، وفوق الشجرة رأى القرد يلوّح له.',theme:'crossroads',choices:[{label:'نذهب إلى النهر',hint:'نسأل الضفدع عن الفراشة',next:'river',icon:'💧'},{label:'نسأل القرد',hint:'ربما رآها من أعلى الشجرة',next:'tree',icon:'🌿'}]},
-  river:{step:3,kicker:'صديق عند الماء',chapter:'الضفدع يعرف علامة',text:'قال الضفدع: رأيت نقاطًا لامعة تتجه نحو الزهور الكبيرة! شكره ليو وتابع الطريق.',theme:'river',friend:'frog',cue:'animal_frog',path:'اخترت طريق النهر',choices:[{label:'نتبع آثار اللمعان',hint:'إلى حديقة الزهور',next:'flower',icon:'✨'}]},
-  tree:{step:3,kicker:'صديق فوق الشجرة',chapter:'القرد يرى بعيدًا',text:'قال القرد: رأيت الفراشة تهبط قرب الزهور الكبيرة! شكره ليو وركض نحوها بهدوء.',theme:'tree',friend:'monkey',cue:'animal_monkey',path:'اخترت طريق الشجرة',choices:[{label:'نذهب إلى الزهور',hint:'الفراشة قريبة الآن',next:'flower',icon:'🌼'}]},
-  flower:{step:4,kicker:'وجدناها!',chapter:'حديقة الزهور',text:'وجد ليو الفراشة المضيئة تستريح على زهرة صفراء. كانت هادئة وتنتظر أن يحييها.',theme:'flowers',friend:'rabbit',cue:'animal_rabbit',choices:[{label:'نقترب بهدوء',hint:'خطوات صغيرة وصوت هادئ',next:'finish',ending:'calm',icon:'🤫'},{label:'نلوّح لها',hint:'نقول مرحبًا من بعيد',next:'finish',ending:'wave',icon:'👋'}]},
-  finish:{step:5,kicker:'نهاية سعيدة',chapter:'صديق جديد!',theme:'celebrate',friend:'monkey',choices:[{label:'نقرأ مرة أخرى',hint:'ابدأ الحكاية من البداية',action:'restart',icon:'↻'},{label:'العودة للرئيسية',hint:'اختر مغامرة أخرى',action:'home',icon:'⌂'}]}
-};
 
 const ANIMAL_LAYOUT={
   lion:{scale:.92,y:1},elephant:{scale:.86,y:2},monkey:{scale:.9,y:1},giraffe:{scale:.72,y:2},panda:{scale:.92,y:1},frog:{scale:.94,y:2},tiger:{scale:.9,y:1},zebra:{scale:.84,y:1},hippo:{scale:.9,y:2},rabbit:{scale:.76,y:4},cow:{scale:.84,y:2},horse:{scale:.82,y:1},duck:{scale:.92,y:2},cat:{scale:.86,y:2},fish:{scale:.96},turtle:{scale:.88,y:1},dolphin:{scale:.86},octopus:{scale:.86,y:3},crab:{scale:.82,y:3},whale:{scale:.88,y:1},shark:{scale:.88}
@@ -105,7 +59,6 @@ function setGameLocked(value){state.locked=!!value;if(settingsButton)settingsBut
 function handleBack(){
   state.flowId++;voice.stop();setGameLocked(false);clearTransientUi();
   if(screens.settings.classList.contains('screen-active'))return showScreen(state.settingsReturn||'home');
-  if(screens.story.classList.contains('screen-active'))return showScreen('home');
   if(screens.game.classList.contains('screen-active'))return showScreen('world');
   if(screens.world.classList.contains('screen-active'))return showScreen('age');
   if(screens.age.classList.contains('screen-active')||screens.finish.classList.contains('screen-active'))return showScreen('home');
@@ -156,74 +109,6 @@ function installTvRuntimeHotfix(){
 }
 installTvRuntimeHotfix();
 tv=createTvNavigation({getActiveScreen:()=>$('.screen-active'),onBack:handleBack});
-
-function storyEndingText(){
-  return storyState.ending==='wave'
-    ?'لوّح ليو للفراشة، فحلّقت حوله في دائرة من الضوء. عرف ليو أن الترحيب اللطيف يصنع صديقًا جديدًا.'
-    :'اقترب ليو بخطوات هادئة، فجلست الفراشة على أنفه لحظة صغيرة. عرف ليو أن الهدوء واللطف يجعلان الأصدقاء يشعرون بالأمان.';
-}
-function renderStoryVisual(node){
-  const visual=$('#storyVisual');
-  if(!visual)return;
-  visual.className=`story-visual story-theme-${node.theme||'dawn'}`;
-  visual.innerHTML=`
-    <span class="story-sun"></span><span class="story-cloud story-cloud-a"></span><span class="story-cloud story-cloud-b"></span>
-    <span class="story-hill story-hill-back"></span><span class="story-hill story-hill-front"></span><span class="story-river"></span>
-    <span class="story-tree story-tree-a"><i></i></span><span class="story-tree story-tree-b"><i></i></span>
-    <span class="story-flower story-flower-a"></span><span class="story-flower story-flower-b"></span><span class="story-flower story-flower-c"></span>
-    <span class="story-butterfly"><i></i><b></b></span>
-    <span class="story-character story-hero">${animalArt('lion')}</span>
-    ${node.friend?`<span class="story-character story-friend">${animalArt(node.friend)}</span>`:''}
-    <span class="story-sparkle story-sparkle-a">✦</span><span class="story-sparkle story-sparkle-b">✦</span>`;
-}
-function renderStory(){
-  const node=STORY_NODES[storyState.node]||STORY_NODES.intro;
-  const chapter=$('#storyChapterTitle'),kicker=$('#storyKicker'),narration=$('#storyNarration'),pathNote=$('#storyPathNote'),progressText=$('#storyProgressText'),progressFillEl=$('#storyProgressFill'),progress=$('.story-progress'),choices=$('#storyChoices');
-  if(chapter)chapter.textContent=node.chapter||'';
-  if(kicker)kicker.textContent=node.kicker||'';
-  if(narration)narration.textContent=storyState.node==='finish'?storyEndingText():node.text||'';
-  if(pathNote)pathNote.textContent=node.path||'اختياراتك تغيّر الطريق، والنهاية دائمًا سعيدة.';
-  if(progressText)progressText.textContent=`${node.step} / ${STORY_TOTAL_STEPS}`;
-  if(progressFillEl)progressFillEl.style.transform=`scaleX(${node.step/STORY_TOTAL_STEPS})`;
-  if(progress)progress.setAttribute('aria-valuenow',String(node.step));
-  renderStoryVisual(node);
-  if(!choices)return;
-  choices.innerHTML='';
-  node.choices.forEach((choice,index)=>{
-    const button=document.createElement('button');
-    button.type='button';button.className='story-choice focusable';button.dataset.focusable='';button.dataset.storyChoice='';
-    if(index===0)button.dataset.autofocus='';
-    button.innerHTML=`<span class="story-choice-icon" aria-hidden="true">${choice.icon||'→'}</span><span class="story-choice-copy"><strong>${choice.label}</strong><small>${choice.hint||''}</small></span>`;
-    button.addEventListener('click',()=>advanceStory(choice));
-    choices.appendChild(button);
-  });
-  const first=choices.querySelector('[data-autofocus]');
-  setTimeout(()=>{if(screens.story.classList.contains('screen-active')&&first)tv?.setFocus(first)},70);
-  voice.stop();
-  if(storyState.node==='finish'){
-    voice.success(true);setTimeout(()=>voice.play('feedback_wow'),150);
-  }else if(node.cue){setTimeout(()=>voice.play(node.cue),120)}
-}
-function advanceStory(choice){
-  voice.ensureAudio();
-  if(choice.action==='home'){voice.stop();showScreen('home');return}
-  if(choice.action==='restart'){openStory();return}
-  if(choice.ending)storyState.ending=choice.ending;
-  if(choice.next)storyState.node=choice.next;
-  voice.success();renderStory();
-}
-function openStory(){
-  storyState.node='intro';storyState.ending='calm';voice.ensureAudio();voice.play('ui_start');renderStory();showScreen('story');
-}
-function wireStoryHomeCard(){
-  const card=$('[data-home-section="stories"]');
-  if(!card)return;
-  card.id='storiesButton';
-  const badge=$('.mode-badge',card),copy=$('.mode-copy small',card);
-  if(badge)badge.textContent='جديد';
-  if(copy)copy.textContent='حكاية مصورة باختيارات وحركة';
-  card.addEventListener('click',event=>{event.stopImmediatePropagation();openStory()},{capture:true});
-}
 
 const randomFrom=items=>items[Math.floor(Math.random()*items.length)];
 function shuffle(items){const copy=[...items];for(let i=copy.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[copy[i],copy[j]]=[copy[j],copy[i]]}return copy}
@@ -400,5 +285,5 @@ $('#worldButton').addEventListener('click',()=>showScreen('world'));
 $('#homeButton').addEventListener('click',()=>showScreen('home'));
 document.addEventListener('pointerdown',()=>voice.ensureAudio(),{once:true});
 
-wireStoryHomeCard();hydrateStaticArt();applyPreferences();updateSoundUi();setWorld('jungle');showScreen('home');readCurrentVersion();
+hydrateStaticArt();applyPreferences();updateSoundUi();setWorld('jungle');showScreen('home');readCurrentVersion();
 if('serviceWorker'in navigator&&location.hostname.endsWith('github.io'))window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js',{updateViaCache:'none'}).catch(()=>{}));
