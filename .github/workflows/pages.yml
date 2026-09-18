@@ -12,7 +12,6 @@ on:
       - 'stories-v12.css'
       - 'game-v3.js'
       - 'stories-v12.js'
-      - 'story-sprites.svg'
       - 'game-data.js'
       - 'tv-nav.js'
       - 'voice.js'
@@ -56,7 +55,7 @@ jobs:
           root = Path('.')
           runtime = [
               'index.html','styles.css','art.css','worlds.css','polish-v08.css','stories-v12.css',
-              'game-v3.js','stories-v12.js','story-sprites.svg','game-data.js','tv-nav.js','voice.js','art.js','scene-art.js',
+              'game-v3.js','stories-v12.js','game-data.js','tv-nav.js','voice.js','art.js','scene-art.js',
               'service-worker.js','manifest.webmanifest','favicon.svg',
           ]
           paths = [root / name for name in runtime]
@@ -84,12 +83,12 @@ jobs:
           set -euo pipefail
           rm -rf _site
           mkdir -p _site/audio _site/updates _site/assets/stories/arin-fox
-          cp index.html styles.css art.css worlds.css polish-v08.css stories-v12.css game-v3.js stories-v12.js story-sprites.svg game-data.js tv-nav.js voice.js art.js scene-art.js service-worker.js manifest.webmanifest favicon.svg _site/
+          cp index.html styles.css art.css worlds.css polish-v08.css stories-v12.css game-v3.js stories-v12.js game-data.js tv-nav.js voice.js art.js scene-art.js service-worker.js manifest.webmanifest favicon.svg _site/
           cp -R audio/. _site/audio/
           cp -R assets/stories/arin-fox/. _site/assets/stories/arin-fox/
           (
             cd _site
-            zip -qr updates/game-bundle.zip index.html styles.css art.css worlds.css polish-v08.css stories-v12.css game-v3.js stories-v12.js story-sprites.svg game-data.js tv-nav.js voice.js art.js scene-art.js service-worker.js manifest.webmanifest favicon.svg audio assets
+            zip -qr updates/game-bundle.zip index.html styles.css art.css worlds.css polish-v08.css stories-v12.css game-v3.js stories-v12.js game-data.js tv-nav.js voice.js art.js scene-art.js service-worker.js manifest.webmanifest favicon.svg audio assets
           )
           HASH="$(sha256sum _site/updates/game-bundle.zip | awk '{print $1}')"
           SIZE="$(stat -c '%s' _site/updates/game-bundle.zip)"
