@@ -394,7 +394,9 @@ public final class MainActivity extends Activity {
     private static boolean isValidGameDirectory(File directory) {
         return directory != null && new File(directory, "index.html").isFile()
                 && new File(directory, "game-v3.js").isFile()
-                && new File(directory, "tv-nav.js").isFile();
+                && new File(directory, "tv-nav.js").isFile()
+                && new File(directory, "stories-v12.css").isFile()
+                && new File(directory, "stories-v12.js").isFile();
     }
 
     private String readBundledVersion() {
