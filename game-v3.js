@@ -345,6 +345,7 @@ function renderUpdateState(detail={}){
 }
 window.BubbleSafariNativeUpdate=renderUpdateState;
 window.addEventListener('bubbleSafariUpdate',event=>renderUpdateState(event.detail||{}));
+window.addEventListener('bubbleSafari:setMuted',event=>{const muted=!!event.detail?.muted;state.muted=muted;localStorage.setItem('bubbleSafariMuted',muted?'1':'0');if(muted)voice.stop();else voice.ensureAudio();updateSoundUi()});
 
 async function readCurrentVersion(){
   let current='';
