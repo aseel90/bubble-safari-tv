@@ -1,0 +1,31 @@
+scene,codec,mime,source_bytes,encoded_bytes,saving_pct,source_duration_s,encoded_duration_s,duration_delta_ms,source_rate,encoded_rate,channels,active_start_delta_ms,active_end_delta_ms,apsnr_db
+arin-fox-01-intro.wav,mp3-64k,audio/mpeg,1105964,184941,83.28,23.04,23.088,48.0,24000,24000,1,0.0,0.0,0.0
+arin-fox-07-where-going.wav,mp3-64k,audio/mpeg,810284,135789,83.24,16.88,16.944,64.0,24000,24000,1,0.0,0.0,0.0
+arin-fox-12-tail.wav,mp3-64k,audio/mpeg,1044524,174765,83.27,21.76,21.816,56.0,24000,24000,1,0.0,0.0,0.0
+arin-fox-18-ranger-talks.wav,mp3-64k,audio/mpeg,746924,125229,83.23,15.56,15.624,64.0,24000,24000,1,0.0,0.0,0.0
+arin-fox-23-fox-apology-v2.wav,mp3-64k,audio/mpeg,833324,139629,83.24,17.36,17.424,64.0,24000,24000,1,0.0,0.0,0.0
+arin-fox-27-ending.wav,mp3-64k,audio/mpeg,789164,132141,83.26,16.44,16.488,48.0,24000,24000,1,0.0,0.0,0.0
+arin-fox-01-intro.wav,aac-lc-64k,"audio/mp4; codecs=""mp4a.40.2""",1105964,198972,82.01,23.04,23.04,0.0,24000,24000,1,0.0,0.0,0.0
+arin-fox-07-where-going.wav,aac-lc-64k,"audio/mp4; codecs=""mp4a.40.2""",810284,147347,81.82,16.88,16.88,0.0,24000,24000,1,0.0,0.0,0.0
+arin-fox-12-tail.wav,aac-lc-64k,"audio/mp4; codecs=""mp4a.40.2""",1044524,188174,81.98,21.76,21.76,0.0,24000,24000,1,0.0,0.0,0.0
+arin-fox-18-ranger-talks.wav,aac-lc-64k,"audio/mp4; codecs=""mp4a.40.2""",746924,133078,82.18,15.56,15.56,0.0,24000,24000,1,0.0,0.0,0.0
+arin-fox-23-fox-apology-v2.wav,aac-lc-64k,"audio/mp4; codecs=""mp4a.40.2""",833324,150394,81.95,17.36,17.36,0.0,24000,24000,1,0.0,0.0,0.0
+arin-fox-27-ending.wav,aac-lc-64k,"audio/mp4; codecs=""mp4a.40.2""",789164,139898,82.27,16.44,16.44,0.0,24000,24000,1,0.0,0.0,0.0
+arin-fox-01-intro.wav,opus-48k,"audio/ogg; codecs=""opus""",1105964,135738,87.73,23.04,23.0465,6.5,24000,48000,1,0.0,0.0,0.0
+arin-fox-07-where-going.wav,opus-48k,"audio/ogg; codecs=""opus""",810284,96550,88.08,16.88,16.8865,6.5,24000,48000,1,0.0,0.0,0.0
+arin-fox-12-tail.wav,opus-48k,"audio/ogg; codecs=""opus""",1044524,126222,87.92,21.76,21.7665,6.5,24000,48000,1,0.0,0.0,0.0
+arin-fox-18-ranger-talks.wav,opus-48k,"audio/ogg; codecs=""opus""",746924,91727,87.72,15.56,15.5665,6.5,24000,48000,1,0.0,0.0,0.0
+arin-fox-23-fox-apology-v2.wav,opus-48k,"audio/ogg; codecs=""opus""",833324,100494,87.94,17.36,17.3665,6.5,24000,48000,1,0.0,-10.0,0.0
+arin-fox-27-ending.wav,opus-48k,"audio/ogg; codecs=""opus""",789164,96071,87.83,16.44,16.4465,6.5,24000,48000,1,0.0,0.0,0.0
+arin-fox-01-intro.wav,vorbis-64k,"audio/ogg; codecs=""vorbis""",1105964,210245,80.99,23.04,23.04,0.0,24000,24000,1,0.0,0.0,0.0
+arin-fox-07-where-going.wav,vorbis-64k,"audio/ogg; codecs=""vorbis""",810284,152964,81.12,16.88,16.88,0.0,24000,24000,1,0.0,0.0,0.0
+arin-fox-12-tail.wav,vorbis-64k,"audio/ogg; codecs=""vorbis""",1044524,197023,81.14,21.76,21.76,0.0,24000,24000,1,0.0,0.0,0.0
+arin-fox-18-ranger-talks.wav,vorbis-64k,"audio/ogg; codecs=""vorbis""",746924,139463,81.33,15.56,15.56,0.0,24000,24000,1,0.0,0.0,0.0
+arin-fox-23-fox-apology-v2.wav,vorbis-64k,"audio/ogg; codecs=""vorbis""",833324,157508,81.1,17.36,17.36,0.0,24000,24000,1,0.0,0.0,0.0
+arin-fox-27-ending.wav,vorbis-64k,"audio/ogg; codecs=""vorbis""",789164,144776,81.65,16.44,16.44,0.0,24000,24000,1,-10.0,0.0,0.0
+arin-fox-01-intro.wav,flac-lossless,audio/flac,1105964,629478,43.08,23.04,23.04,0.0,24000,24000,1,0.0,0.0,0.0
+arin-fox-07-where-going.wav,flac-lossless,audio/flac,810284,443839,45.22,16.88,16.88,0.0,24000,24000,1,0.0,0.0,0.0
+arin-fox-12-tail.wav,flac-lossless,audio/flac,1044524,587302,43.77,21.76,21.76,0.0,24000,24000,1,0.0,0.0,0.0
+arin-fox-18-ranger-talks.wav,flac-lossless,audio/flac,746924,433685,41.94,15.56,15.56,0.0,24000,24000,1,0.0,0.0,0.0
+arin-fox-23-fox-apology-v2.wav,flac-lossless,audio/flac,833324,435544,47.73,17.36,17.36,0.0,24000,24000,1,0.0,0.0,0.0
+arin-fox-27-ending.wav,flac-lossless,audio/flac,789164,415756,47.32,16.44,16.44,0.0,24000,24000,1,0.0,0.0,0.0

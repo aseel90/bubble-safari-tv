@@ -1,0 +1,68 @@
+{
+  "source_count": 27,
+  "source_bytes": 22902948,
+  "source_mib": 21.842,
+  "total_duration_s": 477.12,
+  "formats": [
+    {
+      "codec": "mp3-64k",
+      "mime": "audio/mpeg",
+      "story_bytes": 3835647,
+      "story_mib": 3.658,
+      "saving_pct": 83.25,
+      "avg_sample_duration_delta_ms": 57.33,
+      "max_sample_duration_delta_ms": 64.0,
+      "max_active_start_delta_ms": 0.0,
+      "max_active_end_delta_ms": 0.0,
+      "avg_apsnr_db": 0.0
+    },
+    {
+      "codec": "aac-lc-64k",
+      "mime": "audio/mp4; codecs=\"mp4a.40.2\"",
+      "story_bytes": 4121794,
+      "story_mib": 3.931,
+      "saving_pct": 82.0,
+      "avg_sample_duration_delta_ms": 0.0,
+      "max_sample_duration_delta_ms": 0.0,
+      "max_active_start_delta_ms": 0.0,
+      "max_active_end_delta_ms": 0.0,
+      "avg_apsnr_db": 0.0
+    },
+    {
+      "codec": "opus-48k",
+      "mime": "audio/ogg; codecs=\"opus\"",
+      "story_bytes": 2770027,
+      "story_mib": 2.642,
+      "saving_pct": 87.91,
+      "avg_sample_duration_delta_ms": 6.5,
+      "max_sample_duration_delta_ms": 6.5,
+      "max_active_start_delta_ms": 0.0,
+      "max_active_end_delta_ms": 10.0,
+      "avg_apsnr_db": 0.0
+    },
+    {
+      "codec": "vorbis-64k",
+      "mime": "audio/ogg; codecs=\"vorbis\"",
+      "story_bytes": 4335566,
+      "story_mib": 4.135,
+      "saving_pct": 81.07,
+      "avg_sample_duration_delta_ms": 0.0,
+      "max_sample_duration_delta_ms": 0.0,
+      "max_active_start_delta_ms": 10.0,
+      "max_active_end_delta_ms": 0.0,
+      "avg_apsnr_db": 0.0
+    },
+    {
+      "codec": "flac-lossless",
+      "mime": "audio/flac",
+      "story_bytes": 12430308,
+      "story_mib": 11.854,
+      "saving_pct": 45.73,
+      "avg_sample_duration_delta_ms": 0.0,
+      "max_sample_duration_delta_ms": 0.0,
+      "max_active_start_delta_ms": 0.0,
+      "max_active_end_delta_ms": 0.0,
+      "avg_apsnr_db": 0.0
+    }
+  ]
+}
