@@ -58,8 +58,8 @@ public final class MainActivity extends Activity {
     private static final String VERSION_FILE = ".bubble-safari-version";
     private static final String BUNDLED_VERSION_ASSET = "bubble-safari-version.txt";
     private static final long MAX_MANIFEST_BYTES = 64 * 1024L;
-    private static final long MAX_ZIP_BYTES = 50 * 1024 * 1024L;
-    private static final long MAX_UNPACKED_BYTES = 100 * 1024 * 1024L;
+    private static final long MAX_ZIP_BYTES = 160 * 1024 * 1024L;
+    private static final long MAX_UNPACKED_BYTES = 320 * 1024 * 1024L;
 
     private final ExecutorService updateExecutor = Executors.newSingleThreadExecutor();
     private WebView webView;
@@ -134,7 +134,7 @@ public final class MainActivity extends Activity {
         settings.setDisplayZoomControls(false);
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
         settings.setCacheMode(WebSettings.LOAD_DEFAULT);
-        settings.setUserAgentString(settings.getUserAgentString() + " BubbleSafariTV/0.9.1-tv4");
+        settings.setUserAgentString(settings.getUserAgentString() + " BubbleSafariTV/0.9.2-tv5");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) settings.setSafeBrowsingEnabled(true);
         boolean debuggable = (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
         WebView.setWebContentsDebuggingEnabled(debuggable);
