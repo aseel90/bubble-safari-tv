@@ -20,7 +20,8 @@ on:
       - 'service-worker.js'
       - 'manifest.webmanifest'
       - 'favicon.svg'
-      - 'audio/**/*.wav'
+      - 'audio/*.wav'
+      - 'audio/stories/arin-fox/*.mp3'
       - 'assets/stories/arin-fox/**/*.webp'
       - '.github/workflows/pages.yml'
   workflow_dispatch:
@@ -59,7 +60,8 @@ jobs:
               'service-worker.js','manifest.webmanifest','favicon.svg',
           ]
           paths = [root / name for name in runtime]
-          paths += sorted((root / 'audio').rglob('*.wav'))
+          paths += sorted((root / 'audio').glob('*.wav'))
+          paths += sorted((root / 'audio' / 'stories' / 'arin-fox').glob('*.mp3'))
           paths += sorted((root / 'assets' / 'stories' / 'arin-fox').glob('*.webp'))
           h = hashlib.sha256()
           for path in sorted(paths, key=lambda p: p.as_posix()):
@@ -82,10 +84,24 @@ jobs:
         run: |
           set -euo pipefail
           rm -rf _site
-          mkdir -p _site/audio _site/updates _site/assets/stories/arin-fox
+          mkdir -p _site/audio/stories/arin-fox _site/updates _site/assets/stories/arin-fox
           cp index.html styles.css art.css worlds.css polish-v08.css stories-v12.css game-v3.js stories-v12.js game-data.js tv-nav.js voice.js art.js scene-art.js service-worker.js manifest.webmanifest favicon.svg _site/
-          cp -R audio/. _site/audio/
+          cp audio/*.wav _site/audio/
+          cp audio/stories/arin-fox/*.mp3 _site/audio/stories/arin-fox/
           cp assets/stories/arin-fox/*.webp _site/assets/stories/arin-fox/
+          python3 - <<'PY'
+          from pathlib import Path
+          mp3=list(Path('_site/audio/stories/arin-fox').glob('*.mp3'))
+          wav=list(Path('_site/audio/stories/arin-fox').glob('*.wav'))
+          webp=list(Path('_site/assets/stories/arin-fox').glob('*.webp'))
+          assert len(mp3)==27, len(mp3)
+          assert len(wav)==0, wav
+          assert len(webp)==27, len(webp)
+          assert Path('_site/audio/stories/arin-fox/arin-fox-01-intro.mp3').is_file()
+          assert Path('_site/audio/stories/arin-fox/arin-fox-23-fox-apology-v2.mp3').is_file()
+          assert Path('_site/audio/stories/arin-fox/arin-fox-27-ending.mp3').is_file()
+          print('Verified OTA runtime: 27 MP3, 0 story WAV, 27 WebP')
+          PY
           (
             cd _site
             zip -qr updates/game-bundle.zip index.html styles.css art.css worlds.css polish-v08.css stories-v12.css game-v3.js stories-v12.js game-data.js tv-nav.js voice.js art.js scene-art.js service-worker.js manifest.webmanifest favicon.svg audio assets
