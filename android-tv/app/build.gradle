@@ -23,7 +23,8 @@ tasks.register('syncWebAssets', Sync) {
         include 'service-worker.js'
         include 'manifest.webmanifest'
         include 'favicon.svg'
-        include 'audio/**/*.wav'
+        include 'audio/*.wav'
+        include 'audio/stories/arin-fox/*.mp3'
         include 'assets/stories/arin-fox/*.webp'
     }
     into(generatedWebAssets)
