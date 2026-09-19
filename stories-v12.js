@@ -1,6 +1,6 @@
 const $=(selector,root=document)=>root.querySelector(selector);
 const STORY_AUDIO_BASE='./audio/stories/arin-fox/';
-const STORY_AUDIO_VERSION='v37';
+const STORY_AUDIO_VERSION='v38-mp3-96k';
 const STORY_AUTO_NOTE='تعمل القصة تلقائيًا من البداية إلى النهاية.';
 
 const STORY_IMAGE_BASE='./assets/stories/arin-fox/';
@@ -54,33 +54,33 @@ function preloadSceneImage(index,retry=false){
 }
 
 const ARIN_FOX_SEGMENTS=[
-  {file:'arin-fox-01-intro.wav',chapter:'صباح جميل',caption:'في قرية صغيرة عاشت طفلة لطيفة اسمها أَرين.',theme:'village',actors:['arin']},
-  {file:'arin-fox-02-basket.wav',chapter:'هدية للجدة',caption:'جهزت الأم سلة صغيرة لتأخذها أَرين إلى جدتها.',theme:'home',actors:['arin','mother'],basket:true},
-  {file:'arin-fox-03-advice.wav',chapter:'نصيحة الأم',caption:'ذكّرت الأم أَرين أن تبقى على الطريق وألا تتبع شخصًا لا تعرفه.',theme:'home',actors:['arin','mother'],basket:true},
-  {file:'arin-fox-04-leave-home.wav',chapter:'بداية الرحلة',caption:'حملت أَرين سلتها ولوّحت لأمها وبدأت رحلتها.',theme:'village',actors:['arin'],basket:true},
-  {file:'arin-fox-05-forest-road.wav',chapter:'طريق الغابة',caption:'كان الطريق جميلًا والطيور تغرد بين الأشجار.',theme:'forest',actors:['arin'],basket:true},
-  {file:'arin-fox-06-fox-appears.wav',chapter:'ضيف بين الأشجار',caption:'فجأة خرج ثعلب من خلف شجرة كبيرة.',theme:'fox',actors:['arin','fox'],basket:true},
-  {file:'arin-fox-07-where-going.wav',chapter:'سؤال الثعلب',caption:'سأل الثعلب أَرين إلى أين تذهب، فتذكرت نصيحة أمها.',theme:'fox',actors:['arin','fox'],basket:true},
-  {file:'arin-fox-08-basket-smell.wav',chapter:'رائحة السلة',caption:'لاحظ الثعلب السلة، لكن أَرين لم تخبره أين تسكن جدتها.',theme:'fox',actors:['arin','fox'],basket:true},
-  {file:'arin-fox-09-shortcut.wav',chapter:'الطريق الأقصر',caption:'فكر الثعلب في طريق أقصر وركض بين الأشجار.',theme:'forest',actors:['fox']},
-  {file:'arin-fox-10-flower.wav',chapter:'زهرة للجدة',caption:'اختارت أَرين زهرة قريبة من الطريق ثم تابعت سيرها.',theme:'garden',actors:['arin'],basket:true},
-  {file:'arin-fox-11-grandma-door.wav',chapter:'عند بيت الجدة',caption:'وصل الثعلب أولًا وطرق الباب.',theme:'grandma',actors:['fox','grandma']},
-  {file:'arin-fox-12-tail.wav',chapter:'الجدة الذكية',caption:'رأت الجدة طرف ذيل الثعلب وعرفت أنه ليس زائرًا تعرفه.',theme:'grandma',actors:['fox','grandma']},
-  {file:'arin-fox-13-waiting-fox.wav',chapter:'الثعلب ينتظر',caption:'أغلقت الجدة الباب جيدًا، فجلس الثعلب قرب البيت.',theme:'grandma',actors:['fox']},
-  {file:'arin-fox-14-arin-arrives.wav',chapter:'وصول أَرين',caption:'وصلت أَرين ولاحظت أن المكان هادئ جدًا.',theme:'grandma',actors:['arin','fox'],basket:true},
-  {file:'arin-fox-15-arin-refuses.wav',chapter:'قرار شجاع',caption:'شعرت أَرين أن شيئًا غير صحيح ورفضت الاقتراب.',theme:'grandma',actors:['arin','fox'],basket:true},
-  {file:'arin-fox-16-grandma-calls.wav',chapter:'صوت الجدة',caption:'سمعت أَرين صوت جدتها من داخل البيت فعرفت أنها بخير.',theme:'grandma',actors:['arin','grandma']},
-  {file:'arin-fox-17-ranger-arrives.wav',chapter:'حارس الغابة',caption:'وصل حارس الغابة بعدما سمع الأصوات قرب البيت.',theme:'forest',actors:['arin','fox','ranger']},
-  {file:'arin-fox-18-ranger-talks.wav',chapter:'حديث هادئ',caption:'شرح الحارس للثعلب أنه لا يجوز إخافة الناس أو دخول بيوتهم.',theme:'forest',actors:['fox','ranger']},
-  {file:'arin-fox-19-fox-admits.wav',chapter:'الثعلب يعترف',caption:'اعترف الثعلب أنه كان فضوليًا وأراد معرفة ما في السلة.',theme:'forest',actors:['fox','ranger']},
-  {file:'arin-fox-20-lesson.wav',chapter:'درس مهم',caption:'قال الحارس: عندما تريد شيئًا، اسأل بأدب ولا تتبع الآخرين.',theme:'forest',actors:['fox','ranger']},
-  {file:'arin-fox-21-grandma-opens.wav',chapter:'الباب يفتح',caption:'عندما أصبح المكان آمنًا، فتحت الجدة الباب وعانقت أَرين.',theme:'garden',actors:['arin','grandma','ranger'],basket:true},
-  {file:'arin-fox-22-gift.wav',chapter:'الهدية',caption:'وضعت أَرين السلة على الطاولة وقدمت لجدتها الزهرة الجميلة.',theme:'garden',actors:['arin','grandma'],basket:true},
-  {file:'arin-fox-23-fox-apology-v2.wav',chapter:'اعتذار الثعلب',caption:'اعتذر الثعلب، وذكّرته الجدة أن يتعلم من خطئه، فوعد ألا يخيف أحدًا مرة أخرى.',theme:'garden',actors:['arin','grandma','fox'],autoAdvanceDelayMs:900},
-  {file:'arin-fox-24-return.wav',chapter:'طريق العودة',caption:'حان وقت العودة، فرافق الحارس أَرين في جزء من الطريق.',theme:'return',actors:['arin','ranger'],basket:true},
-  {file:'arin-fox-25-mother-final.wav',chapter:'في البيت',caption:'عادت أَرين إلى أمها وحكت لها عن المغامرة.',theme:'home',actors:['arin','mother']},
-  {file:'arin-fox-26-moral.wav',chapter:'ما تعلمته أَرين',caption:'تعلمت أَرين أن اللطف لا يعني الثقة بكل شخص، وأن طلب المساعدة تصرف شجاع.',theme:'ending',actors:['arin','mother']},
-  {file:'arin-fox-27-ending.wav',chapter:'النهاية',caption:'أما الثعلب، ففي المرة التالية لوّح من بعيد وقال: صباح الخير! ثم أكمل طريقه.',theme:'ending',actors:['arin','fox']}
+  {file:'arin-fox-01-intro.mp3',chapter:'صباح جميل',caption:'في قرية صغيرة عاشت طفلة لطيفة اسمها أَرين.',theme:'village',actors:['arin']},
+  {file:'arin-fox-02-basket.mp3',chapter:'هدية للجدة',caption:'جهزت الأم سلة صغيرة لتأخذها أَرين إلى جدتها.',theme:'home',actors:['arin','mother'],basket:true},
+  {file:'arin-fox-03-advice.mp3',chapter:'نصيحة الأم',caption:'ذكّرت الأم أَرين أن تبقى على الطريق وألا تتبع شخصًا لا تعرفه.',theme:'home',actors:['arin','mother'],basket:true},
+  {file:'arin-fox-04-leave-home.mp3',chapter:'بداية الرحلة',caption:'حملت أَرين سلتها ولوّحت لأمها وبدأت رحلتها.',theme:'village',actors:['arin'],basket:true},
+  {file:'arin-fox-05-forest-road.mp3',chapter:'طريق الغابة',caption:'كان الطريق جميلًا والطيور تغرد بين الأشجار.',theme:'forest',actors:['arin'],basket:true},
+  {file:'arin-fox-06-fox-appears.mp3',chapter:'ضيف بين الأشجار',caption:'فجأة خرج ثعلب من خلف شجرة كبيرة.',theme:'fox',actors:['arin','fox'],basket:true},
+  {file:'arin-fox-07-where-going.mp3',chapter:'سؤال الثعلب',caption:'سأل الثعلب أَرين إلى أين تذهب، فتذكرت نصيحة أمها.',theme:'fox',actors:['arin','fox'],basket:true},
+  {file:'arin-fox-08-basket-smell.mp3',chapter:'رائحة السلة',caption:'لاحظ الثعلب السلة، لكن أَرين لم تخبره أين تسكن جدتها.',theme:'fox',actors:['arin','fox'],basket:true},
+  {file:'arin-fox-09-shortcut.mp3',chapter:'الطريق الأقصر',caption:'فكر الثعلب في طريق أقصر وركض بين الأشجار.',theme:'forest',actors:['fox']},
+  {file:'arin-fox-10-flower.mp3',chapter:'زهرة للجدة',caption:'اختارت أَرين زهرة قريبة من الطريق ثم تابعت سيرها.',theme:'garden',actors:['arin'],basket:true},
+  {file:'arin-fox-11-grandma-door.mp3',chapter:'عند بيت الجدة',caption:'وصل الثعلب أولًا وطرق الباب.',theme:'grandma',actors:['fox','grandma']},
+  {file:'arin-fox-12-tail.mp3',chapter:'الجدة الذكية',caption:'رأت الجدة طرف ذيل الثعلب وعرفت أنه ليس زائرًا تعرفه.',theme:'grandma',actors:['fox','grandma']},
+  {file:'arin-fox-13-waiting-fox.mp3',chapter:'الثعلب ينتظر',caption:'أغلقت الجدة الباب جيدًا، فجلس الثعلب قرب البيت.',theme:'grandma',actors:['fox']},
+  {file:'arin-fox-14-arin-arrives.mp3',chapter:'وصول أَرين',caption:'وصلت أَرين ولاحظت أن المكان هادئ جدًا.',theme:'grandma',actors:['arin','fox'],basket:true},
+  {file:'arin-fox-15-arin-refuses.mp3',chapter:'قرار شجاع',caption:'شعرت أَرين أن شيئًا غير صحيح ورفضت الاقتراب.',theme:'grandma',actors:['arin','fox'],basket:true},
+  {file:'arin-fox-16-grandma-calls.mp3',chapter:'صوت الجدة',caption:'سمعت أَرين صوت جدتها من داخل البيت فعرفت أنها بخير.',theme:'grandma',actors:['arin','grandma']},
+  {file:'arin-fox-17-ranger-arrives.mp3',chapter:'حارس الغابة',caption:'وصل حارس الغابة بعدما سمع الأصوات قرب البيت.',theme:'forest',actors:['arin','fox','ranger']},
+  {file:'arin-fox-18-ranger-talks.mp3',chapter:'حديث هادئ',caption:'شرح الحارس للثعلب أنه لا يجوز إخافة الناس أو دخول بيوتهم.',theme:'forest',actors:['fox','ranger']},
+  {file:'arin-fox-19-fox-admits.mp3',chapter:'الثعلب يعترف',caption:'اعترف الثعلب أنه كان فضوليًا وأراد معرفة ما في السلة.',theme:'forest',actors:['fox','ranger']},
+  {file:'arin-fox-20-lesson.mp3',chapter:'درس مهم',caption:'قال الحارس: عندما تريد شيئًا، اسأل بأدب ولا تتبع الآخرين.',theme:'forest',actors:['fox','ranger']},
+  {file:'arin-fox-21-grandma-opens.mp3',chapter:'الباب يفتح',caption:'عندما أصبح المكان آمنًا، فتحت الجدة الباب وعانقت أَرين.',theme:'garden',actors:['arin','grandma','ranger'],basket:true},
+  {file:'arin-fox-22-gift.mp3',chapter:'الهدية',caption:'وضعت أَرين السلة على الطاولة وقدمت لجدتها الزهرة الجميلة.',theme:'garden',actors:['arin','grandma'],basket:true},
+  {file:'arin-fox-23-fox-apology-v2.mp3',chapter:'اعتذار الثعلب',caption:'اعتذر الثعلب، وذكّرته الجدة أن يتعلم من خطئه، فوعد ألا يخيف أحدًا مرة أخرى.',theme:'garden',actors:['arin','grandma','fox'],autoAdvanceDelayMs:900},
+  {file:'arin-fox-24-return.mp3',chapter:'طريق العودة',caption:'حان وقت العودة، فرافق الحارس أَرين في جزء من الطريق.',theme:'return',actors:['arin','ranger'],basket:true},
+  {file:'arin-fox-25-mother-final.mp3',chapter:'في البيت',caption:'عادت أَرين إلى أمها وحكت لها عن المغامرة.',theme:'home',actors:['arin','mother']},
+  {file:'arin-fox-26-moral.mp3',chapter:'ما تعلمته أَرين',caption:'تعلمت أَرين أن اللطف لا يعني الثقة بكل شخص، وأن طلب المساعدة تصرف شجاع.',theme:'ending',actors:['arin','mother']},
+  {file:'arin-fox-27-ending.mp3',chapter:'النهاية',caption:'أما الثعلب، ففي المرة التالية لوّح من بعيد وقال: صباح الخير! ثم أكمل طريقه.',theme:'ending',actors:['arin','fox']}
 ];
 
 const STORIES=[{id:'arin-fox',title:'أرين والثعلب',typeLabel:'استمع وشاهد',durationLabel:'8 دقائق',description:'حكاية مصورة بصوت راوية، تعمل تلقائيًا من البداية إلى النهاية.',segments:ARIN_FOX_SEGMENTS}];
