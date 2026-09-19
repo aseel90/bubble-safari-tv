@@ -267,7 +267,6 @@ async function checkForUpdates(){
 }
 
 $('#startButton').addEventListener('click',()=>{voice.ensureAudio();voice.play('ui_start');showScreen('age')});
-$('#storyBackButton').addEventListener('click',()=>{voice.stop();showScreen('home')});
 $('#ageBackButton').addEventListener('click',()=>showScreen('home'));
 $$('.age-card').forEach(card=>card.addEventListener('click',()=>{state.age=card.dataset.age;showScreen('world')}));
 $('#worldBackButton').addEventListener('click',()=>showScreen('age'));
