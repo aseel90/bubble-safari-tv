@@ -35,13 +35,15 @@
 - اللغة: العربية الفصحى الواضحة والمناسبة للأطفال.
 - لم تُولد القصة كتسجيل صوتي واحد ضخم.
 - قُسمت النصوص إلى **دفعات قصيرة من مشاهد متتابعة تكمل بعضها** حتى يحافظ الصوت على الاستمرارية والنبرة، وتكون إعادة التوليد سهلة عند وجود مشكلة.
-- بعد التوليد تكون أصول Runtime النهائية **ملف WAV مستقل لكل مشهد**.
+- بعد التوليد يُحفظ **Master WAV مستقل لكل مشهد**. وبعد نجاح QA يمكن اشتقاق نسخة Runtime مضغوطة منه.
 
-### Runtime الحالي
+### Runtime الحالي عند توثيق هذه المرحلة
 
 - 27 مشهدًا.
 - 27 صورة WebP مستخدمة في Runtime.
-- 27 ملف WAV نهائيًا، واحدًا لكل مشهد.
+- Production الحالية ما زالت تستخدم 27 ملف WAV، واحدًا لكل مشهد، إلى أن يتم تنفيذ ترحيل MP3 على `main`.
+- تم اعتماد **MP3 96 kbps mono** كهدف Runtime للقصة بعد نجاح اختبار Android TV كامل 1→27 على الجهاز الفعلي.
+- ملفات WAV الأصلية تبقى **Master/rollback** ولا تُحذف.
 - PNG الأصلية محفوظة كـsource/rollback، لكنها لا تدخل APK أو OTA.
 - Runtime story data موجود حاليًا في `stories-v12.js`.
 - التصميم البصري للمشغل موجود في `stories-v12.css`.
@@ -302,7 +304,9 @@ The canonical master sheet is the ONLY valid identity.
 
 حتى لو تم توليد عدة مشاهد في دفعة واحدة:
 
-**Runtime النهائي = ملف مستقل لكل مشهد.**
+**Master النهائي = ملف WAV مستقل لكل مشهد.**
+
+بعد اعتماد الـMaster وإكمال QA يمكن إنشاء **Runtime MP3 96 kbps mono مستقل لكل مشهد**. لا تعتمد MP3 كـMaster ولا تحذف WAV الأصلي.
 
 مثال:
 
@@ -505,7 +509,68 @@ Scene 23 لديها حاليًا `autoAdvanceDelayMs: 900`، بينما بقية
 
 ---
 
-## 13. المرحلة G — تحسين الصور قبل Runtime
+## 13. المرحلة G — تحسين صوت القصة قبل Runtime
+
+لا نحذف أو نستبدل ملفات WAV الأصلية التي خرجت من Google AI Studio بعد اعتمادها. هذه الملفات هي **Production Masters**.
+
+### القرار المعتمد بعد اختبار Android TV الفعلي
+
+تمت مقارنة عدة صيغ صوتية للقصة، ثم اختبار MP3 96 kbps على Android TV بطريقتين:
+
+1. اختبار قصير منفصل للمشاهد **22 → 23 → 24**، ويتضمن Scene 23 الحساسة.
+2. اختبار منفصل للقصة كاملة **1 → 27** باستخدام نفس صور WebP ونفس منطق المشغل والانتقالات.
+
+الاختبار الكامل على التلفزيون الفعلي نجح:
+- القصة عملت 1 → 27 بدون مشاكل.
+- الصوت كان واضحًا.
+- الانتقال بين المشاهد عمل طبيعيًا.
+- Scene 23 اكتملت بدون قطع.
+- لم يتم الإبلاغ عن مشكلة في Pause / Resume أو Replay أثناء الاختبار الكامل.
+- التطبيق الاختباري كان Package منفصلًا ولم يلمس Production.
+
+### Benchmark المعتمد
+
+قصة أرين والثعلب:
+- WAV masters: **22,902,948 bytes** ≈ **21.84 MiB**
+- MP3 96 kbps runtime target: **5,752,863 bytes** ≈ **5.49 MiB**
+- التوفير: **74.88%**
+
+### سياسة Runtime الصوتية للقصص
+
+للـstory narration فقط:
+
+1. احتفظ بـWAV PCM 24 kHz mono 16-bit كـMaster.
+2. بعد اكتمال Audio QA، حوّل كل Scene إلى:
+   - MP3
+   - 96 kbps
+   - mono
+   - نفس ترتيب وأسماء المشاهد
+3. افحص أن عدد MP3 = عدد المشاهد.
+4. اختبر Scene 01، Scene حساسة مثل 23، وآخر Scene.
+5. اختبر القصة كاملة على Android TV الفعلي.
+6. إذا نجح الاختبار، APK وOTA يشحنان MP3 الخاصة بالقصة فقط.
+7. WAV masters تبقى في المستودع للرجوع وإعادة الترميز، لكنها لا تدخل Runtime package.
+8. **لا تحوّل أصوات اللعبة/UI القصيرة إلى MP3 تلقائيًا.** تبقى WAV ما لم تحصل على Benchmark واختبار مستقل خاص بها.
+
+### قاعدة التراجع
+
+إذا ظهر على أي جهاز مستهدف:
+- فشل تشغيل،
+- تأخير ملحوظ،
+- تقطيع،
+- فقدان بداية أو نهاية،
+- مشكلة Replay / Pause،
+- اختلاف سلوك WebView،
+
+نعود فورًا إلى WAV Runtime لذلك الإصدار. تقليل الحجم لا يبرر أي مخاطرة باستقرار اللعبة.
+
+### ملاحظة مهمة
+
+نجاح المتصفح وحده غير كافٍ. اعتماد MP3 تم فقط بعد نجاح **القصة الكاملة على Android TV الفعلي**.
+
+---
+
+## 14. المرحلة H — تحسين الصور قبل Runtime
 
 لا نشحن PNG الأصلية الثقيلة داخل APK.
 
@@ -537,7 +602,7 @@ Scene 23 لديها حاليًا `autoAdvanceDelayMs: 900`، بينما بقية
 
 ---
 
-## 14. المرحلة H — دمج القصة في Runtime
+## 15. المرحلة I — دمج القصة في Runtime
 
 ### الملفات الأساسية الحالية
 
@@ -598,7 +663,7 @@ android-tv/app/build.gradle
 
 ---
 
-## 15. مهم جدًا قبل القصة الثانية — Current hard-coded paths
+## 16. مهم جدًا قبل القصة الثانية — Current hard-coded paths
 
 رغم وجود `STORIES` array، بنية الإنتاج الحالية لا تزال single-story oriented في عدة نقاط.
 
@@ -640,7 +705,7 @@ audio/stories/new-story/
 
 ---
 
-## 16. المرحلة I — Story QA الكامل
+## 17. المرحلة J — Story QA الكامل
 
 لا يكفي فحص عدة مشاهد.
 
@@ -698,7 +763,7 @@ Browser QA لا يغني عن:
 
 ---
 
-## 17. APK / OTA Validation Gate
+## 18. APK / OTA Validation Gate
 
 قبل اعتماد القصة:
 
@@ -708,6 +773,9 @@ Browser QA لا يغني عن:
 - story JS/CSS موجودة،
 - صور Runtime موجودة،
 - Audio موجود،
+- عدد Story MP3 يساوي عدد المشاهد عند اعتماد MP3 Runtime،
+- لا توجد Story WAV داخل APK بعد نجاح ترحيل MP3؛ WAV تبقى Masters خارج الحزمة،
+- أصوات اللعبة/UI الأخرى يمكن أن تبقى WAV،
 - Source PNG غير موجودة إذا كانت WebP هي Runtime format،
 - أول وآخر Scene موجودان،
 - Game content version صحيح.
@@ -722,7 +790,7 @@ Browser QA لا يغني عن:
 
 ---
 
-## 18. ماذا لا نكرر من تجربة أرين والثعلب
+## 19. ماذا لا نكرر من تجربة أرين والثعلب
 
 ### 1. Character Drift
 
@@ -768,7 +836,7 @@ Browser QA لا يغني عن:
 
 ---
 
-## 19. Definition of Done لأي قصة جديدة
+## 20. Definition of Done لأي قصة جديدة
 
 القصة لا تعتبر Production Ready إلا إذا كانت كل البنود التالية ✅:
 
@@ -781,8 +849,11 @@ Browser QA لا يغني عن:
 - [ ] Google AI Studio audio batch plan documented.
 - [ ] Leda used consistently.
 - [ ] Every batch listened to completely.
-- [ ] Final runtime audio split one file per scene.
-- [ ] Every final audio matched word-for-word to approved script.
+- [ ] Final master audio split one WAV file per scene.
+- [ ] Every final master audio matched word-for-word to approved script.
+- [ ] Story Runtime audio encoded to MP3 96 kbps mono only after master QA.
+- [ ] Runtime MP3 count matches Scene count.
+- [ ] Full MP3 story playback verified on physical Android TV.
 - [ ] Runtime images converted to WebP Q95 or currently approved format.
 - [ ] Source masters kept out of APK/OTA.
 - [ ] Story data count matches assets.
@@ -798,7 +869,7 @@ Browser QA لا يغني عن:
 
 ---
 
-## 20. الملفات التي يجب حفظها لكل قصة مستقبلية
+## 21. الملفات التي يجب حفظها لكل قصة مستقبلية
 
 بالإضافة إلى Runtime assets، احتفظ بتوثيق Production:
 
@@ -812,6 +883,8 @@ Regeneration notes / forbidden traits
 Google AI Studio audio batch plan
 Exact narration text
 Audio naming map
+Approved WAV masters
+Runtime MP3 derivatives and encoding settings
 Image naming map
 QA report
 Release version / commit / checksum
@@ -821,7 +894,7 @@ Release version / commit / checksum
 
 ---
 
-## 21. Source of truth hierarchy
+## 22. Source of truth hierarchy
 
 عند وجود تعارض بين ملف قديم وملاحظة قديمة:
 
@@ -836,7 +909,7 @@ Release version / commit / checksum
 
 ---
 
-## 22. Production rule summary
+## 23. Production rule summary
 
 ### Images
 
@@ -844,7 +917,7 @@ Release version / commit / checksum
 
 ### Audio
 
-**Google AI Studio → Gemini TTS → Leda → short batches of connected scenes → full batch QA → split/export to one WAV per scene → per-scene QA**
+**Google AI Studio → Gemini TTS → Leda → short batches of connected scenes → full batch QA → one WAV master per scene → per-scene QA → MP3 96 kbps mono runtime derivative → full Android TV 1→NN validation**
 
 ### Integration
 
