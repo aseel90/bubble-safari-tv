@@ -136,6 +136,19 @@ function syncControls(){
   if(text)text.textContent=paused?(muted?'تشغيل الصوت':'متابعة'):'إيقاف مؤقت';
   if(icon)icon.innerHTML=storyIcon(paused?'play':'pause');
 }
+async function waitForSceneVisual(index,token,timeoutMs=20000){
+  const visual=$('#storyVisual');if(!visual)return true;
+  const started=performance.now();
+  while(performance.now()-started<timeoutMs){
+    if(token!==player.token||player.index!==index)return false;
+    const frame=visual.querySelector('.story-static-scene[data-scene-index="'+index+'"]');
+    if(frame?.classList.contains('story-scene-error'))return true;
+    const image=frame?.querySelector('img');
+    if(image?.complete&&image.naturalWidth>0&&(frame.classList.contains('story-scene-visible')||frame.classList.contains('story-scene-current')))return true;
+    await new Promise(resolve=>setTimeout(resolve,40))
+  }
+  return true
+}
 function renderSegment(){
   const story=player.story,segment=story?.segments?.[player.index];if(!story||!segment)return;
   setStoryPathNote();$('#storyChapterTitle').textContent=segment.chapter;$('#storyNarration').textContent=segment.caption;
@@ -172,6 +185,7 @@ async function playCurrentAudioPart({render=false,forceSeek=false}={}){
   const token=++player.token;
   player.partBoundaryHandled=false;
   if(render)renderSegment();
+  const visualIndex=player.index;
   let source=audioPath(part),start=Number(part.startAt||0);
   if(segment.stitchParts?.length&&player.partIndex===0){
     try{source=await stitchedAudioPath(segment);start=0}catch{source=audioPath(part)}
@@ -187,6 +201,7 @@ async function playCurrentAudioPart({render=false,forceSeek=false}={}){
     if(token!==player.token)return;
     try{if(Math.abs((audio.currentTime||0)-start)>.06)audio.currentTime=start}catch{}
   }
+  if(render){await waitForSceneVisual(visualIndex,token);if(token!==player.token)return}
   if(audio.muted){
     audio.pause();syncControls();setStoryPathNote('الصوت مكتوم. اضغط تشغيل الصوت لبدء القصة.');return
   }
