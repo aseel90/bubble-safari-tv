@@ -23,13 +23,14 @@ tasks.register('syncWebAssets', Sync) {
         include 'service-worker.js'
         include 'manifest.webmanifest'
         include 'favicon.svg'
-        include 'audio/**/*.wav'
+        include 'audio/*.wav'
+        include 'audio/stories/arin-fox/*.mp3'
         include 'assets/stories/arin-fox/*.webp'
     }
     into(generatedWebAssets)
     doLast {
         def marker = new File(generatedWebAssets.get().asFile, "bubble-safari-version.txt")
-        marker.text = (System.getenv("BUBBLE_SAFARI_GAME_VERSION") ?: System.getenv("GITHUB_SHA") ?: "bundled").trim()
+        marker.text = (System.getenv("BUBBLE_SAFARI_GAME_VERSION") ?: System.getenv("GITHUB_SHA") ?: "mp3-full-test").trim()
     }
 }
 
@@ -38,11 +39,11 @@ android {
     compileSdk 36
 
     defaultConfig {
-        applicationId 'com.bubblesafari.tv'
+        applicationId 'com.bubblesafari.tv.mp3fulltest'
         minSdk 26
         targetSdk 36
-        versionCode 5
-        versionName '0.9.2-tv5'
+        versionCode 1
+        versionName '1.0-mp3fulltest'
     }
 
     sourceSets.getByName('main').assets.directories.add(

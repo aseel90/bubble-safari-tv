@@ -1,0 +1,171 @@
+name: Build full MP3 story TV test
+
+on:
+  push:
+    branches: [mp3-full-story-tv-test-20260919]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout full MP3 test branch
+        uses: actions/checkout@v4
+
+      - name: Install FFmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Convert all 27 story WAV files to MP3 96k
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          wavs=(audio/stories/arin-fox/*.wav)
+          if [ "${#wavs[@]}" -ne 27 ]; then
+            echo "Expected 27 story WAV files, found ${#wavs[@]}"
+            exit 1
+          fi
+
+          rm -f audio/stories/arin-fox/*.mp3
+          for src in "${wavs[@]}"; do
+            dst="${src%.wav}.mp3"
+            ffmpeg -hide_banner -loglevel error -y               -i "$src"               -c:a libmp3lame -b:a 96k -ar 24000 -ac 1 -write_xing 1               "$dst"
+            ffmpeg -hide_banner -loglevel error -i "$dst" -f null -
+          done
+
+          mp3s=(audio/stories/arin-fox/*.mp3)
+          test "${#mp3s[@]}" -eq 27
+
+          python3 - <<'PY'
+          from pathlib import Path
+          wavs=sorted(Path('audio/stories/arin-fox').glob('*.wav'))
+          mp3s=sorted(Path('audio/stories/arin-fox').glob('*.mp3'))
+          wav_bytes=sum(p.stat().st_size for p in wavs)
+          mp3_bytes=sum(p.stat().st_size for p in mp3s)
+          assert len(wavs)==27
+          assert len(mp3s)==27
+          assert {p.stem for p in wavs} == {p.stem for p in mp3s}
+          print("WAV count:",len(wavs))
+          print("MP3 count:",len(mp3s))
+          print("WAV bytes:",wav_bytes)
+          print("MP3 bytes:",mp3_bytes)
+          print("Saving percent: %.2f%%" % ((1-mp3_bytes/wav_bytes)*100))
+          PY
+
+      - name: Switch story runtime to MP3 and auto-open the full story
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('stories-v12.js')
+          s=p.read_text(encoding='utf-8')
+
+          old_version="const STORY_AUDIO_VERSION='v37';"
+          assert old_version in s
+          s=s.replace(old_version,"const STORY_AUDIO_VERSION='v38-mp3-96k-full-tv-test';")
+
+          old_note="const STORY_AUTO_NOTE='تعمل القصة تلقائيًا من البداية إلى النهاية.';"
+          assert old_note in s
+          s=s.replace(old_note,"const STORY_AUTO_NOTE='اختبار Android TV كامل — صوت MP3 96 kbps.';")
+
+          count=s.count(".wav'")
+          assert count==27, count
+          s=s.replace(".wav'",".mp3'")
+
+          old_init="async function init(){installScreens();renderLibrary();wire()}"
+          assert old_init in s
+          s=s.replace(old_init,"async function init(){installScreens();renderLibrary();wire();setTimeout(()=>openStory('arin-fox'),120)}")
+
+          p.write_text(s,encoding='utf-8')
+          print("MP3 story refs:",s.count(".mp3'"))
+          print("Remaining WAV story refs:",s.count(".wav'"))
+          PY
+
+      - name: Java 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Android SDK
+        uses: android-actions/setup-android@v4
+        with:
+          packages: ''
+
+      - name: Install SDK 36
+        run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0'
+
+      - name: Gradle 9.6
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '9.6.0'
+
+      - name: Build isolated full-story MP3 APK
+        env:
+          BUBBLE_SAFARI_GAME_VERSION: mp3-full-story-tv-test
+        run: gradle -p android-tv :app:assembleDebug --stacktrace
+
+      - name: Verify APK contains full MP3 story and no story WAV
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p validation
+          python3 - <<'PY' | tee validation/mp3-full-story-report.txt
+          import zipfile
+          from pathlib import Path
+
+          apk=Path('android-tv/app/build/outputs/apk/debug/app-debug.apk')
+          with zipfile.ZipFile(apk) as z:
+              names=z.namelist()
+              story_mp3=sorted(n for n in names if n.startswith('assets/audio/stories/arin-fox/') and n.endswith('.mp3'))
+              story_wav=sorted(n for n in names if n.startswith('assets/audio/stories/arin-fox/') and n.endswith('.wav'))
+              webp=sorted(n for n in names if n.startswith('assets/assets/stories/arin-fox/') and n.endswith('.webp'))
+              story_js=z.read('assets/stories-v12.js').decode('utf-8')
+
+          assert len(story_mp3)==27, len(story_mp3)
+          assert len(story_wav)==0, story_wav
+          assert len(webp)==27, len(webp)
+          assert story_js.count(".mp3'")==27, story_js.count(".mp3'")
+          assert story_js.count(".wav'")==0, story_js.count(".wav'")
+          assert 'v38-mp3-96k-full-tv-test' in story_js
+          assert "openStory('arin-fox')" in story_js
+          assert 'assets/audio/stories/arin-fox/arin-fox-01-intro.mp3' in names
+          assert 'assets/audio/stories/arin-fox/arin-fox-23-fox-apology-v2.mp3' in names
+          assert 'assets/audio/stories/arin-fox/arin-fox-27-ending.mp3' in names
+
+          print("APK bytes:",apk.stat().st_size)
+          print("Story MP3 count:",len(story_mp3))
+          print("Story WAV count:",len(story_wav))
+          print("Story WebP count:",len(webp))
+          print("Scene 01 MP3: OK")
+          print("Scene 23 v2 MP3: OK")
+          print("Scene 27 MP3: OK")
+          PY
+
+      - name: Upload full MP3 TV test artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: bubble-safari-mp3-full-story-tv-test
+          path: |
+            android-tv/app/build/outputs/apk/debug/app-debug.apk
+            validation/mp3-full-story-report.txt
+          if-no-files-found: error
+
+      - name: Publish prerelease full MP3 test APK
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          short="${GITHUB_SHA::7}"
+          tag="mp3-full-test-$short"
+          cp android-tv/app/build/outputs/apk/debug/app-debug.apk bubble-safari-mp3-full-story-tv-test.apk
+          gh release create "$tag" bubble-safari-mp3-full-story-tv-test.apk validation/mp3-full-story-report.txt             --target "$GITHUB_SHA"             --title "Bubble Safari Full Story MP3 TV Test $short"             --notes "Isolated Android TV test app. Package: com.bubblesafari.tv.mp3fulltest. Runs the full 27-scene Arin & the Fox story using MP3 96 kbps narration and the production WebP story images/player. Does not replace the production Bubble Safari app and has no OTA updater."             --prerelease
