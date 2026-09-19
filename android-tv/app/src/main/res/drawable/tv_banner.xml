@@ -4,12 +4,39 @@
     android:height="180dp"
     android:viewportWidth="320"
     android:viewportHeight="180">
-    <path android:fillColor="#07182E" android:pathData="M0,0h320v180h-320z" />
-    <path android:fillColor="#0E3158" android:pathData="M0,118C54,88 96,96 142,121C190,146 242,144 320,102V180H0Z" />
-    <path android:fillColor="#25C7E8" android:pathData="M80,28a43,43 0,1 0,0 86a43,43 0,1 0,0 -86" />
-    <path android:fillColor="#8BEAFF" android:pathData="M101,43a22,22 0,1 0,0 44a22,22 0,1 0,0 -44" />
-    <path android:fillColor="#FFFFFF" android:fillAlpha="0.78" android:pathData="M91,37a10,10 0,1 0,0 20a10,10 0,1 0,0 -20" />
-    <path android:fillColor="#FFCA58" android:pathData="M223,58a25,25 0,1 0,0 50a25,25 0,1 0,0 -50" />
-    <path android:fillColor="#FF86B4" android:pathData="M268,27a13,13 0,1 0,0 26a13,13 0,1 0,0 -26" />
-    <path android:fillColor="#88E08F" android:pathData="M182,106a17,17 0,1 0,0 34a17,17 0,1 0,0 -34" />
+
+    <!-- Warm safari background -->
+    <path android:fillColor="#154F3D" android:pathData="M0,0h320v180h-320z" />
+    <path android:fillColor="#1E6B53" android:pathData="M0,118C44,92 88,96 132,119C180,145 235,145 320,103V180H0Z" />
+    <path android:fillColor="#2F7D5D" android:fillAlpha="0.58" android:pathData="M0,143C58,121 105,129 152,148C202,167 253,163 320,132V180H0Z" />
+
+    <!-- Decorative safari leaves -->
+    <path android:fillColor="#8AD76F" android:fillAlpha="0.88" android:pathData="M264,24C287,20 303,8 310,2C309,27 294,42 267,45Z" />
+    <path android:fillColor="#59B663" android:pathData="M269,41C283,30 294,18 306,7C295,21 286,34 275,50Z" />
+    <path android:fillColor="#8AD76F" android:fillAlpha="0.72" android:pathData="M267,147C290,142 305,130 316,116C314,144 298,160 270,165Z" />
+
+    <!-- Main brand bubble -->
+    <path android:fillColor="#34BCD0" android:pathData="M86,30a55,55 0,1 0,0 110a55,55 0,1 0,0 -110" />
+    <path android:fillColor="#70DEE8" android:pathData="M86,36a49,49 0,1 0,0 98a49,49 0,1 0,0 -98" />
+    <path android:fillColor="#FFFFFF" android:fillAlpha="0.82" android:pathData="M59,45a13,13 0,1 0,0 26a13,13 0,1 0,0 -26" />
+    <path android:fillColor="#FFFFFF" android:fillAlpha="0.34" android:pathData="M52,68a7,7 0,1 0,0 14a7,7 0,1 0,0 -14" />
+
+    <!-- Paw mark -->
+    <path android:fillColor="#F7B64D" android:pathData="M86,89C74,89 66,100 67,110C68,120 76,127 86,127C96,127 104,120 105,110C106,100 98,89 86,89Z" />
+    <path android:fillColor="#FFD16A" android:pathData="M86,95C78,95 73,101 73,108C73,115 78,121 86,121C94,121 99,115 99,108C99,101 94,95 86,95Z" />
+    <path android:fillColor="#F7B64D" android:pathData="M62,76a10,11 0,1 0,0 22a10,11 0,1 0,0 -22" />
+    <path android:fillColor="#F7B64D" android:pathData="M80,68a10,11 0,1 0,0 22a10,11 0,1 0,0 -22" />
+    <path android:fillColor="#F7B64D" android:pathData="M99,70a10,11 0,1 0,0 22a10,11 0,1 0,0 -22" />
+    <path android:fillColor="#F7B64D" android:pathData="M116,78a9,10 0,1 0,0 20a9,10 0,1 0,0 -20" />
+
+    <!-- Brand-supporting bubble trail on the right -->
+    <path android:fillColor="#FFD96A" android:pathData="M202,47a19,19 0,1 0,0 38a19,19 0,1 0,0 -38" />
+    <path android:fillColor="#FF9C73" android:pathData="M248,72a14,14 0,1 0,0 28a14,14 0,1 0,0 -28" />
+    <path android:fillColor="#A6EFF4" android:pathData="M217,108a12,12 0,1 0,0 24a12,12 0,1 0,0 -24" />
+    <path android:fillColor="#FFFFFF" android:fillAlpha="0.75" android:pathData="M196,42a6,6 0,1 0,0 12a6,6 0,1 0,0 -12" />
+    <path android:fillColor="#FFFFFF" android:fillAlpha="0.56" android:pathData="M244,68a5,5 0,1 0,0 10a5,5 0,1 0,0 -10" />
+
+    <!-- Leaf accent linking icon and banner -->
+    <path android:fillColor="#8AD76F" android:pathData="M119,119C134,118 144,109 148,95C133,95 121,104 119,119Z" />
+    <path android:fillColor="#4FAF5D" android:pathData="M122,118C129,110 136,103 145,98C137,105 131,113 125,124Z" />
 </vector>
