@@ -1,0 +1,278 @@
+name: Audio codec benchmark
+
+on:
+  push:
+    branches: [audio-codec-benchmark-20260919]
+    paths:
+      - '.github/workflows/audio-codec-benchmark.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout benchmark branch
+        uses: actions/checkout@v4
+
+      - name: Install FFmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Encode and measure all story audio
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf benchmarks/audio-codecs
+          mkdir -p benchmarks/audio-codecs/samples benchmarks/audio-codecs/work
+          cat > benchmarks/audio-codecs/benchmark.py <<'PY'
+          from __future__ import annotations
+          import csv, json, math, re, shutil, subprocess, sys, wave
+          from array import array
+          from pathlib import Path
+
+          ROOT = Path('audio/stories/arin-fox')
+          OUT = Path('benchmarks/audio-codecs')
+          WORK = OUT/'work'
+          SAMPLES = OUT/'samples'
+          sources = sorted(ROOT.glob('*.wav'))
+          assert len(sources) == 27, f'expected 27 story WAVs, got {len(sources)}'
+
+          sample_names = {
+              'arin-fox-01-intro.wav',
+              'arin-fox-07-where-going.wav',
+              'arin-fox-12-tail.wav',
+              'arin-fox-18-ranger-talks.wav',
+              'arin-fox-23-fox-apology-v2.wav',
+              'arin-fox-27-ending.wav',
+          }
+
+          codecs = {
+              'mp3-64k': {
+                  'ext': '.mp3',
+                  'args': ['-c:a','libmp3lame','-b:a','64k','-ar','24000','-ac','1','-write_xing','1'],
+                  'mime': 'audio/mpeg',
+              },
+              'aac-lc-64k': {
+                  'ext': '.m4a',
+                  'args': ['-c:a','aac','-profile:a','aac_low','-b:a','64k','-ar','24000','-ac','1','-movflags','+faststart'],
+                  'mime': 'audio/mp4; codecs="mp4a.40.2"',
+              },
+              'opus-48k': {
+                  'ext': '.ogg',
+                  'args': ['-c:a','libopus','-b:a','48k','-vbr','on','-application','audio','-ac','1'],
+                  'mime': 'audio/ogg; codecs="opus"',
+              },
+              'vorbis-64k': {
+                  'ext': '.ogg',
+                  'args': ['-c:a','libvorbis','-b:a','64k','-ac','1'],
+                  'mime': 'audio/ogg; codecs="vorbis"',
+              },
+              'flac-lossless': {
+                  'ext': '.flac',
+                  'args': ['-c:a','flac','-compression_level','8','-ar','24000','-ac','1'],
+                  'mime': 'audio/flac',
+              },
+          }
+
+          def run(cmd, check=True):
+              p = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+              if check and p.returncode:
+                  print(p.stdout)
+                  print(p.stderr, file=sys.stderr)
+                  raise SystemExit(p.returncode)
+              return p
+
+          def probe(path: Path):
+              p=run(['ffprobe','-v','error','-select_streams','a:0',
+                     '-show_entries','stream=codec_name,sample_rate,channels,bit_rate,duration',
+                     '-show_entries','format=duration,size,bit_rate',
+                     '-of','json',str(path)])
+              j=json.loads(p.stdout)
+              s=j['streams'][0]
+              f=j['format']
+              return {
+                  'codec':s.get('codec_name',''),
+                  'sample_rate':int(s.get('sample_rate') or 0),
+                  'channels':int(s.get('channels') or 0),
+                  'stream_bitrate':int(s.get('bit_rate') or 0),
+                  'duration':float(s.get('duration') or f.get('duration') or 0),
+                  'size':int(f.get('size') or path.stat().st_size),
+                  'format_bitrate':int(f.get('bit_rate') or 0),
+              }
+
+          def decode_to_wav(src: Path, dst: Path):
+              run(['ffmpeg','-hide_banner','-loglevel','error','-y','-i',str(src),
+                   '-ar','24000','-ac','1','-c:a','pcm_s16le',str(dst)])
+
+          def active_bounds(wav_path: Path):
+              with wave.open(str(wav_path),'rb') as w:
+                  rate=w.getframerate(); ch=w.getnchannels(); sw=w.getsampwidth()
+                  assert ch==1 and sw==2
+                  data=array('h'); data.frombytes(w.readframes(w.getnframes()))
+              if sys.byteorder!='little': data.byteswap()
+              if not data: return (0.0,0.0)
+              frame=max(1, rate//100)
+              rms=[]
+              for i in range(0,len(data),frame):
+                  chunk=data[i:i+frame]
+                  if not chunk: break
+                  rms.append(math.sqrt(sum(x*x for x in chunk)/len(chunk)))
+              peak=max(rms) if rms else 0
+              if peak <= 0: return (0.0,len(data)/rate)
+              threshold=max(80.0, peak*0.01)
+              active=[i for i,v in enumerate(rms) if v>=threshold]
+              if not active: return (0.0,len(data)/rate)
+              return (active[0]*frame/rate, min(len(data), (active[-1]+1)*frame)/rate)
+
+          def apsnr(src:Path, enc:Path):
+              p=run(['ffmpeg','-hide_banner','-nostats','-i',str(src),'-i',str(enc),
+                     '-filter_complex',
+                     '[0:a]aresample=24000,aformat=sample_fmts=fltp:channel_layouts=mono[a0];'
+                     '[1:a]aresample=24000,aformat=sample_fmts=fltp:channel_layouts=mono[a1];'
+                     '[a0][a1]apsnr',
+                     '-f','null','-'], check=False)
+              txt=p.stderr
+              m=re.search(r'PSNR ch0:\\s*([0-9.+-]+|inf)', txt)
+              if not m:
+                  m=re.search(r'PSNR.*?([0-9]+(?:\\.[0-9]+)?)', txt)
+              if not m: return None
+              return 99.0 if m.group(1)=='inf' else float(m.group(1))
+
+          source_total=sum(p.stat().st_size for p in sources)
+          src_probe={p.name:probe(p) for p in sources}
+          total_duration=sum(x['duration'] for x in src_probe.values())
+
+          encoded_totals={k:0 for k in codecs}
+          rows=[]
+          for codec_name,cfg in codecs.items():
+              codec_dir=WORK/codec_name
+              codec_dir.mkdir(parents=True,exist_ok=True)
+              for src in sources:
+                  dst=codec_dir/(src.stem+cfg['ext'])
+                  run(['ffmpeg','-hide_banner','-loglevel','error','-y','-i',str(src),*cfg['args'],str(dst)])
+                  encoded_totals[codec_name]+=dst.stat().st_size
+                  if src.name not in sample_names:
+                      continue
+                  sample_dst=SAMPLES/(src.stem+'__'+codec_name+cfg['ext'])
+                  shutil.copy2(dst,sample_dst)
+                  sp=src_probe[src.name]; ep=probe(dst)
+                  src_w=WORK/(src.stem+'__source.wav')
+                  dec_w=WORK/(src.stem+'__'+codec_name+'__decoded.wav')
+                  if not src_w.exists(): decode_to_wav(src,src_w)
+                  decode_to_wav(dst,dec_w)
+                  s_on,s_off=active_bounds(src_w); e_on,e_off=active_bounds(dec_w)
+                  rows.append({
+                      'scene':src.name,
+                      'codec':codec_name,
+                      'mime':cfg['mime'],
+                      'source_bytes':src.stat().st_size,
+                      'encoded_bytes':dst.stat().st_size,
+                      'saving_pct':round((1-dst.stat().st_size/src.stat().st_size)*100,2),
+                      'source_duration_s':round(sp['duration'],6),
+                      'encoded_duration_s':round(ep['duration'],6),
+                      'duration_delta_ms':round((ep['duration']-sp['duration'])*1000,2),
+                      'source_rate':sp['sample_rate'],
+                      'encoded_rate':ep['sample_rate'],
+                      'channels':ep['channels'],
+                      'active_start_delta_ms':round((e_on-s_on)*1000,1),
+                      'active_end_delta_ms':round((e_off-s_off)*1000,1),
+                      'apsnr_db':apsnr(src,dst),
+                  })
+
+          with (OUT/'sample-results.csv').open('w',newline='',encoding='utf-8') as f:
+              w=csv.DictWriter(f,fieldnames=list(rows[0].keys()));w.writeheader();w.writerows(rows)
+
+          summary=[]
+          for name,cfg in codecs.items():
+              size=encoded_totals[name]
+              relevant=[r for r in rows if r['codec']==name]
+              ps=[r['apsnr_db'] for r in relevant if r['apsnr_db'] is not None]
+              summary.append({
+                  'codec':name,
+                  'mime':cfg['mime'],
+                  'story_bytes':size,
+                  'story_mib':round(size/1048576,3),
+                  'saving_pct':round((1-size/source_total)*100,2),
+                  'avg_sample_duration_delta_ms':round(sum(abs(r['duration_delta_ms']) for r in relevant)/len(relevant),2),
+                  'max_sample_duration_delta_ms':round(max(abs(r['duration_delta_ms']) for r in relevant),2),
+                  'max_active_start_delta_ms':round(max(abs(r['active_start_delta_ms']) for r in relevant),1),
+                  'max_active_end_delta_ms':round(max(abs(r['active_end_delta_ms']) for r in relevant),1),
+                  'avg_apsnr_db':round(sum(ps)/len(ps),2) if ps else None,
+              })
+          (OUT/'summary.json').write_text(json.dumps({
+              'source_count':len(sources),
+              'source_bytes':source_total,
+              'source_mib':round(source_total/1048576,3),
+              'total_duration_s':round(total_duration,3),
+              'formats':summary,
+          },indent=2),encoding='utf-8')
+
+          lines=[
+              '# Bubble Safari story audio codec benchmark',
+              '',
+              'This benchmark is isolated from production. Original WAV files remain untouched.',
+              '',
+              f'- Story files: **{len(sources)}**',
+              f'- WAV source bytes: **{source_total:,}** ({source_total/1048576:.2f} MiB)',
+              f'- Total narration duration: **{total_duration:.2f} s**',
+              '',
+              '| Format | Full story size | Saving vs WAV | Avg abs duration delta | Max abs duration delta | Max active-start shift | Max active-end shift | Avg APSNR |',
+              '|---|---:|---:|---:|---:|---:|---:|---:|',
+          ]
+          for s in summary:
+              lines.append(
+                  f"| {s['codec']} | {s['story_mib']:.3f} MiB | {s['saving_pct']:.2f}% | "
+                  f"{s['avg_sample_duration_delta_ms']:.2f} ms | {s['max_sample_duration_delta_ms']:.2f} ms | "
+                  f"{s['max_active_start_delta_ms']:.1f} ms | {s['max_active_end_delta_ms']:.1f} ms | "
+                  f"{s['avg_apsnr_db'] if s['avg_apsnr_db'] is not None else 'n/a'} dB |"
+              )
+          lines += [
+              '',
+              '## Sample set',
+              '',
+              ', '.join(sorted(sample_names)),
+              '',
+              '## Encoding settings',
+              '',
+              '- MP3: libmp3lame, 64 kbps CBR, mono, 24 kHz.',
+              '- AAC-LC: native FFmpeg AAC, 64 kbps, M4A, mono, 24 kHz.',
+              '- Opus: libopus, 48 kbps VBR, Ogg, mono.',
+              '- Vorbis: libvorbis, 64 kbps target, Ogg, mono.',
+              '- FLAC: lossless level 8, mono, 24 kHz.',
+              '',
+              'Detailed per-scene measurements are in sample-results.csv.',
+              'Representative encoded samples are in samples/ for browser/device playback testing.',
+          ]
+          (OUT/'REPORT.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
+          print((OUT/'REPORT.md').read_text())
+          PY
+          python3 benchmarks/audio-codecs/benchmark.py
+          rm -rf benchmarks/audio-codecs/work benchmarks/audio-codecs/benchmark.py
+
+      - name: Verify generated benchmark files decode
+        shell: bash
+        run: |
+          set -euo pipefail
+          count=0
+          for f in benchmarks/audio-codecs/samples/*; do
+            ffmpeg -hide_banner -loglevel error -i "$f" -f null -
+            count=$((count+1))
+          done
+          test "$count" -eq 30
+          echo "Verified benchmark sample files: $count"
+
+      - name: Commit benchmark report and samples
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add benchmarks/audio-codecs
+          git diff --cached --quiet && exit 0
+          git commit -m "Add isolated story audio codec benchmark results"
+          git push origin HEAD:audio-codec-benchmark-20260919
