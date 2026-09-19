@@ -1,3 +1,7 @@
+/* Story screens own their header; hide the global app branding and reclaim that space. */
+#app.story-mode .topbar{display:none!important}
+#app.story-mode .stage{padding-top:max(var(--tv-safe-y,14px),env(safe-area-inset-top,0px))!important}
+
 /* Final narrated story library + player */
 #storyLibraryScreen.screen-active,#storyNarratedScreen.screen-active{display:flex;align-items:center;justify-content:center;overflow:hidden;direction:rtl}
 #storyLibraryScreen .story-library-shell,#storyNarratedScreen .story-player-shell{box-sizing:border-box;width:min(1320px,calc(100vw - clamp(30px,4vw,70px)));height:min(680px,100%);margin:0 auto;min-width:0;min-height:0;padding:clamp(3px,.6vh,7px) 0}

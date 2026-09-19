@@ -205,7 +205,6 @@
 @media (max-aspect-ratio:4/3){
   #homeScreen.screen-active .mode-art-bubbles{width:39%!important;left:4%!important}
   #homeScreen.screen-active .mode-card-featured .mode-copy{max-width:54%!important;width:54%!important}
-  #homeScreen.screen-active .mode-card-featured .mode-action{display:none!important}
 }
 
 
@@ -250,6 +249,7 @@ body{overflow:hidden;background:#d8f2d2;text-rendering:optimizeLegibility;-webki
 }
 .world-card:focus,.world-card.tv-focus,.age-card:focus,.age-card.tv-focus{transform:none!important}
 .choice:focus,.choice.tv-focus{transform:none!important;filter:none!important;z-index:20}
+.choice:focus,.choice.tv-focus{box-shadow:none!important;outline:none!important}
 .choice:focus .choice-bubble,.choice.tv-focus .choice-bubble{
   box-shadow:inset 0 -13px 20px rgba(28,103,127,.10),0 0 0 4px #fffdf7,0 0 0 8px rgba(255,216,101,.96),0 14px 30px rgba(36,87,71,.16)!important;
   animation:none!important;
@@ -260,7 +260,7 @@ body{overflow:hidden;background:#d8f2d2;text-rendering:optimizeLegibility;-webki
 /* Text must always sit above decorative layers. */
 .mode-card,.world-card,.age-card,.question-card,.setting-card{isolation:isolate}
 .mode-card::before,.mode-card::after,.world-card::before,.world-card::after,.question-card::before,.question-card::after{pointer-events:none;z-index:0}
-.mode-card .mode-copy,.mode-card .mode-age,.mode-card .mode-badge,.mode-card .mode-action,.world-card strong,.world-card small,
+.mode-card .mode-copy,.mode-card .mode-age,.mode-card .mode-badge,.world-card strong,.world-card small,
 .age-card strong,.age-card small,.question-copy,.replay-button,.setting-copy,.update-copy,.quality-options,.update-button{position:relative;z-index:4}
 .mode-card .mode-copy strong,.world-card strong,.age-card strong,.setting-copy strong,.update-copy strong{line-height:1.18;text-wrap:balance}
 .mode-card .mode-copy small,.world-card small,.age-card small,.setting-copy small,.update-copy small{line-height:1.4;overflow-wrap:anywhere}

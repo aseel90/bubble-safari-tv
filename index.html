@@ -59,21 +59,53 @@
 
     <main class="stage">
       <section class="screen screen-active" id="homeScreen" aria-labelledby="homeTitle">
-        <div class="hero-copy">
-          <span class="eyebrow">للأطفال 2–5 سنوات</span>
-          <h1 id="homeTitle">جاهز لمغامرة<br><span>الفقاعات؟</span></h1>
-          <p>4 عوالم • أصوات عربية • تحديات متنوعة • تحكم بالريموت فقط.</p>
-        </div>
+        <div class="home-portal">
+          <div class="home-heading">
+            <div class="home-heading-main">
+              <h1 id="homeTitle">اختر مغامرتك</h1>
+              <p>كل قسم مصمم للعب والتعلّم بالريموت.</p>
+            </div>
+            <span class="home-heading-chip">تعلم • لعب • قصص</span>
+          </div>
 
-        <div class="mascot-scene" aria-hidden="true">
-          <div class="vine vine-one"></div><div class="vine vine-two"></div>
-          <div class="big-bubble mascot-bubble"><span class="mascot-art" data-mascot-art="lion"></span></div>
-          <span class="mini-bubble mini-a"></span><span class="mini-bubble mini-b"></span><span class="mini-bubble mini-c"></span>
-        </div>
+          <div class="mode-grid" aria-label="أقسام سفاري الفقاعات">
+            <button class="mode-card mode-card-featured mode-card-bubbles focusable" id="startButton" type="button" data-focusable data-autofocus>
+              <span class="mode-age">2–5 سنوات</span>
+              <span class="mode-art mode-art-bubbles" aria-hidden="true">
+                <span class="mode-bubble mode-bubble-main"><span class="mode-mascot" data-mascot-art="lion"></span></span>
+                <span class="mode-bubble mode-bubble-a"></span><span class="mode-bubble mode-bubble-b"></span>
+              </span>
+              <span class="mode-copy"><strong>مغامرة الفقاعات</strong><small>حيوانات • ألوان • أرقام • أشكال</small></span>
+            </button>
 
-        <div class="home-actions">
-          <button class="primary-button focusable" id="startButton" type="button" data-focusable><span>ابدأ اللعب</span><span class="primary-icon" data-ui-art="play" aria-hidden="true"></span></button>
-          <p class="remote-hint"><span class="remote-key">OK</span> استخدم الأسهم وزر OK</p>
+            <button class="mode-card mode-card-stories focusable" type="button" data-home-section="stories" data-focusable>
+              <span class="mode-age">3+ سنوات</span><span class="mode-badge">جديد</span>
+              <span class="mode-mini-art" aria-hidden="true"><span class="story-book"><i></i><i></i></span><span class="story-spark"></span></span>
+              <span class="mode-copy"><strong>القصص</strong><small>قصص مسموعة ومصورة للأطفال</small></span>
+            </button>
+
+            <button class="mode-card mode-card-math focusable" type="button" data-home-section="math" data-focusable>
+              <span class="mode-age">5+ سنوات</span><span class="mode-badge">قريبًا</span>
+              <span class="mode-mini-art math-orbs" aria-hidden="true"><i>2</i><i>+</i><i>3</i></span>
+              <span class="mode-copy"><strong>رياضيات ممتعة</strong><small>جمع • طرح • مقارنة • عد</small></span>
+            </button>
+
+            <button class="mode-card mode-card-letters focusable" type="button" data-home-section="letters" data-focusable>
+              <span class="mode-age">3+ سنوات</span><span class="mode-badge">قريبًا</span>
+              <span class="mode-mini-art letter-orbs" aria-hidden="true"><i>أ</i><i>ب</i></span>
+              <span class="mode-copy"><strong>الحروف والكلمات</strong><small>حروف • صور • كلمات وأصوات</small></span>
+            </button>
+
+            <button class="mode-card mode-card-puzzles focusable" type="button" data-home-section="puzzles" data-focusable>
+              <span class="mode-age">5+ سنوات</span><span class="mode-badge">قريبًا</span>
+              <span class="mode-mini-art puzzle-art" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+              <span class="mode-copy"><strong>ألغاز وتحديات</strong><small>أنماط • ترتيب • تفكير بصري</small></span>
+            </button>
+          </div>
+
+          <div class="section-notice" id="sectionNotice" role="status" aria-live="polite" aria-hidden="true">
+            <strong id="sectionNoticeTitle">قريبًا</strong><span id="sectionNoticeText">هذا القسم قيد التجهيز.</span>
+          </div>
         </div>
       </section>
 
