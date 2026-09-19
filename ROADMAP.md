@@ -1,67 +1,81 @@
 # Bubble Safari — Roadmap
 
-## Story audio reliability
+## Current status
 
-### Incident: Arin & the Fox — Scene 23 narration is truncated
+### Phase 1 — Regression & integrity ✅
+- Deep regression test for game boot, navigation, settings, worlds, questions, finish flow and resources.
+- Fixed the legacy `#storyBackButton` binding regression.
+- Confirmed clean console and stable remote/keyboard navigation.
 
-**Status:** Resolved and user-verified. Scene 23 was re-recorded as a standalone file, cross-scene stitching was removed, and the corrected playback was confirmed.
+### Phase 2 — Responsive story Split Layout ✅
+- Restored the preferred story layout: complete illustration on the left and narrator panel on the right.
+- Removed narration overlay from the illustration.
+- Story images use `object-fit: contain` to avoid cropping.
+- Verified responsive behavior on TV and landscape phone sizes.
 
-#### What was verified
+### Phase 3 — Story QA 1→27 ✅
+- Full sequential story playback from Scene 1 through Scene 27.
+- Extra checks for Scenes 2, 17, 18, 23 and 27.
+- Verified Pause/Resume, Replay Segment, Replay Story, ending actions and library return.
+- Verified no story-layout overflow at the target resolutions.
 
-- `arin-fox-23-fox-apology.wav` is incomplete.
-- The recording ends abruptly after the grandmother says the equivalent of:
-  > "... يمكنك الاعتذار، ولكن عليك أيضًا..."
-- `arin-fox-24-return.wav` starts with the Scene 24 return narration ("عندما حان وقت العودة..."), so Scene 24 is not the missing continuation of Scene 23.
-- The previous runtime workaround stitched the beginning of Scene 24 onto Scene 23 and started Scene 24 at an offset. It was removed after the standalone Scene 23 recording was created.
+### Phase 4 — Android TV branding ✅
+- Finalized Android Vector App Icon.
+- Finalized Android TV Banner.
+- Kept branding consistent around Bubble Safari colors and safari/paw identity.
+- Confirmed Android builds after resource changes.
 
-#### Implemented fix
+### Phase 5 — Conservative cleanup ✅
+- Audited runtime references before deleting anything.
+- Removed obsolete truncated Scene 23 audio:
+  `arin-fox-23-fox-apology.wav`
+- Removed unused `audio/ui_listen.wav`.
+- Kept all referenced JS/CSS, current story images and production audio.
+- Confirmed Pages, APK and publish workflows after cleanup.
 
-1. Re-recorded **Scene 23 only** using the approved Leda narration voice.
-2. Added the complete standalone asset as `arin-fox-23-fox-apology-v2.wav`.
-3. Kept Scene 24 as its own independent complete file.
-4. Removed `stitchParts` from Scene 23 and `startAt` from Scene 24.
-5. Bumped the story audio and service-worker cache versions.
-6. Sequential playback was accepted after the corrected Scene 23 asset was deployed; the incident is closed.
+### Phase 6 — Final technical cleanup ✅
+- Scoped Service Worker cleanup to Bubble Safari cache names only.
+- Isolated cache reads to the current Bubble Safari cache.
+- Bumped Service Worker cache version.
+- Aligned the web favicon with the Android branding without introducing bitmap assets.
+- Updated README and Roadmap to match the real project state.
+- No gameplay/story logic was changed in this phase.
 
-#### Scene 23 acceptance criteria
+### Phase 7 — Final release validation ⏳
+Planned final work:
+1. Build the final release candidate APK.
+2. Verify generated APK contents and update bundle.
+3. Install/update it on the target Android TV device.
+4. Run physical D-pad / OK / Back smoke tests.
+5. Run final game + story regression.
+6. Confirm OTA update behavior from an older installed build.
+7. Produce the final signed release package and record checksum/version.
 
-The accepted Scene 23 asset:
+---
 
-- contains the full intended Scene 23 narration from beginning to end;
-- ends naturally, never mid-word or mid-sentence;
-- contains **no words from Scene 24**;
-- starts playback from `0.0` seconds;
-- uses the approved Leda narration voice and matching story performance;
-- remains compatible with the story audio pipeline;
-- finishes as a self-contained recording without runtime cutting;
-- was listened to and approved after deployment.
+## Resolved technical incident — Arin & the Fox Scene 23
 
-**Incident lesson:** if a scene recording is truncated, regenerate that scene as a complete standalone asset. Never borrow speech from the next scene to repair it at runtime.
+**Status: Resolved and user-verified.**
 
-### Prevention rules for all future stories
+The original `arin-fox-23-fox-apology.wav` recording was incomplete and ended before the intended Scene 23 narration was finished. Scene 24 contained its own independent narration and was not a valid continuation.
 
-**One scene = one final audio asset.** A production scene should not depend on the head or tail of another scene's file.
+### Implemented fix
+1. Re-recorded Scene 23 as a complete standalone file.
+2. Added `arin-fox-23-fox-apology-v2.wav`.
+3. Kept Scene 24 independent.
+4. Removed cross-scene stitching and Scene 24 offset workarounds.
+5. Verified sequential playback.
+6. Removed the obsolete truncated Scene 23 file during Phase 5 cleanup.
 
-Before integrating any story audio:
+### Production rule for story audio
+**One scene = one final audio asset.**
 
-1. **Freeze the script first.** Each scene has an approved final text before recording/generation.
-2. **Produce one complete file per scene.** Every file starts at 0 and contains only that scene.
-3. **Listen, do not infer.** Silence/RMS analysis can help find candidate edit points, but it is not proof of sentence boundaries or semantic completeness.
-4. **Do not use cross-scene stitching as a production fix.** `stitchParts`, `startAt`, and `endAt` should be treated as temporary diagnostics or explicitly reviewed exceptions, not normal story authoring.
-5. **Run an asset-to-script review.** For every scene, verify the spoken content against the approved scene text before coding.
-6. **Validate technical properties.** Check filename, duration, sample rate, channels, bit depth, readable WAV metadata, and that the file is not truncated/corrupt.
-7. **Run sequential QA, not only per-file QA.** Test the full transition chain, especially the last 5 scenes and every scene boundary.
-8. **Test on the target runtime.** Final acceptance must include Android TV / the same WebView class used by the app.
-9. **Log the playback identity during QA.** Capture scene index, expected filename, actual `audio.src`, `currentTime`, `duration`, playback token, and `ended` transition.
-10. **Cache carefully.** Any replaced narration asset must ship with an audio version/cache bump so Android TV does not keep an older file.
-
-### Definition of done for a story audio release
-
-A story is ready only when:
-
-- every scene's spoken content matches its approved script;
-- every scene uses its own final audio file starting at 0;
-- there are no unintended cross-scene words, abrupt cuts, or overlaps;
-- scene N's visual/text remains visible until scene N's audio actually finishes;
-- the next scene starts only after the previous audio finishes and the intended transition delay completes;
-- the full story is played from start to finish on the Android TV target with no audio/visual drift.
+For future stories:
+- freeze the script before recording;
+- keep each scene self-contained from 0.0 seconds;
+- never repair production narration by borrowing audio from adjacent scenes;
+- verify filename, duration and technical WAV integrity;
+- listen to the complete scene and compare it with the approved text;
+- run sequential QA across scene boundaries;
+- test on the Android TV runtime;
+- bump relevant cache/audio versions when replacing production assets.

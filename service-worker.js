@@ -1,4 +1,5 @@
-const CACHE = 'bubble-safari-v50-final-story-ui';
+const CACHE_PREFIX = 'bubble-safari-';
+const CACHE = 'bubble-safari-v51-final-cleanup';
 const CORE = [
   './', './index.html', './styles.css', './art.css', './worlds.css', './polish-v08.css', './stories-v12.css',
   './game-v3.js', './stories-v12.js', './game-data.js', './tv-nav.js', './voice.js', './art.js', './scene-art.js',
@@ -21,10 +22,19 @@ self.addEventListener('install', event => {
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys()
-      .then(keys => Promise.all(keys.filter(key => key !== CACHE).map(key => caches.delete(key))))
+      .then(keys => Promise.all(
+        keys
+          .filter(key => key.startsWith(CACHE_PREFIX) && key !== CACHE)
+          .map(key => caches.delete(key))
+      ))
       .then(() => self.clients.claim())
   );
 });
+
+async function cacheMatch(request) {
+  const cache = await caches.open(CACHE);
+  return cache.match(request);
+}
 
 async function cachePut(request, response) {
   if (response?.ok && response.status === 200) {
@@ -40,15 +50,15 @@ async function networkFirst(request) {
     if (response.status === 200) return cachePut(request, response);
     return response;
   } catch {
-    const cached = await caches.match(request);
+    const cached = await cacheMatch(request);
     if (cached) return cached;
-    if (request.mode === 'navigate') return (await caches.match('./index.html')) || Response.error();
+    if (request.mode === 'navigate') return (await cacheMatch('./index.html')) || Response.error();
     return Response.error();
   }
 }
 
 async function cacheFirst(request) {
-  const cached = await caches.match(request);
+  const cached = await cacheMatch(request);
   if (cached) return cached;
   try {
     const response = await fetch(request, { cache: 'no-store' });
@@ -74,7 +84,7 @@ self.addEventListener('fetch', event => {
     if (isStoryScene) return cacheFirst(request);
 
     if (isAudio) {
-      const cached = await caches.match(request);
+      const cached = await cacheMatch(request);
       if (cached) return cached;
       try {
         const response = await fetch(request, { cache: 'no-store' });
