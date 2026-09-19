@@ -1,0 +1,160 @@
+name: Audio codec conservative quality check
+
+on:
+  push:
+    branches: [audio-codec-benchmark-20260919]
+    paths:
+      - '.github/workflows/audio-codec-quality.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install FFmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+      - name: Measure MP3 96k and corrected quality metrics
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p benchmarks/audio-codecs/mp3-96k-samples benchmarks/audio-codecs/quality-work
+          python3 - <<'PY'
+          import csv, json, re, shutil, subprocess
+          from pathlib import Path
+
+          root=Path('audio/stories/arin-fox')
+          out=Path('benchmarks/audio-codecs')
+          work=out/'quality-work'
+          samples=out/'mp3-96k-samples'
+          srcs=sorted(root.glob('*.wav'))
+          chosen={
+            'arin-fox-01-intro.wav',
+            'arin-fox-07-where-going.wav',
+            'arin-fox-12-tail.wav',
+            'arin-fox-18-ranger-talks.wav',
+            'arin-fox-23-fox-apology-v2.wav',
+            'arin-fox-27-ending.wav'
+          }
+
+          def run(cmd,check=True):
+            p=subprocess.run(cmd,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)
+            if check and p.returncode:
+              print(p.stdout);print(p.stderr);raise SystemExit(p.returncode)
+            return p
+
+          def duration(p):
+            x=run(['ffprobe','-v','error','-show_entries','format=duration','-of','default=nw=1:nk=1',str(p)])
+            return float(x.stdout.strip())
+
+          def metric(src,enc,filter_name,label):
+            p=run(['ffmpeg','-hide_banner','-nostats','-i',str(src),'-i',str(enc),
+              '-filter_complex',
+              '[0:a]aresample=24000,aformat=sample_fmts=fltp:channel_layouts=mono[a0];'
+              '[1:a]aresample=24000,aformat=sample_fmts=fltp:channel_layouts=mono[a1];'
+              f'[a0][a1]{filter_name}',
+              '-f','null','-'],check=False)
+            m=re.search(label+r' ch0:\s*([0-9.+-]+|inf)',p.stderr)
+            if not m:return None
+            return 999.0 if m.group(1)=='inf' else float(m.group(1))
+
+          total_src=sum(p.stat().st_size for p in srcs)
+          total_mp3=0
+          rows=[]
+          for src in srcs:
+            enc=work/(src.stem+'.mp3')
+            run(['ffmpeg','-hide_banner','-loglevel','error','-y','-i',str(src),
+                 '-c:a','libmp3lame','-b:a','96k','-ar','24000','-ac','1','-write_xing','1',str(enc)])
+            total_mp3 += enc.stat().st_size
+            if src.name in chosen:
+              shutil.copy2(enc,samples/(src.stem+'__mp3-96k.mp3'))
+              rows.append({
+                'scene':src.name,
+                'source_bytes':src.stat().st_size,
+                'mp3_96k_bytes':enc.stat().st_size,
+                'saving_pct':round((1-enc.stat().st_size/src.stat().st_size)*100,2),
+                'source_duration_s':duration(src),
+                'mp3_ffprobe_duration_s':duration(enc),
+                'apsnr_db':metric(src,enc,'apsnr','PSNR'),
+                'si_sdr_db':metric(src,enc,'asisdr','SI-SDR'),
+              })
+
+          # Correct quality metrics for the already generated formats on representative samples.
+          formats=[
+            ('mp3-64k','.mp3'),
+            ('aac-lc-64k','.m4a'),
+            ('opus-48k','.ogg'),
+            ('vorbis-64k','.ogg'),
+            ('flac-lossless','.flac'),
+          ]
+          quality=[]
+          for src in srcs:
+            if src.name not in chosen:continue
+            for name,ext in formats:
+              enc=out/'samples'/(src.stem+'__'+name+ext)
+              assert enc.exists(),enc
+              quality.append({
+                'scene':src.name,
+                'codec':name,
+                'apsnr_db':metric(src,enc,'apsnr','PSNR'),
+                'si_sdr_db':metric(src,enc,'asisdr','SI-SDR'),
+              })
+          for r in rows:
+            src=root/r['scene']; enc=samples/(src.stem+'__mp3-96k.mp3')
+            quality.append({'scene':r['scene'],'codec':'mp3-96k','apsnr_db':metric(src,enc,'apsnr','PSNR'),'si_sdr_db':metric(src,enc,'asisdr','SI-SDR')})
+
+          with (out/'quality-results.csv').open('w',newline='',encoding='utf-8') as f:
+            w=csv.DictWriter(f,fieldnames=quality[0].keys());w.writeheader();w.writerows(quality)
+
+          agg={}
+          for r in quality:
+            a=agg.setdefault(r['codec'],{'p':[],'s':[]})
+            if r['apsnr_db'] is not None:a['p'].append(r['apsnr_db'])
+            if r['si_sdr_db'] is not None:a['s'].append(r['si_sdr_db'])
+          summary={k:{'avg_apsnr_db':round(sum(v['p'])/len(v['p']),2),'min_apsnr_db':round(min(v['p']),2),'avg_si_sdr_db':round(sum(v['s'])/len(v['s']),2),'min_si_sdr_db':round(min(v['s']),2)} for k,v in agg.items()}
+
+          report=[
+            '# Conservative audio quality check',
+            '',
+            f'- WAV story total: **{total_src:,} bytes** ({total_src/1048576:.2f} MiB)',
+            f'- MP3 96k story total: **{total_mp3:,} bytes** ({total_mp3/1048576:.2f} MiB)',
+            f'- MP3 96k saving: **{(1-total_mp3/total_src)*100:.2f}%**',
+            '',
+            '| Codec | Avg APSNR | Min APSNR | Avg SI-SDR | Min SI-SDR |',
+            '|---|---:|---:|---:|---:|'
+          ]
+          for k in ['mp3-64k','mp3-96k','aac-lc-64k','opus-48k','vorbis-64k','flac-lossless']:
+            v=summary[k]
+            report.append(f"| {k} | {v['avg_apsnr_db']:.2f} dB | {v['min_apsnr_db']:.2f} dB | {v['avg_si_sdr_db']:.2f} dB | {v['min_si_sdr_db']:.2f} dB |")
+          report += [
+            '',
+            'Notes:',
+            '- Metrics are engineering checks, not a replacement for listening on the target TV.',
+            '- MP3 container duration can include encoder padding in ffprobe; Chromium may expose the gapless-trimmed duration via HTMLAudioElement.',
+            '- Production WAV assets were not changed.',
+          ]
+          (out/'QUALITY.md').write_text('\n'.join(report)+'\n',encoding='utf-8')
+          print((out/'QUALITY.md').read_text())
+          PY
+          rm -rf benchmarks/audio-codecs/quality-work
+      - name: Verify MP3 96k samples decode
+        run: |
+          set -euo pipefail
+          for f in benchmarks/audio-codecs/mp3-96k-samples/*.mp3; do
+            ffmpeg -hide_banner -loglevel error -i "$f" -f null -
+          done
+      - name: Commit quality report
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add benchmarks/audio-codecs/QUALITY.md benchmarks/audio-codecs/quality-results.csv benchmarks/audio-codecs/mp3-96k-samples
+          git diff --cached --quiet && exit 0
+          git commit -m "Add conservative MP3 quality benchmark"
+          git push origin HEAD:audio-codec-benchmark-20260919
