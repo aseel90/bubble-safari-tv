@@ -1,0 +1,150 @@
+name: Validate story MP3 production migration
+
+on:
+  push:
+    branches: [story-mp3-runtime-20260919]
+    paths:
+      - '.github/workflows/validate-story-mp3-migration.yml'
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout migration branch
+        uses: actions/checkout@v4
+
+      - name: Validate source/runtime contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          wavs=sorted(Path('audio/stories/arin-fox').glob('*.wav'))
+          mp3s=sorted(Path('audio/stories/arin-fox').glob('*.mp3'))
+          webps=sorted(Path('assets/stories/arin-fox').glob('*.webp'))
+          story=Path('stories-v12.js').read_text(encoding='utf-8')
+          gradle=Path('android-tv/app/build.gradle').read_text(encoding='utf-8')
+
+          assert len(wavs)==27, len(wavs)
+          assert len(mp3s)==27, len(mp3s)
+          assert len(webps)==27, len(webps)
+          assert {p.stem for p in wavs} == {p.stem for p in mp3s}
+          assert story.count(".mp3'")==27, story.count(".mp3'")
+          assert story.count(".wav'")==0, story.count(".wav'")
+          assert "STORY_AUDIO_VERSION='v38-mp3-96k'" in story
+          assert "include 'audio/*.wav'" in gradle
+          assert "include 'audio/stories/arin-fox/*.mp3'" in gradle
+          assert "include 'audio/**/*.wav'" not in gradle
+          assert Path('audio/stories/arin-fox/arin-fox-01-intro.mp3').is_file()
+          assert Path('audio/stories/arin-fox/arin-fox-23-fox-apology-v2.mp3').is_file()
+          assert Path('audio/stories/arin-fox/arin-fox-27-ending.mp3').is_file()
+
+          wav_bytes=sum(p.stat().st_size for p in wavs)
+          mp3_bytes=sum(p.stat().st_size for p in mp3s)
+          print('WAV masters:',len(wavs),wav_bytes)
+          print('MP3 runtime:',len(mp3s),mp3_bytes)
+          print('Story audio saving: %.2f%%' % ((1-mp3_bytes/wav_bytes)*100))
+          PY
+
+      - name: Build OTA-equivalent runtime bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf validation-site validation
+          mkdir -p validation-site/audio/stories/arin-fox validation-site/assets/stories/arin-fox validation
+          cp index.html styles.css art.css worlds.css polish-v08.css stories-v12.css game-v3.js stories-v12.js game-data.js tv-nav.js voice.js art.js scene-art.js service-worker.js manifest.webmanifest favicon.svg validation-site/
+          cp audio/*.wav validation-site/audio/
+          cp audio/stories/arin-fox/*.mp3 validation-site/audio/stories/arin-fox/
+          cp assets/stories/arin-fox/*.webp validation-site/assets/stories/arin-fox/
+          (
+            cd validation-site
+            zip -qr ../validation/game-bundle.zip index.html styles.css art.css worlds.css polish-v08.css stories-v12.css game-v3.js stories-v12.js game-data.js tv-nav.js voice.js art.js scene-art.js service-worker.js manifest.webmanifest favicon.svg audio assets
+          )
+          python3 - <<'PY'
+          import zipfile
+          from pathlib import Path
+          z=Path('validation/game-bundle.zip')
+          with zipfile.ZipFile(z) as f:
+              names=f.namelist()
+          mp3=[n for n in names if n.startswith('audio/stories/arin-fox/') and n.endswith('.mp3')]
+          wav=[n for n in names if n.startswith('audio/stories/arin-fox/') and n.endswith('.wav')]
+          root_wav=[n for n in names if n.startswith('audio/') and n.count('/')==1 and n.endswith('.wav')]
+          webp=[n for n in names if n.startswith('assets/stories/arin-fox/') and n.endswith('.webp')]
+          assert len(mp3)==27, len(mp3)
+          assert len(wav)==0, wav
+          assert len(root_wav)>0, len(root_wav)
+          assert len(webp)==27, len(webp)
+          print('OTA bytes:',z.stat().st_size)
+          print('OTA story MP3:',len(mp3))
+          print('OTA story WAV:',len(wav))
+          print('OTA root WAV:',len(root_wav))
+          print('OTA story WebP:',len(webp))
+          PY
+
+      - name: Java 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Android SDK
+        uses: android-actions/setup-android@v4
+        with:
+          packages: ''
+
+      - name: Install SDK 36
+        run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0'
+
+      - name: Gradle 9.6
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '9.6.0'
+
+      - name: Build production-equivalent APK
+        env:
+          BUBBLE_SAFARI_GAME_VERSION: story-mp3-validation
+        run: gradle -p android-tv :app:assembleDebug --stacktrace
+
+      - name: Verify APK runtime assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY' | tee validation/report.txt
+          import zipfile
+          from pathlib import Path
+          apk=Path('android-tv/app/build/outputs/apk/debug/app-debug.apk')
+          with zipfile.ZipFile(apk) as f:
+              names=f.namelist()
+              story=f.read('assets/stories-v12.js').decode('utf-8')
+          mp3=[n for n in names if n.startswith('assets/audio/stories/arin-fox/') and n.endswith('.mp3')]
+          wav=[n for n in names if n.startswith('assets/audio/stories/arin-fox/') and n.endswith('.wav')]
+          root_wav=[n for n in names if n.startswith('assets/audio/') and n.count('/')==2 and n.endswith('.wav')]
+          webp=[n for n in names if n.startswith('assets/assets/stories/arin-fox/') and n.endswith('.webp')]
+          assert len(mp3)==27, len(mp3)
+          assert len(wav)==0, wav
+          assert len(root_wav)>0, len(root_wav)
+          assert len(webp)==27, len(webp)
+          assert story.count(".mp3'")==27
+          assert story.count(".wav'")==0
+          assert 'assets/audio/stories/arin-fox/arin-fox-01-intro.mp3' in names
+          assert 'assets/audio/stories/arin-fox/arin-fox-23-fox-apology-v2.mp3' in names
+          assert 'assets/audio/stories/arin-fox/arin-fox-27-ending.mp3' in names
+          print('APK bytes:',apk.stat().st_size)
+          print('APK story MP3:',len(mp3))
+          print('APK story WAV:',len(wav))
+          print('APK root WAV:',len(root_wav))
+          print('APK story WebP:',len(webp))
+          print('Runtime story MP3 refs:',story.count(".mp3'"))
+          PY
+
+      - name: Upload validation artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: story-mp3-production-validation
+          path: |
+            android-tv/app/build/outputs/apk/debug/app-debug.apk
+            validation/game-bundle.zip
+            validation/report.txt
+          if-no-files-found: error
