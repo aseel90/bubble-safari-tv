@@ -41,9 +41,9 @@
 
 - 27 مشهدًا.
 - 27 صورة WebP مستخدمة في Runtime.
-- Production الحالية ما زالت تستخدم 27 ملف WAV، واحدًا لكل مشهد، إلى أن يتم تنفيذ ترحيل MP3 على `main`.
-- تم اعتماد **MP3 96 kbps mono** كهدف Runtime للقصة بعد نجاح اختبار Android TV كامل 1→27 على الجهاز الفعلي.
-- ملفات WAV الأصلية تبقى **Master/rollback** ولا تُحذف.
+- Production Runtime تستخدم الآن **27 ملف MP3 96 kbps mono**، واحدًا لكل مشهد.
+- تم اعتماد MP3 بعد نجاح اختبار Android TV كامل 1→27 على الجهاز الفعلي ثم نجاح بوابة APK/OTA production-equivalent.
+- ملفات WAV الأصلية تبقى **Master/rollback** في المستودع ولا تدخل APK أو OTA.
 - PNG الأصلية محفوظة كـsource/rollback، لكنها لا تدخل APK أو OTA.
 - Runtime story data موجود حاليًا في `stories-v12.js`.
 - التصميم البصري للمشغل موجود في `stories-v12.css`.
@@ -477,33 +477,33 @@ Scene NN image ↔ Scene NN audio ↔ Scene NN caption
 
 | # | Chapter | Characters | Runtime image | Runtime audio |
 |---:|---|---|---|---|
-| 01 | صباح جميل | Arin | `arinfox_scene_01_2026-09-18T18-53-29-720Z.webp` | `arin-fox-01-intro.wav` |
-| 02 | هدية للجدة | Arin, Mother | `arinfox_scene_02_v02.webp` | `arin-fox-02-basket.wav` |
-| 03 | نصيحة الأم | Arin, Mother | `arinfox_scene_03_2026-09-18T17-58-25-364Z.webp` | `arin-fox-03-advice.wav` |
-| 04 | بداية الرحلة | Arin | `arinfox_scene_04_2026-09-18T17-58-35-275Z.webp` | `arin-fox-04-leave-home.wav` |
-| 05 | طريق الغابة | Arin | `arinfox_scene_05_2026-09-18T17-58-45-622Z.webp` | `arin-fox-05-forest-road.wav` |
-| 06 | ضيف بين الأشجار | Arin, Fox | `arinfox_scene_06_2026-09-18T17-58-55-686Z.webp` | `arin-fox-06-fox-appears.wav` |
-| 07 | سؤال الثعلب | Arin, Fox | `arinfox_scene_07_2026-09-18T17-59-05-062Z.webp` | `arin-fox-07-where-going.wav` |
-| 08 | رائحة السلة | Arin, Fox | `arinfox_scene_08_2026-09-18T17-59-15-467Z.webp` | `arin-fox-08-basket-smell.wav` |
-| 09 | الطريق الأقصر | Fox | `arinfox_scene_09_2026-09-18T18-55-35-944Z.webp` | `arin-fox-09-shortcut.wav` |
-| 10 | زهرة للجدة | Arin | `arinfox_scene_10_2026-09-18T17-59-33-781Z.webp` | `arin-fox-10-flower.wav` |
-| 11 | عند بيت الجدة | Fox, Grandma | `arinfox_scene_11_2026-09-18T17-59-43-414Z.webp` | `arin-fox-11-grandma-door.wav` |
-| 12 | الجدة الذكية | Fox, Grandma | `arinfox_scene_12_2026-09-18T17-59-53-209Z.webp` | `arin-fox-12-tail.wav` |
-| 13 | الثعلب ينتظر | Fox | `arinfox_scene_13_2026-09-18T18-00-03-610Z.webp` | `arin-fox-13-waiting-fox.wav` |
-| 14 | وصول أرين | Arin, Fox | `arinfox_scene_14_2026-09-18T18-00-14-038Z.webp` | `arin-fox-14-arin-arrives.wav` |
-| 15 | قرار شجاع | Arin, Fox | `arinfox_scene_15_2026-09-18T18-00-24-296Z.webp` | `arin-fox-15-arin-refuses.wav` |
-| 16 | صوت الجدة | Arin, Grandma | `arinfox_scene_16_2026-09-18T18-00-41-496Z.webp` | `arin-fox-16-grandma-calls.wav` |
-| 17 | حارس الغابة | Arin, Fox, Ranger | `arinfox_scene_17_v03_2026-09-18T20-27-40-404Z.webp` | `arin-fox-17-ranger-arrives.wav` |
-| 18 | حديث هادئ | Fox, Ranger | `arinfox_scene_18_v02_2026-09-18T20-25-47-534Z.webp` | `arin-fox-18-ranger-talks.wav` |
-| 19 | الثعلب يعترف | Fox, Ranger | `arinfox_scene_19_2026-09-18T18-01-27-385Z.webp` | `arin-fox-19-fox-admits.wav` |
-| 20 | درس مهم | Fox, Ranger | `arinfox_scene_20_2026-09-18T18-01-37-914Z.webp` | `arin-fox-20-lesson.wav` |
-| 21 | الباب يفتح | Arin, Grandma, Ranger | `arinfox_scene_21_2026-09-18T18-01-48-087Z.webp` | `arin-fox-21-grandma-opens.wav` |
-| 22 | الهدية | Arin, Grandma | `arinfox_scene_22_2026-09-18T18-02-06-303Z.webp` | `arin-fox-22-gift.wav` |
-| 23 | اعتذار الثعلب | Arin, Grandma, Fox | `arinfox_scene_23_2026-09-18T18-02-16-052Z.webp` | `arin-fox-23-fox-apology-v2.wav` |
-| 24 | طريق العودة | Arin, Ranger | `arinfox_scene_24_2026-09-18T18-02-26-179Z.webp` | `arin-fox-24-return.wav` |
-| 25 | في البيت | Arin, Mother | `arinfox_scene_25_2026-09-18T18-02-36-134Z.webp` | `arin-fox-25-mother-final.wav` |
-| 26 | ما تعلمته أرين | Arin, Mother | `arinfox_scene_26_2026-09-18T18-02-46-671Z.webp` | `arin-fox-26-moral.wav` |
-| 27 | النهاية | Arin, Fox | `arinfox_scene_27_2026-09-18T18-02-56-244Z.webp` | `arin-fox-27-ending.wav` |
+| 01 | صباح جميل | Arin | `arinfox_scene_01_2026-09-18T18-53-29-720Z.webp` | `arin-fox-01-intro.mp3` |
+| 02 | هدية للجدة | Arin, Mother | `arinfox_scene_02_v02.webp` | `arin-fox-02-basket.mp3` |
+| 03 | نصيحة الأم | Arin, Mother | `arinfox_scene_03_2026-09-18T17-58-25-364Z.webp` | `arin-fox-03-advice.mp3` |
+| 04 | بداية الرحلة | Arin | `arinfox_scene_04_2026-09-18T17-58-35-275Z.webp` | `arin-fox-04-leave-home.mp3` |
+| 05 | طريق الغابة | Arin | `arinfox_scene_05_2026-09-18T17-58-45-622Z.webp` | `arin-fox-05-forest-road.mp3` |
+| 06 | ضيف بين الأشجار | Arin, Fox | `arinfox_scene_06_2026-09-18T17-58-55-686Z.webp` | `arin-fox-06-fox-appears.mp3` |
+| 07 | سؤال الثعلب | Arin, Fox | `arinfox_scene_07_2026-09-18T17-59-05-062Z.webp` | `arin-fox-07-where-going.mp3` |
+| 08 | رائحة السلة | Arin, Fox | `arinfox_scene_08_2026-09-18T17-59-15-467Z.webp` | `arin-fox-08-basket-smell.mp3` |
+| 09 | الطريق الأقصر | Fox | `arinfox_scene_09_2026-09-18T18-55-35-944Z.webp` | `arin-fox-09-shortcut.mp3` |
+| 10 | زهرة للجدة | Arin | `arinfox_scene_10_2026-09-18T17-59-33-781Z.webp` | `arin-fox-10-flower.mp3` |
+| 11 | عند بيت الجدة | Fox, Grandma | `arinfox_scene_11_2026-09-18T17-59-43-414Z.webp` | `arin-fox-11-grandma-door.mp3` |
+| 12 | الجدة الذكية | Fox, Grandma | `arinfox_scene_12_2026-09-18T17-59-53-209Z.webp` | `arin-fox-12-tail.mp3` |
+| 13 | الثعلب ينتظر | Fox | `arinfox_scene_13_2026-09-18T18-00-03-610Z.webp` | `arin-fox-13-waiting-fox.mp3` |
+| 14 | وصول أرين | Arin, Fox | `arinfox_scene_14_2026-09-18T18-00-14-038Z.webp` | `arin-fox-14-arin-arrives.mp3` |
+| 15 | قرار شجاع | Arin, Fox | `arinfox_scene_15_2026-09-18T18-00-24-296Z.webp` | `arin-fox-15-arin-refuses.mp3` |
+| 16 | صوت الجدة | Arin, Grandma | `arinfox_scene_16_2026-09-18T18-00-41-496Z.webp` | `arin-fox-16-grandma-calls.mp3` |
+| 17 | حارس الغابة | Arin, Fox, Ranger | `arinfox_scene_17_v03_2026-09-18T20-27-40-404Z.webp` | `arin-fox-17-ranger-arrives.mp3` |
+| 18 | حديث هادئ | Fox, Ranger | `arinfox_scene_18_v02_2026-09-18T20-25-47-534Z.webp` | `arin-fox-18-ranger-talks.mp3` |
+| 19 | الثعلب يعترف | Fox, Ranger | `arinfox_scene_19_2026-09-18T18-01-27-385Z.webp` | `arin-fox-19-fox-admits.mp3` |
+| 20 | درس مهم | Fox, Ranger | `arinfox_scene_20_2026-09-18T18-01-37-914Z.webp` | `arin-fox-20-lesson.mp3` |
+| 21 | الباب يفتح | Arin, Grandma, Ranger | `arinfox_scene_21_2026-09-18T18-01-48-087Z.webp` | `arin-fox-21-grandma-opens.mp3` |
+| 22 | الهدية | Arin, Grandma | `arinfox_scene_22_2026-09-18T18-02-06-303Z.webp` | `arin-fox-22-gift.mp3` |
+| 23 | اعتذار الثعلب | Arin, Grandma, Fox | `arinfox_scene_23_2026-09-18T18-02-16-052Z.webp` | `arin-fox-23-fox-apology-v2.mp3` |
+| 24 | طريق العودة | Arin, Ranger | `arinfox_scene_24_2026-09-18T18-02-26-179Z.webp` | `arin-fox-24-return.mp3` |
+| 25 | في البيت | Arin, Mother | `arinfox_scene_25_2026-09-18T18-02-36-134Z.webp` | `arin-fox-25-mother-final.mp3` |
+| 26 | ما تعلمته أرين | Arin, Mother | `arinfox_scene_26_2026-09-18T18-02-46-671Z.webp` | `arin-fox-26-moral.mp3` |
+| 27 | النهاية | Arin, Fox | `arinfox_scene_27_2026-09-18T18-02-56-244Z.webp` | `arin-fox-27-ending.mp3` |
 
 Scene 23 لديها حاليًا `autoAdvanceDelayMs: 900`، بينما بقية المشاهد تستخدم الانتقال الافتراضي للمشغل.
 
