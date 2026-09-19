@@ -37,15 +37,20 @@ const ARIN_FOX_SCENE_IMAGES=[
 const preloadedSceneImages=new Map();
 let storyVisualToken=0;
 function sceneImagePath(index){const file=ARIN_FOX_SCENE_IMAGES[index];return file?STORY_IMAGE_BASE+file+'?v='+STORY_IMAGE_VERSION:''}
-function preloadSceneImage(index){
-  const src=sceneImagePath(index);if(!src)return Promise.resolve(null);
-  const cached=preloadedSceneImages.get(src);if(cached)return cached.ready;
+function preloadSceneImage(index,retry=false){
+  const baseSrc=sceneImagePath(index);if(!baseSrc)return Promise.resolve(null);
+  const cached=preloadedSceneImages.get(baseSrc);if(cached)return cached.ready;
   const image=new Image();image.decoding='async';image.alt='';image.setAttribute('aria-hidden','true');image.draggable=false;try{image.fetchPriority='low'}catch{}
+  const requestSrc=retry?baseSrc+(baseSrc.includes('?')?'&':'?')+'retry='+Date.now():baseSrc;
   const ready=new Promise((resolve,reject)=>{
     image.addEventListener('load',async()=>{try{if(image.decode)await image.decode()}catch{}resolve(image)},{once:true});
-    image.addEventListener('error',()=>{preloadedSceneImages.delete(src);reject(new Error('scene image failed'))},{once:true});
+    image.addEventListener('error',()=>{
+      preloadedSceneImages.delete(baseSrc);
+      if(!retry){preloadSceneImage(index,true).then(resolve,reject);return}
+      reject(new Error('scene image failed'))
+    },{once:true});
   });
-  preloadedSceneImages.set(src,{image,ready});image.src=src;return ready
+  preloadedSceneImages.set(baseSrc,{image,ready});image.src=requestSrc;return ready
 }
 
 const ARIN_FOX_SEGMENTS=[
