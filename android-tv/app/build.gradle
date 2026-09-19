@@ -24,7 +24,7 @@ tasks.register('syncWebAssets', Sync) {
         include 'manifest.webmanifest'
         include 'favicon.svg'
         include 'audio/**/*.wav'
-        include 'assets/stories/arin-fox/*.png'
+        include 'assets/stories/arin-fox/*.webp'
     }
     into(generatedWebAssets)
     doLast {

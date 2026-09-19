@@ -23,7 +23,7 @@ on:
       - 'manifest.webmanifest'
       - 'favicon.svg'
       - 'audio/**/*.wav'
-      - 'assets/stories/arin-fox/**/*.png'
+      - 'assets/stories/arin-fox/**/*.webp'
       - '.github/workflows/android-tv-apk.yml'
 
 jobs:
@@ -50,7 +50,7 @@ jobs:
           ]
           paths = [root / name for name in runtime]
           paths += sorted((root / 'audio').rglob('*.wav'))
-          paths += sorted((root / 'assets' / 'stories' / 'arin-fox').glob('*.png'))
+          paths += sorted((root / 'assets' / 'stories' / 'arin-fox').glob('*.webp'))
           h = hashlib.sha256()
           for path in sorted(paths, key=lambda p: p.as_posix()):
               if not path.is_file():
@@ -119,8 +119,8 @@ jobs:
               'assets/tv-nav.js',
               'assets/bubble-safari-version.txt',
               'assets/audio/ui_start.wav',
-              'assets/assets/stories/arin-fox/arinfox_scene_01_2026-09-18T18-53-29-720Z.png',
-              'assets/assets/stories/arin-fox/arinfox_scene_27_2026-09-18T18-02-56-244Z.png',
+              'assets/assets/stories/arin-fox/arinfox_scene_01_2026-09-18T18-53-29-720Z.webp',
+              'assets/assets/stories/arin-fox/arinfox_scene_27_2026-09-18T18-02-56-244Z.webp',
           }
           with zipfile.ZipFile(apk) as zf:
               names = set(zf.namelist())
