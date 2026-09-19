@@ -34,9 +34,19 @@ const ARIN_FOX_SCENE_IMAGES=[
   'arinfox_scene_26_2026-09-18T18-02-46-671Z.png',
   'arinfox_scene_27_2026-09-18T18-02-56-244Z.png'
 ];
-const preloadedSceneImages=new Set();
+const preloadedSceneImages=new Map();
+let storyVisualToken=0;
 function sceneImagePath(index){const file=ARIN_FOX_SCENE_IMAGES[index];return file?STORY_IMAGE_BASE+file+'?v='+STORY_IMAGE_VERSION:''}
-function preloadSceneImage(index){const src=sceneImagePath(index);if(!src||preloadedSceneImages.has(src))return;preloadedSceneImages.add(src);const image=new Image();image.decoding='async';try{image.fetchPriority='low'}catch{}image.src=src}
+function preloadSceneImage(index){
+  const src=sceneImagePath(index);if(!src)return Promise.resolve(null);
+  const cached=preloadedSceneImages.get(src);if(cached)return cached.ready;
+  const image=new Image();image.decoding='async';image.alt='';image.setAttribute('aria-hidden','true');image.draggable=false;try{image.fetchPriority='low'}catch{}
+  const ready=new Promise((resolve,reject)=>{
+    image.addEventListener('load',async()=>{try{if(image.decode)await image.decode()}catch{}resolve(image)},{once:true});
+    image.addEventListener('error',()=>{preloadedSceneImages.delete(src);reject(new Error('scene image failed'))},{once:true});
+  });
+  preloadedSceneImages.set(src,{image,ready});image.src=src;return ready
+}
 
 const ARIN_FOX_SEGMENTS=[
   {file:'arin-fox-01-intro.wav',chapter:'صباح جميل',caption:'في قرية صغيرة عاشت طفلة لطيفة اسمها أَرين.',theme:'village',actors:['arin']},
@@ -125,17 +135,28 @@ function renderSegment(){
   const story=player.story,segment=story?.segments?.[player.index];if(!story||!segment)return;
   setStoryPathNote();$('#storyChapterTitle').textContent=segment.chapter;$('#storyNarration').textContent=segment.caption;
   const visual=$('#storyVisual');visual.className='story-visual story-theme-'+segment.theme;
-  const frame=document.createElement('div');frame.className='story-scene-enter story-static-scene story-scene-loading';
-  const src=sceneImagePath(player.index);
-  const image=document.createElement('img');image.className='story-scene-image';image.alt='';image.setAttribute('aria-hidden','true');image.decoding='async';image.draggable=false;try{image.fetchPriority='high'}catch{}
-  let retried=false;
-  image.addEventListener('load',()=>{frame.classList.remove('story-scene-loading');frame.classList.add('story-scene-ready')});
-  image.addEventListener('error',()=>{
-    if(!retried){retried=true;image.src=src+(src.includes('?')?'&':'?')+'retry='+Date.now();return}
-    frame.classList.remove('story-scene-loading');frame.classList.add('story-scene-error');image.remove();
-    const error=document.createElement('div');error.className='story-scene-error-message';error.textContent='تعذر تحميل صورة المشهد.';frame.appendChild(error);
-  });
-  image.src=src;frame.appendChild(image);visual.replaceChildren(frame);preloadSceneImage(player.index+1);
+  const sceneIndex=player.index,token=++storyVisualToken;
+  const existing=visual.querySelector('.story-static-scene[data-scene-index="'+sceneIndex+'"]');
+  if(!existing){
+    const oldFrames=[...visual.querySelectorAll('.story-static-scene')];
+    const firstFrame=oldFrames.length===0;
+    let loadingFrame=null;
+    if(firstFrame){loadingFrame=document.createElement('div');loadingFrame.className='story-static-scene story-scene-loading';loadingFrame.dataset.sceneIndex=String(sceneIndex);visual.appendChild(loadingFrame)}
+    void preloadSceneImage(sceneIndex).then(image=>{
+      if(token!==storyVisualToken||player.index!==sceneIndex)return;
+      const frame=loadingFrame||document.createElement('div');
+      frame.className='story-static-scene story-scene-enter story-scene-ready';frame.dataset.sceneIndex=String(sceneIndex);
+      image.className='story-scene-image';image.alt='';image.setAttribute('aria-hidden','true');image.draggable=false;try{image.fetchPriority='high'}catch{}
+      frame.replaceChildren(image);if(!frame.isConnected)visual.appendChild(frame);
+      requestAnimationFrame(()=>{if(token!==storyVisualToken)return;frame.classList.add('story-scene-visible');oldFrames.forEach(old=>old.classList.add('story-scene-exit'))});
+      setTimeout(()=>{if(token!==storyVisualToken)return;oldFrames.forEach(old=>old.remove());frame.classList.remove('story-scene-enter','story-scene-visible');frame.classList.add('story-scene-current')},240)
+    }).catch(()=>{
+      if(token!==storyVisualToken||player.index!==sceneIndex)return;
+      const frame=loadingFrame||document.createElement('div');frame.className='story-static-scene story-scene-error';frame.dataset.sceneIndex=String(sceneIndex);
+      const error=document.createElement('div');error.className='story-scene-error-message';error.textContent='تعذر تحميل صورة المشهد.';frame.replaceChildren(error);if(!frame.isConnected)visual.appendChild(frame)
+    })
+  }
+  preloadSceneImage(sceneIndex+1).catch(()=>{});preloadSceneImage(sceneIndex+2).catch(()=>{});
   const current=player.index+1,total=story.segments.length;$('#storyProgressText').textContent=current+' / '+total;$('#storyProgressFill').style.transform='scaleX('+(current/total)+')';$('#storyProgress').setAttribute('aria-valuenow',String(current));$('#storyEnding').classList.add('hidden');$('#storyEnding').setAttribute('aria-hidden','true');$('#storyControls').classList.remove('hidden');player.finished=false;syncControls()
 }
 async function playCurrentAudioPart({render=false,forceSeek=false}={}){
