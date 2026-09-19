@@ -135,9 +135,10 @@ function renderSegment(){
   const story=player.story,segment=story?.segments?.[player.index];if(!story||!segment)return;
   setStoryPathNote();$('#storyChapterTitle').textContent=segment.chapter;$('#storyNarration').textContent=segment.caption;
   const visual=$('#storyVisual');visual.className='story-visual story-theme-'+segment.theme;
-  const sceneIndex=player.index,token=++storyVisualToken;
+  const sceneIndex=player.index;
   const existing=visual.querySelector('.story-static-scene[data-scene-index="'+sceneIndex+'"]');
   if(!existing){
+    const token=++storyVisualToken;
     const oldFrames=[...visual.querySelectorAll('.story-static-scene')];
     const firstFrame=oldFrames.length===0;
     let loadingFrame=null;
