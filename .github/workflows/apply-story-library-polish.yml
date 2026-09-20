@@ -1,0 +1,122 @@
+name: Apply story library polish
+
+on:
+  push:
+    branches: [story-library-polish-coming-soon-20260920]
+    paths:
+      - '.github/workflows/apply-story-library-polish.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Add coming-soon story card and responsive library grid
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+
+          # ---- JS ----
+          p=Path('stories-v12.js')
+          s=p.read_text(encoding='utf-8')
+
+          old="""function renderLibrary(){
+  const grid=$('#storyLibraryGrid');if(!grid)return;
+  preloadSceneImage(0);grid.innerHTML='';
+  STORIES.forEach((story,index)=>{
+    const card=document.createElement('button');card.type='button';card.className='story-cover-card focusable';card.dataset.focusable='';if(index===0)card.dataset.autofocus='';
+    const coverSrc=sceneImagePath(0);
+    card.innerHTML=`<span class="story-cover-art"><img class="story-cover-image" src="${coverSrc}" alt="" aria-hidden="true" draggable="false"><span class="story-cover-play">${storyIcon('play')}</span></span><span class="story-cover-copy"><span class="story-type-badge">${story.typeLabel}</span><strong>${story.title}</strong><small>${story.description}</small><span class="story-duration">◷ ${story.durationLabel}</span></span>`;
+    card.addEventListener('click',()=>openStory(story.id));grid.appendChild(card)
+  });
+}"""
+          new="""function renderLibrary(){
+  const grid=$('#storyLibraryGrid');if(!grid)return;
+  preloadSceneImage(0);grid.innerHTML='';
+  STORIES.forEach((story,index)=>{
+    const card=document.createElement('button');card.type='button';card.className='story-cover-card focusable';card.dataset.focusable='';if(index===0)card.dataset.autofocus='';
+    const coverSrc=sceneImagePath(0);
+    card.innerHTML=`<span class="story-cover-art"><img class="story-cover-image" src="${coverSrc}" alt="" aria-hidden="true" draggable="false"><span class="story-cover-play">${storyIcon('play')}</span></span><span class="story-cover-copy"><span class="story-type-badge">${story.typeLabel}</span><strong>${story.title}</strong><small>${story.description}</small><span class="story-duration">◷ ${story.durationLabel}</span></span>`;
+    card.addEventListener('click',()=>openStory(story.id));grid.appendChild(card)
+  });
+  const coming=document.createElement('button');
+  coming.type='button';coming.disabled=true;coming.className='story-cover-card story-coming-soon-card';coming.setAttribute('aria-label','قصة جديدة قريبًا');
+  coming.innerHTML=`<span class="story-cover-art story-coming-soon-art"><span class="story-coming-soon-glow" aria-hidden="true"></span><span class="story-coming-soon-book" aria-hidden="true">${storyIcon('library')}</span><span class="story-coming-soon-ribbon">قريبًا</span></span><span class="story-cover-copy"><span class="story-type-badge story-coming-soon-type">قصة جديدة</span><strong>مغامرة جديدة</strong><small>قصة مصورة ومسموعة جديدة قيد الإعداد.</small><span class="story-duration">ستتوفر قريبًا</span></span>`;
+  grid.appendChild(coming);
+  const countValue=$('#storyLibraryCountValue'),countLabel=$('#storyLibraryCountLabel');
+  if(countValue)countValue.textContent=String(STORIES.length);
+  if(countLabel)countLabel.textContent='متاحة • 1 قريبًا'
+}"""
+          assert old in s, 'renderLibrary anchor missing'
+          s=s.replace(old,new,1)
+
+          old="""<div class="story-library-count"><span>1</span><small>قصة</small></div>"""
+          new="""<div class="story-library-count"><span id="storyLibraryCountValue">1</span><small id="storyLibraryCountLabel">متاحة • 1 قريبًا</small></div>"""
+          assert old in s, 'library count anchor missing'
+          s=s.replace(old,new,1)
+          p.write_text(s,encoding='utf-8')
+
+          # ---- CSS ----
+          p=Path('stories-v12.css')
+          c=p.read_text(encoding='utf-8')
+
+          old="#storyLibraryScreen .story-library-grid{min-height:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:minmax(280px,1fr);gap:clamp(16px,1.6vw,24px);align-content:start}"
+          new="#storyLibraryScreen .story-library-grid{min-height:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,390px));grid-auto-rows:minmax(300px,1fr);gap:clamp(18px,1.8vw,28px);align-content:start;justify-content:center}"
+          assert old in c, 'library grid anchor missing'
+          c=c.replace(old,new,1)
+
+          old="#storyLibraryScreen .story-cover-card:only-child{grid-column:1/-1;width:min(410px,100%);justify-self:center}"
+          new="""#storyLibraryScreen .story-cover-card:only-child{grid-column:1/-1;width:min(390px,100%);justify-self:center}
+#storyLibraryScreen .story-coming-soon-card{opacity:1;cursor:default;border-style:dashed;border-color:rgba(255,255,255,.96);background:#f9fff9;box-shadow:0 12px 28px rgba(39,90,69,.09)}
+#storyLibraryScreen .story-coming-soon-card:disabled{opacity:1;color:inherit}
+#storyLibraryScreen .story-coming-soon-art{display:grid;place-items:center;background:linear-gradient(145deg,#dff5e5 0%,#cceef2 48%,#fff0bd 100%)}
+#storyLibraryScreen .story-coming-soon-glow{position:absolute;width:190px;height:190px;border-radius:50%;background:rgba(255,255,255,.5);box-shadow:0 0 0 28px rgba(255,255,255,.16),0 0 0 58px rgba(255,255,255,.08)}
+#storyLibraryScreen .story-coming-soon-book{position:relative;z-index:2;width:96px;height:96px;border-radius:30px;display:grid;place-items:center;background:#fffdf8;color:#4d7867;box-shadow:0 12px 28px rgba(46,93,76,.16);transform:rotate(-3deg)}
+#storyLibraryScreen .story-coming-soon-book .story-icon-svg{width:52px;height:52px;stroke-width:1.65}
+#storyLibraryScreen .story-coming-soon-ribbon{position:absolute;z-index:3;left:18px;top:16px;padding:7px 13px;border-radius:999px;background:#fff4bf;color:#80601f;border:2px solid rgba(255,255,255,.88);box-shadow:0 6px 14px rgba(104,81,24,.09);font-size:13px;font-weight:900}
+#storyLibraryScreen .story-coming-soon-type{background:#edf4ea;color:#6a7d72}
+#storyLibraryScreen .story-coming-soon-card .story-duration{color:#768c82}"""
+          assert old in c, 'only-child anchor missing'
+          c=c.replace(old,new,1)
+
+          old="  #storyLibraryScreen .story-library-grid{grid-template-columns:1fr 1fr}"
+          new="  #storyLibraryScreen .story-library-grid{grid-template-columns:repeat(2,minmax(0,1fr));justify-content:stretch}"
+          assert old in c, 'stacked library grid anchor missing'
+          c=c.replace(old,new,1)
+
+          old="  #storyLibraryScreen .story-library-grid{gap:10px}"
+          new="  #storyLibraryScreen .story-library-grid{gap:10px;grid-template-columns:repeat(2,minmax(0,1fr))}"
+          assert old in c, 'small-width library grid anchor missing'
+          c=c.replace(old,new,1)
+
+          p.write_text(c,encoding='utf-8')
+
+          # Sanity
+          assert s.count("story-coming-soon-card")==1
+          assert "disabled=true" in s
+          assert "grid-template-columns:repeat(auto-fit,minmax(300px,390px))" in c
+          assert c.count('{')==c.count('}')
+          print('Story library polish applied')
+          PY
+
+      - name: JavaScript syntax check
+        run: node --check stories-v12.js
+
+      - name: Commit story library polish
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add stories-v12.js stories-v12.css
+          git diff --cached --quiet && exit 0
+          git commit -m "Polish story library with coming-soon card"
+          git push origin HEAD:story-library-polish-coming-soon-20260920
