@@ -552,21 +552,90 @@ Scene 23 لديها حاليًا `autoAdvanceDelayMs: 900`، بينما بقية
 7. WAV masters تبقى في المستودع للرجوع وإعادة الترميز، لكنها لا تدخل Runtime package.
 8. **لا تحوّل أصوات اللعبة/UI القصيرة إلى MP3 تلقائيًا.** تبقى WAV ما لم تحصل على Benchmark واختبار مستقل خاص بها.
 
-### قاعدة التراجع
+### قاعدة التشخيص والتراجع
 
-إذا ظهر على أي جهاز مستهدف:
-- فشل تشغيل،
-- تأخير ملحوظ،
-- تقطيع،
-- فقدان بداية أو نهاية،
-- مشكلة Replay / Pause،
-- اختلاف سلوك WebView،
+إذا ظهر خلل صوتي بعد اعتماد MP3، لا نفترض مباشرة أن الـcodec هو السبب.
 
-نعود فورًا إلى WAV Runtime لذلك الإصدار. تقليل الحجم لا يبرر أي مخاطرة باستقرار اللعبة.
+1. إذا فشل MP3 داخل **APK المدمج** وداخل **OTA** معًا على جهاز مستهدف، يمكن الرجوع إلى WAV لذلك الإصدار بعد استبعاد أخطاء الملفات والمسارات.
+2. إذا كان MP3 يعمل داخل APK لكنه يفشل **فقط بعد OTA**، افحص أولًا **طريقة تقديم الملف من التخزين الداخلي** قبل تغيير الـcodec.
+3. لا نرجع إلى WAV لمجرد ظهور خطأ من `<audio>` إذا كانت نفس ملفات MP3 قد اجتازت اختبار Android TV المباشر.
+4. تقليل الحجم لا يبرر المخاطرة بالاستقرار، لكن التشخيص يجب أن يفرق بين **مشكلة codec** و**مشكلة media delivery**.
+
+### حادثة Production — MP3 يعمل في APK ويفشل بعد OTA
+
+بعد ترحيل قصة أرين والثعلب إلى MP3 96 kbps، نجحت القصة كاملة **1 → 27** داخل APK اختبار منفصل على Android TV الفعلي. بعد نشر MP3 في Production عبر OTA ظهرت رسالة:
+
+> تعذر تشغيل هذا الجزء الآن. اختر إعادة الجزء للمحاولة.
+
+الصور والنصوص كانت تعمل، بينما عنصر الصوت وحده كان يفشل.
+
+#### السبب الحقيقي
+
+كان هناك مساران مختلفان لتقديم الملفات داخل تطبيق Android TV:
+
+- **Bundled APK:** المحتوى يعمل من `/assets/`.
+- **OTA active bundle:** المحتوى يعمل من `/update/` ويُقدَّم من التخزين الداخلي عبر Android WebView asset loader / internal storage handler.
+
+نجاح MP3 داخل `/assets/` لم يضمن أن `<audio>` سيتعامل بالطريقة نفسها مع MP3 المقدم مباشرة من `/update/`.
+
+إذن المشكلة لم تكن في ملفات MP3 ولا في 96 kbps ولا في Leda؛ كانت في **طريقة Media Delivery بعد OTA**.
+
+#### الحل المعتمد
+
+عند تشغيل القصة من OTA فقط:
+
+```text
+/update/...scene.mp3
+        ↓
+fetch()
+        ↓
+ArrayBuffer
+        ↓
+Blob(type = audio/mpeg)
+        ↓
+blob: URL
+        ↓
+HTMLAudioElement
+```
+
+أما عندما تعمل اللعبة من APK المدمج `/assets/`، فيبقى تشغيل MP3 مباشرًا بدون هذا الجسر.
+
+Runtime الحالي يطبق القاعدة التالية:
+
+- إذا كان host هو `appassets.androidplatform.net` والمسار يبدأ بـ`/update/` → استخدم **MP3 Blob Bridge**.
+- غير ذلك → استخدم مسار MP3 المباشر.
+- Preload للمشهد التالي يجب أن يمر من نفس resolver، وليس من مسار مختلف.
+- عند تغيير طريقة تقديم الصوت ارفع `STORY_AUDIO_VERSION` لمنع خلط cache قديم مع المسار الجديد.
+- النسخة التي أصلحت هذه الحادثة استخدمت `v39-mp3-ota-blob`.
+
+#### قاعدة إلزامية لأي Codec/Audio Delivery مستقبلي
+
+نجاح المتصفح أو APK وحده **غير كافٍ**. يجب اختبار المسارين بشكل مستقل على Android TV الفعلي:
+
+1. **Bundled APK / `/assets/`**.
+2. **OTA activated bundle / `/update/`** بعد تنزيل التحديث وتفعيله ثم Cold Restart للتطبيق.
+
+إذا نجح الأول وفشل الثاني، افحص media delivery / WebView interception / MIME / range behavior قبل الحكم على الـcodec.
+
+#### OTA Audio QA Gate
+
+بعد أي تغيير في codec أو طريقة تقديم الصوت:
+
+- [ ] ثبّت أو شغّل نسخة APK التي تستخدم الأصول المدمجة وتأكد أن MP3 يعمل.
+- [ ] نفّذ OTA فعلي على نفس التلفزيون.
+- [ ] أغلق التطبيق وافتحه من جديد حتى يعمل من `/update/`.
+- [ ] اختبر Scene 01.
+- [ ] اختبر مشهدًا حساسًا مثل Scene 23.
+- [ ] اختبر آخر Scene.
+- [ ] اختبر Pause / Resume.
+- [ ] اختبر Replay Segment.
+- [ ] شغّل القصة كاملة 1 → NN بدون خطأ صوتي.
+- [ ] تأكد أن الصور والنص والصوت ينتقلون معًا.
+- [ ] تأكد أن Runtime package يحتوي MP3 فقط للقصة ولا يحتوي Story WAV masters.
 
 ### ملاحظة مهمة
 
-نجاح المتصفح وحده غير كافٍ. اعتماد MP3 تم فقط بعد نجاح **القصة الكاملة على Android TV الفعلي**.
+اعتماد MP3 تم بعد نجاح **القصة الكاملة على Android TV الفعلي**، ثم تم تثبيت اعتماده نهائيًا بعد إصلاح واختبار مسار OTA باستخدام Blob bridge.
 
 ---
 
@@ -853,7 +922,10 @@ Browser QA لا يغني عن:
 - [ ] Every final master audio matched word-for-word to approved script.
 - [ ] Story Runtime audio encoded to MP3 96 kbps mono only after master QA.
 - [ ] Runtime MP3 count matches Scene count.
-- [ ] Full MP3 story playback verified on physical Android TV.
+- [ ] Full MP3 story playback verified on physical Android TV from bundled APK `/assets/`.
+- [ ] Full MP3 story playback verified again after real OTA activation from `/update/`.
+- [ ] OTA MP3 delivery uses the approved Blob bridge when running from `/update/`.
+- [ ] Scene 01, a sensitive scene such as 23, and the final scene pass after OTA cold restart.
 - [ ] Runtime images converted to WebP Q95 or currently approved format.
 - [ ] Source masters kept out of APK/OTA.
 - [ ] Story data count matches assets.
@@ -921,6 +993,6 @@ Release version / commit / checksum
 
 ### Integration
 
-**Image + Audio + Caption share the same Scene index → preload/decode image → show image → start audio → full 1→NN QA → APK/OTA verification**
+**Image + Audio + Caption share the same Scene index → preload/decode image → show image → resolve audio delivery path → `/assets/` direct MP3 or `/update/` MP3 Blob bridge → start audio → full 1→NN QA in APK → real OTA activation → full 1→NN QA again**
 
 هذا هو الـPipeline المرجعي للقصص القادمة في Bubble Safari.
