@@ -168,27 +168,33 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          printf -v NOTES '%s\n\nPackage: %s\nVersion: %s (%s)\nSigner SHA-256: %s\nGame version: %s\nSource commit: %s\n\n%s' \
-            "SOURCE CANDIDATE ONLY — final external distribution is owned by Zoryvo App Hub." \
-            "$CANDIDATE_PACKAGE" "$CANDIDATE_VERSION_NAME" "$CANDIDATE_VERSION_CODE" \
-            "$CANDIDATE_SIGNER" "$BUBBLE_SAFARI_GAME_VERSION" "$GITHUB_SHA" \
-            "Next step: submit this verified APK URL to aseel90/zoryvo-app-hub → Publish External App Update."
-          if [ -n "${RELEASE_NOTES:-}" ]; then
-            NOTES="$NOTES"
+          {
+            echo "SOURCE CANDIDATE ONLY — final external distribution is owned by Zoryvo App Hub."
+            echo
+            echo "Package: $CANDIDATE_PACKAGE"
+            echo "Version: $CANDIDATE_VERSION_NAME ($CANDIDATE_VERSION_CODE)"
+            echo "Signer SHA-256: $CANDIDATE_SIGNER"
+            echo "Game version: $BUBBLE_SAFARI_GAME_VERSION"
+            echo "Source commit: $GITHUB_SHA"
+            echo
+            echo "Next step: submit this verified APK URL to aseel90/zoryvo-app-hub → Publish External App Update."
+            if [ -n "${RELEASE_NOTES:-}" ]; then
+              echo
+              echo "Notes:"
+              printf '%s\n' "$RELEASE_NOTES"
+            fi
+          } > dist/release-notes.txt
+
           if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
             gh release upload "$RELEASE_TAG" dist/Bubble-Safari-TV.apk dist/Bubble-Safari-TV.apk.sha256 --clobber
-            gh release edit "$RELEASE_TAG" --title "Bubble Safari External Candidate" --notes "$NOTES" --prerelease
+            gh release edit "$RELEASE_TAG" --title "Bubble Safari External Candidate" --notes-file dist/release-notes.txt --prerelease
           else
-            gh release create "$RELEASE_TAG" dist/Bubble-Safari-TV.apk dist/Bubble-Safari-TV.apk.sha256 --target "$GITHUB_SHA" --title "Bubble Safari External Candidate" --notes "$NOTES" --prerelease
+            gh release create "$RELEASE_TAG" dist/Bubble-Safari-TV.apk dist/Bubble-Safari-TV.apk.sha256 \
+              --target "$GITHUB_SHA" \
+              --title "Bubble Safari External Candidate" \
+              --notes-file dist/release-notes.txt \
+              --prerelease
           fi
-          echo "Candidate URL: https://github.com/$GITHUB_REPOSITORY/releases/download/$RELEASE_TAG/Bubble-Safari-TV.apk"
-          echo "Final user distribution must be performed by Zoryvo."\n\nNotes:\n'"$RELEASE_NOTES"
-          fi
-          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
-            gh release upload "$RELEASE_TAG" dist/Bubble-Safari-TV.apk dist/Bubble-Safari-TV.apk.sha256 --clobber
-            gh release edit "$RELEASE_TAG" --title "Bubble Safari External Candidate" --notes "$NOTES" --prerelease
-          else
-            gh release create "$RELEASE_TAG" dist/Bubble-Safari-TV.apk dist/Bubble-Safari-TV.apk.sha256 --target "$GITHUB_SHA" --title "Bubble Safari External Candidate" --notes "$NOTES" --prerelease
-          fi
+
           echo "Candidate URL: https://github.com/$GITHUB_REPOSITORY/releases/download/$RELEASE_TAG/Bubble-Safari-TV.apk"
           echo "Final user distribution must be performed by Zoryvo."
