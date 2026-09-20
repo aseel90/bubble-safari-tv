@@ -1,0 +1,126 @@
+name: Validate OTA MP3 blob hotfix
+
+on:
+  push:
+    branches: [fix-ota-mp3-blob-bridge-20260920]
+    paths:
+      - '.github/workflows/validate-ota-mp3-blob-hotfix.yml'
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate JavaScript and hotfix contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check stories-v12.js
+          python3 - <<'PY'
+          from pathlib import Path
+          s=Path('stories-v12.js').read_text(encoding='utf-8')
+          assert "STORY_AUDIO_VERSION='v39-mp3-ota-blob'" in s
+          assert s.count(".mp3'")==27, s.count(".mp3'")
+          assert "location.pathname.startsWith('/update/')" in s
+          assert "fetch(direct,{cache:'no-store'})" in s
+          assert "new Blob([bytes],{type:'audio/mpeg'})" in s
+          assert "resolvedStoryAudioPath(next)" in s
+          assert "source=await resolvedStoryAudioPath(part)" in s
+          assert "if(!STORY_AUDIO_BLOB_MODE)return direct" in s
+          print('Hotfix contract OK')
+          PY
+
+      - name: Validate story assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          mp3=sorted(Path('audio/stories/arin-fox').glob('*.mp3'))
+          wav=sorted(Path('audio/stories/arin-fox').glob('*.wav'))
+          webp=sorted(Path('assets/stories/arin-fox').glob('*.webp'))
+          assert len(mp3)==27, len(mp3)
+          assert len(wav)==27, len(wav)
+          assert len(webp)==27, len(webp)
+          assert Path('audio/stories/arin-fox/arin-fox-01-intro.mp3').is_file()
+          assert Path('audio/stories/arin-fox/arin-fox-23-fox-apology-v2.mp3').is_file()
+          assert Path('audio/stories/arin-fox/arin-fox-27-ending.mp3').is_file()
+          print('27 MP3 runtime + 27 WAV masters + 27 WebP OK')
+          PY
+
+      - name: Build OTA-equivalent bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf _site validation
+          mkdir -p _site/audio/stories/arin-fox _site/assets/stories/arin-fox _site/updates validation
+          cp index.html styles.css art.css worlds.css polish-v08.css stories-v12.css game-v3.js stories-v12.js game-data.js tv-nav.js voice.js art.js scene-art.js service-worker.js manifest.webmanifest favicon.svg _site/
+          cp audio/*.wav _site/audio/
+          cp audio/stories/arin-fox/*.mp3 _site/audio/stories/arin-fox/
+          cp assets/stories/arin-fox/*.webp _site/assets/stories/arin-fox/
+          (
+            cd _site
+            zip -qr ../validation/game-bundle.zip index.html styles.css art.css worlds.css polish-v08.css stories-v12.css game-v3.js stories-v12.js game-data.js tv-nav.js voice.js art.js scene-art.js service-worker.js manifest.webmanifest favicon.svg audio assets
+          )
+          python3 - <<'PY'
+          import zipfile
+          from pathlib import Path
+          z=Path('validation/game-bundle.zip')
+          with zipfile.ZipFile(z) as f:
+              names=set(f.namelist())
+              story=f.read('stories-v12.js').decode('utf-8')
+          mp3=[n for n in names if n.startswith('audio/stories/arin-fox/') and n.endswith('.mp3')]
+          story_wav=[n for n in names if n.startswith('audio/stories/arin-fox/') and n.endswith('.wav')]
+          assert len(mp3)==27, len(mp3)
+          assert len(story_wav)==0, story_wav
+          assert "STORY_AUDIO_VERSION='v39-mp3-ota-blob'" in story
+          assert "location.pathname.startsWith('/update/')" in story
+          assert "new Blob([bytes],{type:'audio/mpeg'})" in story
+          print('OTA bundle bytes:',z.stat().st_size)
+          print('OTA hotfix JS + 27 MP3 + 0 story WAV OK')
+          PY
+
+      - name: Java 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Android SDK
+        uses: android-actions/setup-android@v4
+        with:
+          packages: ''
+
+      - name: Install SDK 36
+        run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0'
+
+      - name: Gradle 9.6
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '9.6.0'
+
+      - name: Build regression APK
+        env:
+          BUBBLE_SAFARI_GAME_VERSION: ota-mp3-blob-validation
+        run: gradle -p android-tv :app:assembleDebug --stacktrace
+
+      - name: Verify bundled APK remains direct-MP3 compatible
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import zipfile
+          apk='android-tv/app/build/outputs/apk/debug/app-debug.apk'
+          with zipfile.ZipFile(apk) as z:
+              names=set(z.namelist())
+              story=z.read('assets/stories-v12.js').decode('utf-8')
+          mp3=[n for n in names if n.startswith('assets/audio/stories/arin-fox/') and n.endswith('.mp3')]
+          story_wav=[n for n in names if n.startswith('assets/audio/stories/arin-fox/') and n.endswith('.wav')]
+          assert len(mp3)==27, len(mp3)
+          assert len(story_wav)==0, story_wav
+          assert "if(!STORY_AUDIO_BLOB_MODE)return direct" in story
+          print('Bundled APK regression assets OK:',len(mp3),'MP3')
+          PY
