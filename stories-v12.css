@@ -4,7 +4,7 @@
 
 /* Final narrated story library + player */
 #storyLibraryScreen.screen-active,#storyNarratedScreen.screen-active{display:flex;align-items:center;justify-content:center;overflow:hidden;direction:rtl}
-#storyLibraryScreen .story-library-shell,#storyNarratedScreen .story-player-shell{box-sizing:border-box;width:min(1320px,calc(100vw - clamp(30px,4vw,70px)));height:min(680px,100%);margin:0 auto;min-width:0;min-height:0;padding:clamp(3px,.6vh,7px) 0}
+#storyLibraryScreen .story-library-shell,#storyNarratedScreen .story-player-shell{box-sizing:border-box;width:min(1320px,calc(100vw - clamp(30px,4vw,70px)));height:min(680px,100%);margin:0 auto;min-width:0;min-height:0;padding:clamp(2px,.35vh,5px) 0}
 
 /* Library */
 #storyLibraryScreen .story-library-shell{display:grid;grid-template-rows:auto minmax(0,1fr);gap:clamp(14px,2vh,24px)}
@@ -32,8 +32,8 @@
 #storyLibraryScreen .story-cover-card:only-child{grid-column:1/-1;width:min(410px,100%);justify-self:center}
 
 /* Player */
-#storyNarratedScreen .story-player-shell{display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:clamp(8px,1.3vh,14px)}
-#storyNarratedScreen .story-player-topbar{display:grid;grid-template-columns:56px minmax(0,1fr) minmax(165px,235px);align-items:center;gap:clamp(10px,1.3vw,18px);min-height:68px;position:relative;z-index:4}
+#storyNarratedScreen .story-player-shell{display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:clamp(6px,.9vh,10px)}
+#storyNarratedScreen .story-player-topbar{display:grid;grid-template-columns:56px minmax(0,1fr) minmax(165px,235px);align-items:center;gap:clamp(10px,1.3vw,18px);min-height:64px;position:relative;z-index:4}
 #storyNarratedScreen .story-back{position:static;right:auto;top:auto;width:48px;height:48px;justify-self:start}
 #storyNarratedScreen .story-back .story-icon-svg,#storyLibraryScreen .story-library-back .story-icon-svg{width:24px;height:24px}
 #storyNarratedScreen .story-player-heading{min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:right}
@@ -46,7 +46,7 @@
 #storyNarratedScreen #storyProgressFill{display:block;width:100%;height:100%;border-radius:inherit;background:linear-gradient(90deg,#73c973,#ffd663,#ff9b6b);transform:scaleX(.037);transform-origin:left center;transition:transform .2s ease}
 
 /* Split story layout: complete illustration on the left, narration panel on the right. */
-#storyNarratedScreen .story-stage-card{position:relative;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) clamp(285px,31vw,405px);direction:ltr;width:100%;height:auto;max-height:100%;align-self:center;aspect-ratio:2.6/1;border:3px solid rgba(255,255,255,.92);border-radius:28px;overflow:hidden;background:#c7edf3;box-shadow:0 16px 36px rgba(39,90,69,.13);isolation:isolate}
+#storyNarratedScreen .story-stage-card{position:relative;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) clamp(285px,31vw,405px);direction:ltr;width:100%;height:auto;max-height:100%;align-self:center;aspect-ratio:2.64/1;border:3px solid rgba(255,255,255,.92);border-radius:28px;overflow:hidden;background:#c7edf3;box-shadow:0 16px 36px rgba(39,90,69,.13);isolation:isolate}
 #storyNarratedScreen .story-visual{position:relative;grid-column:1;min-width:0;min-height:0;height:100%;overflow:hidden;background:#c7edf3;direction:ltr;z-index:1}
 #storyNarratedScreen .story-static-scene{position:absolute;inset:0;width:100%;height:100%;overflow:hidden;opacity:1;transition:opacity .22s ease;will-change:opacity}
 #storyNarratedScreen .story-scene-enter{opacity:0;z-index:2}
@@ -62,27 +62,27 @@
 #storyNarratedScreen .story-path-note:empty{display:none}
 
 /* Controls: focus uses outline/shadow only — never zoom or scale. */
-#storyNarratedScreen .story-controls{display:grid;grid-template-columns:repeat(2,minmax(220px,360px));gap:11px;justify-content:center;min-height:64px;direction:rtl}
+#storyNarratedScreen .story-controls{display:grid;grid-template-columns:repeat(2,minmax(205px,330px));gap:9px;justify-content:center;min-height:56px;direction:rtl}
 #storyNarratedScreen .story-controls.hidden{display:none!important}
-#storyNarratedScreen .story-control{min-height:60px;border:3px solid rgba(255,255,255,.96);border-radius:19px;background:#fffdf8;color:#315b50;box-shadow:0 8px 20px rgba(39,90,69,.09);display:flex;align-items:center;justify-content:center;gap:10px;padding:7px 16px;font-size:clamp(15px,1.2vw,20px);font-weight:900;cursor:pointer;outline:none;transform:none!important;animation:none!important;transition:box-shadow .12s ease,border-color .12s ease,background-color .12s ease!important}
+#storyNarratedScreen .story-control{min-height:54px;border:3px solid rgba(255,255,255,.96);border-radius:17px;background:#fffdf8;color:#315b50;box-shadow:0 8px 20px rgba(39,90,69,.09);display:flex;align-items:center;justify-content:center;gap:8px;padding:5px 13px;font-size:clamp(14px,1.08vw,18px);font-weight:900;cursor:pointer;outline:none;transform:none!important;animation:none!important;transition:box-shadow .12s ease,border-color .12s ease,background-color .12s ease!important}
 #storyNarratedScreen .story-control:hover,#storyNarratedScreen .story-control:active,#storyNarratedScreen .story-control:focus,#storyNarratedScreen .story-control.tv-focus{transform:none!important;animation:none!important}
 #storyNarratedScreen .story-control:focus,#storyNarratedScreen .story-control.tv-focus{box-shadow:var(--tv-focus-shadow,0 0 0 3px #fffdf7,0 0 0 7px rgba(255,216,101,.96),0 12px 28px rgba(35,72,58,.18))!important;background:#fffdf3;border-color:#fff;z-index:4}
 #storyNarratedScreen .story-control:disabled{opacity:.45;cursor:default}
-#storyNarratedScreen .story-control-icon{width:38px;height:38px;border-radius:13px;display:grid;place-items:center;background:#edf8e7;color:#3f6f5d;flex:0 0 38px;transform:none!important;animation:none!important}
-#storyNarratedScreen .story-control-icon .story-icon-svg{display:block;width:22px;height:22px;transform:none!important;animation:none!important}
+#storyNarratedScreen .story-control-icon{width:34px;height:34px;border-radius:12px;display:grid;place-items:center;background:#edf8e7;color:#3f6f5d;flex:0 0 34px;transform:none!important;animation:none!important}
+#storyNarratedScreen .story-control-icon .story-icon-svg{display:block;width:20px;height:20px;transform:none!important;animation:none!important}
 #storyNarratedScreen .story-control:focus .story-control-icon,#storyNarratedScreen .story-control.tv-focus .story-control-icon{background:#ffe58b}
 
 /* Ending keeps the final illustration on screen; only action buttons appear. */
-#storyNarratedScreen .story-ending{min-height:64px;display:flex;align-items:center;justify-content:center;background:transparent;border:0;padding:0}
+#storyNarratedScreen .story-ending{min-height:56px;display:flex;align-items:center;justify-content:center;background:transparent;border:0;padding:0}
 #storyNarratedScreen .story-ending.hidden{display:none!important}
-#storyNarratedScreen .story-ending-actions{display:grid;grid-template-columns:repeat(2,minmax(220px,360px));gap:11px;justify-content:center;width:min(731px,100%);direction:rtl}
+#storyNarratedScreen .story-ending-actions{display:grid;grid-template-columns:repeat(2,minmax(205px,330px));gap:9px;justify-content:center;width:min(669px,100%);direction:rtl}
 
 @keyframes storyImageLoading{from{opacity:.24}to{opacity:.58}}
 
 @media (min-width:1600px) and (min-height:850px){
   #storyLibraryScreen .story-library-shell,#storyNarratedScreen .story-player-shell{width:min(1450px,calc(100vw - 180px));height:min(730px,100%)}
   #storyLibraryScreen .story-library-grid{grid-auto-rows:minmax(360px,1fr)}
-  #storyNarratedScreen .story-stage-card{grid-template-columns:minmax(0,1fr) clamp(350px,29vw,435px);aspect-ratio:2.55/1}
+  #storyNarratedScreen .story-stage-card{grid-template-columns:minmax(0,1fr) clamp(350px,29vw,435px);aspect-ratio:2.58/1}
   #storyNarratedScreen #storyNarration{font-size:clamp(23px,1.55vw,30px)}
 }
 @media (min-aspect-ratio:16/10) and (max-height:650px){
@@ -99,10 +99,10 @@
   #storyNarratedScreen .story-caption-panel{padding:12px 14px;gap:5px}
   #storyNarratedScreen #storyNarration{font-size:clamp(16px,1.42vw,20px);line-height:1.45}
   #storyNarratedScreen .story-path-note{font-size:11px;padding:5px 8px}
-  #storyNarratedScreen .story-controls,#storyNarratedScreen .story-ending{min-height:54px}
-  #storyNarratedScreen .story-control{min-height:52px;border-radius:16px;font-size:clamp(14px,1.15vw,17px);padding:6px 12px}
-  #storyNarratedScreen .story-control-icon{width:34px;height:34px;flex-basis:34px}
-  #storyNarratedScreen .story-control-icon .story-icon-svg{width:20px;height:20px}
+  #storyNarratedScreen .story-controls,#storyNarratedScreen .story-ending{min-height:48px}
+  #storyNarratedScreen .story-control{min-height:46px;border-radius:15px;font-size:clamp(13px,1.05vw,16px);padding:5px 10px}
+  #storyNarratedScreen .story-control-icon{width:30px;height:30px;flex-basis:30px}
+  #storyNarratedScreen .story-control-icon .story-icon-svg{width:18px;height:18px}
 }
 @media (max-aspect-ratio:4/3){
   #storyLibraryScreen .story-library-shell,#storyNarratedScreen .story-player-shell{width:min(930px,calc(100vw - 32px));height:100%}
@@ -123,7 +123,7 @@
   #storyNarratedScreen .story-caption-panel{padding:10px 12px}
   #storyNarratedScreen #storyNarration{font-size:15px;line-height:1.4}
   #storyNarratedScreen .story-path-note{font-size:10px}
-  #storyNarratedScreen .story-control{min-height:48px}
+  #storyNarratedScreen .story-control{min-height:44px}
 }
 @media (min-width:2200px) and (min-height:1200px){
   #storyLibraryScreen .story-library-shell,#storyNarratedScreen .story-player-shell{width:min(1840px,100%);max-height:980px}
@@ -132,7 +132,7 @@
   #storyLibraryScreen .story-library-grid{grid-auto-rows:minmax(430px,1fr)}
   #storyNarratedScreen .story-player-heading h2{font-size:50px}
   #storyNarratedScreen .story-player-heading p{font-size:20px}
-  #storyNarratedScreen .story-stage-card{grid-template-columns:minmax(0,1fr) 470px;aspect-ratio:2.4/1}
+  #storyNarratedScreen .story-stage-card{grid-template-columns:minmax(0,1fr) 470px;aspect-ratio:2.43/1}
   #storyNarratedScreen .story-caption-panel{padding:30px}
   #storyNarratedScreen #storyNarration{font-size:34px}
   #storyNarratedScreen .story-path-note{font-size:17px}
