@@ -17,7 +17,7 @@
 #storyLibraryScreen .story-library-count{display:flex;align-items:center;gap:7px;padding:8px 12px;border-radius:16px;background:rgba(255,255,255,.76);color:#47705f;font-weight:900}
 #storyLibraryScreen .story-library-count span{font-size:20px}
 #storyLibraryScreen .story-library-count small{font-size:12px}
-#storyLibraryScreen .story-library-grid{min-height:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:minmax(280px,1fr);gap:clamp(16px,1.6vw,24px);align-content:start}
+#storyLibraryScreen .story-library-grid{min-height:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,390px));grid-auto-rows:minmax(300px,1fr);gap:clamp(18px,1.8vw,28px);align-content:start;justify-content:center}
 #storyLibraryScreen .story-cover-card{position:relative;min-width:0;min-height:0;border:3px solid rgba(255,255,255,.95);border-radius:30px;background:#fff;box-shadow:0 14px 34px rgba(39,90,69,.12);padding:0;overflow:hidden;display:grid;grid-template-rows:minmax(0,1.25fr) auto;text-align:right;cursor:pointer;outline:none;transition:box-shadow .14s ease,border-color .14s ease;transform:none!important}
 #storyLibraryScreen .story-cover-card:focus,#storyLibraryScreen .story-cover-card.tv-focus{border-color:#fff;box-shadow:var(--tv-focus-shadow,0 0 0 3px #fffdf7,0 0 0 7px rgba(255,216,101,.96),0 12px 28px rgba(35,72,58,.18))!important;transform:none!important;z-index:3}
 #storyLibraryScreen .story-cover-art{position:relative;display:block;min-height:0;overflow:hidden;background:#c8edf2}
@@ -29,7 +29,16 @@
 #storyLibraryScreen .story-cover-copy strong{font-size:clamp(24px,2vw,32px);line-height:1.12;color:#2d594d;font-weight:900}
 #storyLibraryScreen .story-cover-copy small{color:#4f7466;font-size:clamp(13px,1vw,16px);font-weight:800;line-height:1.45}
 #storyLibraryScreen .story-duration{color:#8a7652;font-size:clamp(12px,.9vw,14px);font-weight:900}
-#storyLibraryScreen .story-cover-card:only-child{grid-column:1/-1;width:min(410px,100%);justify-self:center}
+#storyLibraryScreen .story-cover-card:only-child{grid-column:1/-1;width:min(390px,100%);justify-self:center}
+#storyLibraryScreen .story-coming-soon-card{opacity:1;cursor:default;border-style:dashed;border-color:rgba(255,255,255,.96);background:#f9fff9;box-shadow:0 12px 28px rgba(39,90,69,.09)}
+#storyLibraryScreen .story-coming-soon-card:disabled{opacity:1;color:inherit}
+#storyLibraryScreen .story-coming-soon-art{display:grid;place-items:center;background:linear-gradient(145deg,#dff5e5 0%,#cceef2 48%,#fff0bd 100%)}
+#storyLibraryScreen .story-coming-soon-glow{position:absolute;width:190px;height:190px;border-radius:50%;background:rgba(255,255,255,.5);box-shadow:0 0 0 28px rgba(255,255,255,.16),0 0 0 58px rgba(255,255,255,.08)}
+#storyLibraryScreen .story-coming-soon-book{position:relative;z-index:2;width:96px;height:96px;border-radius:30px;display:grid;place-items:center;background:#fffdf8;color:#4d7867;box-shadow:0 12px 28px rgba(46,93,76,.16);transform:rotate(-3deg)}
+#storyLibraryScreen .story-coming-soon-book .story-icon-svg{width:52px;height:52px;stroke-width:1.65}
+#storyLibraryScreen .story-coming-soon-ribbon{position:absolute;z-index:3;left:18px;top:16px;padding:7px 13px;border-radius:999px;background:#fff4bf;color:#80601f;border:2px solid rgba(255,255,255,.88);box-shadow:0 6px 14px rgba(104,81,24,.09);font-size:13px;font-weight:900}
+#storyLibraryScreen .story-coming-soon-type{background:#edf4ea;color:#6a7d72}
+#storyLibraryScreen .story-coming-soon-card .story-duration{color:#768c82}
 
 /* Player */
 #storyNarratedScreen .story-player-shell{display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:clamp(6px,.9vh,10px)}
@@ -106,7 +115,7 @@
 }
 @media (max-aspect-ratio:4/3){
   #storyLibraryScreen .story-library-shell,#storyNarratedScreen .story-player-shell{width:min(930px,calc(100vw - 32px));height:100%}
-  #storyLibraryScreen .story-library-grid{grid-template-columns:1fr 1fr}
+  #storyLibraryScreen .story-library-grid{grid-template-columns:repeat(2,minmax(0,1fr));justify-content:stretch}
   #storyNarratedScreen .story-player-topbar{grid-template-columns:48px minmax(0,1fr) 145px}
   #storyNarratedScreen .story-stage-card{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto;height:100%;aspect-ratio:auto;align-self:stretch}
   #storyNarratedScreen .story-visual{grid-column:1;grid-row:1;min-height:180px}
@@ -116,7 +125,7 @@
 }
 @media (max-width:900px){
   #storyLibraryScreen .story-library-shell,#storyNarratedScreen .story-player-shell{width:calc(100vw - 24px)}
-  #storyLibraryScreen .story-library-grid{gap:10px}
+  #storyLibraryScreen .story-library-grid{gap:10px;grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media (max-height:520px){
   #storyNarratedScreen .story-stage-card{grid-template-columns:minmax(0,1fr) clamp(245px,34vw,320px)}
