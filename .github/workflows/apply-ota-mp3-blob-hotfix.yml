@@ -1,0 +1,100 @@
+name: Apply OTA MP3 blob bridge hotfix
+
+on:
+  push:
+    branches: [fix-ota-mp3-blob-bridge-20260920]
+    paths:
+      - '.github/workflows/apply-ota-mp3-blob-hotfix.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Patch story audio delivery for OTA internal storage
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+
+          p=Path('stories-v12.js')
+          s=p.read_text(encoding='utf-8')
+
+          old="const STORY_AUDIO_VERSION='v38-mp3-96k';"
+          assert old in s
+          s=s.replace(old,"const STORY_AUDIO_VERSION='v39-mp3-ota-blob';",1)
+
+          anchor="const audio=new Audio();audio.preload='auto';\nlet nextAudio=null;"
+          bridge="""const audio=new Audio();audio.preload='auto';
+          const STORY_AUDIO_BLOB_MODE=location.hostname==='appassets.androidplatform.net'&&location.pathname.startsWith('/update/');
+          const storyAudioBlobUrls=new Map();
+          async function resolvedStoryAudioPath(item){
+            const direct=audioPath(item);
+            if(!STORY_AUDIO_BLOB_MODE)return direct;
+            const cached=storyAudioBlobUrls.get(direct);if(cached)return cached;
+            const pending=(async()=>{
+              const response=await fetch(direct,{cache:'no-store'});
+              if(!response.ok)throw new Error(`audio ${response.status}`);
+              const bytes=await response.arrayBuffer();if(!bytes.byteLength)throw new Error('empty audio');
+              return URL.createObjectURL(new Blob([bytes],{type:'audio/mpeg'}))
+            })();
+            storyAudioBlobUrls.set(direct,pending);
+            try{return await pending}catch(error){storyAudioBlobUrls.delete(direct);throw error}
+          }
+          let nextAudio=null;"""
+          bridge='\n'.join(line[10:] if line.startswith('          ') else line for line in bridge.splitlines())
+          assert anchor in s
+          s=s.replace(anchor,bridge,1)
+
+          old_preload="function preloadNext(){const segment=player.story?.segments?.[player.index],parts=segmentAudioParts(segment);let next=parts[player.partIndex+1],nextSegment=null;if(!next){nextSegment=player.story?.segments?.[player.index+1];next=segmentAudioParts(nextSegment)[0]}if(nextSegment?.stitchParts?.length){nextAudio=null;void stitchedAudioPath(nextSegment).catch(()=>{});return}if(!next){nextAudio=null;return}nextAudio=new Audio();nextAudio.preload='auto';nextAudio.src=audioPath(next)}"
+          new_preload="function preloadNext(){const segment=player.story?.segments?.[player.index],parts=segmentAudioParts(segment);let next=parts[player.partIndex+1],nextSegment=null;if(!next){nextSegment=player.story?.segments?.[player.index+1];next=segmentAudioParts(nextSegment)[0]}if(nextSegment?.stitchParts?.length){nextAudio=null;void stitchedAudioPath(nextSegment).catch(()=>{});return}if(!next){nextAudio=null;return}void resolvedStoryAudioPath(next).then(source=>{nextAudio=new Audio();nextAudio.preload='auto';nextAudio.src=source}).catch(()=>{nextAudio=null})}"
+          assert old_preload in s
+          s=s.replace(old_preload,new_preload,1)
+
+          old_source="""  let source=audioPath(part),start=Number(part.startAt||0);
+            if(segment.stitchParts?.length&&player.partIndex===0){
+              try{source=await stitchedAudioPath(segment);start=0}catch{source=audioPath(part)}
+            }"""
+          old_source='\n'.join(line[10:] if line.startswith('          ') else line for line in old_source.splitlines())
+          new_source="""  let source=audioPath(part),start=Number(part.startAt||0);
+            if(segment.stitchParts?.length&&player.partIndex===0){
+              try{source=await stitchedAudioPath(segment);start=0}catch{source=audioPath(part)}
+            }else{
+              try{source=await resolvedStoryAudioPath(part)}catch{if(token===player.token){syncControls();setStoryPathNote('تعذر تحميل صوت هذا الجزء الآن. اختر إعادة الجزء للمحاولة.')}return}
+            }"""
+          new_source='\n'.join(line[10:] if line.startswith('          ') else line for line in new_source.splitlines())
+          assert old_source in s
+          s=s.replace(old_source,new_source,1)
+
+          p.write_text(s,encoding='utf-8')
+
+          assert "STORY_AUDIO_VERSION='v39-mp3-ota-blob'" in s
+          assert s.count("file:'arin-fox-")==27
+          assert s.count(".mp3'")==27
+          assert "STORY_AUDIO_BLOB_MODE=location.hostname==='appassets.androidplatform.net'&&location.pathname.startsWith('/update/')" in s
+          assert "new Blob([bytes],{type:'audio/mpeg'})" in s
+          assert "resolvedStoryAudioPath(next)" in s
+          assert "source=await resolvedStoryAudioPath(part)" in s
+          print('OTA MP3 blob bridge applied')
+          PY
+
+      - name: JavaScript syntax check
+        run: node --check stories-v12.js
+
+      - name: Commit hotfix
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add stories-v12.js
+          git diff --cached --quiet && exit 0
+          git commit -m "Fix MP3 playback from OTA internal storage"
+          git push origin HEAD:fix-ota-mp3-blob-bridge-20260920
