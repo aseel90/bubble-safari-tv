@@ -83,7 +83,7 @@ const ARIN_FOX_SEGMENTS=[
   {file:'arin-fox-27-ending.mp3',chapter:'النهاية',caption:'أما الثعلب، ففي المرة التالية لوّح من بعيد وقال: صباح الخير! ثم أكمل طريقه.',theme:'ending',actors:['arin','fox']}
 ];
 
-const STORIES=[{id:'arin-fox',title:'أرين والثعلب',typeLabel:'استمع وشاهد',durationLabel:'8 دقائق',description:'حكاية مصورة بصوت راوية، تعمل تلقائيًا من البداية إلى النهاية.',segments:ARIN_FOX_SEGMENTS}];
+const STORIES=[{id:'arin-fox',title:'أرين والثعلب',typeLabel:'استمع وشاهد',durationLabel:'8 دقائق',description:'تذهب أرين لزيارة جدتها، فتقابل ثعلبًا فضوليًا وتتعلم أن تكون لطيفة وحذرة وتطلب المساعدة عند الحاجة.',segments:ARIN_FOX_SEGMENTS}];
 const player={story:null,index:0,partIndex:0,finished:false,token:0,partBoundaryHandled:false};
 const audio=new Audio();audio.preload='auto';
 const STORY_AUDIO_BLOB_MODE=location.hostname==='appassets.androidplatform.net'&&location.pathname.startsWith('/update/');
@@ -134,8 +134,9 @@ function renderLibrary(){
   ];
   comingSoon.forEach((item,index)=>{
     const coming=document.createElement('button');
-    coming.type='button';coming.disabled=true;coming.className='story-cover-card story-coming-soon-card';coming.dataset.comingSlot=String(index+1);coming.setAttribute('aria-label',item.title+' قريبًا');
+    coming.type='button';coming.className='story-cover-card story-coming-soon-card focusable';coming.dataset.focusable='';coming.dataset.comingSlot=String(index+1);coming.setAttribute('aria-disabled','true');coming.setAttribute('aria-label',item.title+' قريبًا');
     coming.innerHTML=`<span class="story-cover-art story-coming-soon-art"><span class="story-coming-soon-glow" aria-hidden="true"></span><span class="story-coming-soon-book" aria-hidden="true">${storyIcon('library')}</span><span class="story-coming-soon-ribbon">قريبًا</span></span><span class="story-cover-copy"><span class="story-type-badge story-coming-soon-type">قصة جديدة</span><strong>${item.title}</strong><small>${item.copy}</small><span class="story-duration">ستتوفر قريبًا</span></span>`;
+    coming.addEventListener('click',event=>{event.preventDefault();event.stopPropagation()});
     grid.appendChild(coming)
   });
   const countValue=$('#storyLibraryCountValue'),countLabel=$('#storyLibraryCountLabel');
