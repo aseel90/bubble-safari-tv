@@ -1,0 +1,107 @@
+name: Apply compact story polish
+
+on:
+  push:
+    branches: [story-compact-polish-20260920]
+    paths:
+      - '.github/workflows/apply-story-compact-polish.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Apply conservative story spacing and control polish
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('stories-v12.css')
+          s=p.read_text(encoding='utf-8')
+
+          replacements={
+            "#storyLibraryScreen .story-library-shell,#storyNarratedScreen .story-player-shell{box-sizing:border-box;width:min(1320px,calc(100vw - clamp(30px,4vw,70px)));height:min(680px,100%);margin:0 auto;min-width:0;min-height:0;padding:clamp(3px,.6vh,7px) 0}":
+            "#storyLibraryScreen .story-library-shell,#storyNarratedScreen .story-player-shell{box-sizing:border-box;width:min(1320px,calc(100vw - clamp(30px,4vw,70px)));height:min(680px,100%);margin:0 auto;min-width:0;min-height:0;padding:clamp(2px,.35vh,5px) 0}",
+
+            "#storyNarratedScreen .story-player-shell{display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:clamp(8px,1.3vh,14px)}":
+            "#storyNarratedScreen .story-player-shell{display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:clamp(6px,.9vh,10px)}",
+
+            "#storyNarratedScreen .story-player-topbar{display:grid;grid-template-columns:56px minmax(0,1fr) minmax(165px,235px);align-items:center;gap:clamp(10px,1.3vw,18px);min-height:68px;position:relative;z-index:4}":
+            "#storyNarratedScreen .story-player-topbar{display:grid;grid-template-columns:56px minmax(0,1fr) minmax(165px,235px);align-items:center;gap:clamp(10px,1.3vw,18px);min-height:64px;position:relative;z-index:4}",
+
+            "aspect-ratio:2.6/1":
+            "aspect-ratio:2.64/1",
+
+            "#storyNarratedScreen .story-controls{display:grid;grid-template-columns:repeat(2,minmax(220px,360px));gap:11px;justify-content:center;min-height:64px;direction:rtl}":
+            "#storyNarratedScreen .story-controls{display:grid;grid-template-columns:repeat(2,minmax(205px,330px));gap:9px;justify-content:center;min-height:56px;direction:rtl}",
+
+            "#storyNarratedScreen .story-control{min-height:60px;border:3px solid rgba(255,255,255,.96);border-radius:19px;background:#fffdf8;color:#315b50;box-shadow:0 8px 20px rgba(39,90,69,.09);display:flex;align-items:center;justify-content:center;gap:10px;padding:7px 16px;font-size:clamp(15px,1.2vw,20px);font-weight:900;cursor:pointer;outline:none;transform:none!important;animation:none!important;transition:box-shadow .12s ease,border-color .12s ease,background-color .12s ease!important}":
+            "#storyNarratedScreen .story-control{min-height:54px;border:3px solid rgba(255,255,255,.96);border-radius:17px;background:#fffdf8;color:#315b50;box-shadow:0 8px 20px rgba(39,90,69,.09);display:flex;align-items:center;justify-content:center;gap:8px;padding:5px 13px;font-size:clamp(14px,1.08vw,18px);font-weight:900;cursor:pointer;outline:none;transform:none!important;animation:none!important;transition:box-shadow .12s ease,border-color .12s ease,background-color .12s ease!important}",
+
+            "#storyNarratedScreen .story-control-icon{width:38px;height:38px;border-radius:13px;display:grid;place-items:center;background:#edf8e7;color:#3f6f5d;flex:0 0 38px;transform:none!important;animation:none!important}":
+            "#storyNarratedScreen .story-control-icon{width:34px;height:34px;border-radius:12px;display:grid;place-items:center;background:#edf8e7;color:#3f6f5d;flex:0 0 34px;transform:none!important;animation:none!important}",
+
+            "#storyNarratedScreen .story-control-icon .story-icon-svg{display:block;width:22px;height:22px;transform:none!important;animation:none!important}":
+            "#storyNarratedScreen .story-control-icon .story-icon-svg{display:block;width:20px;height:20px;transform:none!important;animation:none!important}",
+
+            "#storyNarratedScreen .story-ending{min-height:64px;display:flex;align-items:center;justify-content:center;background:transparent;border:0;padding:0}":
+            "#storyNarratedScreen .story-ending{min-height:56px;display:flex;align-items:center;justify-content:center;background:transparent;border:0;padding:0}",
+
+            "#storyNarratedScreen .story-ending-actions{display:grid;grid-template-columns:repeat(2,minmax(220px,360px));gap:11px;justify-content:center;width:min(731px,100%);direction:rtl}":
+            "#storyNarratedScreen .story-ending-actions{display:grid;grid-template-columns:repeat(2,minmax(205px,330px));gap:9px;justify-content:center;width:min(669px,100%);direction:rtl}",
+
+            "aspect-ratio:2.55/1":
+            "aspect-ratio:2.58/1",
+
+            "aspect-ratio:2.4/1":
+            "aspect-ratio:2.43/1",
+
+            "#storyNarratedScreen .story-controls,#storyNarratedScreen .story-ending{min-height:54px}":
+            "#storyNarratedScreen .story-controls,#storyNarratedScreen .story-ending{min-height:48px}",
+
+            "#storyNarratedScreen .story-control{min-height:52px;border-radius:16px;font-size:clamp(14px,1.15vw,17px);padding:6px 12px}":
+            "#storyNarratedScreen .story-control{min-height:46px;border-radius:15px;font-size:clamp(13px,1.05vw,16px);padding:5px 10px}",
+
+            "#storyNarratedScreen .story-control-icon{width:34px;height:34px;flex-basis:34px}":
+            "#storyNarratedScreen .story-control-icon{width:30px;height:30px;flex-basis:30px}",
+
+            "#storyNarratedScreen .story-control-icon .story-icon-svg{width:20px;height:20px}":
+            "#storyNarratedScreen .story-control-icon .story-icon-svg{width:18px;height:18px}",
+
+            "#storyNarratedScreen .story-control{min-height:48px}":
+            "#storyNarratedScreen .story-control{min-height:44px}"
+          }
+
+          for old,new in replacements.items():
+              if old not in s:
+                  raise SystemExit(f'missing anchor: {old[:90]}')
+              s=s.replace(old,new,1)
+
+          p.write_text(s,encoding='utf-8')
+
+          assert s.count('{')==s.count('}')
+          assert 'object-fit:contain' in s
+          assert 'aspect-ratio:2.64/1' in s
+          assert 'aspect-ratio:2.58/1' in s
+          assert 'aspect-ratio:2.43/1' in s
+          assert 'min-height:54px;border:3px' in s
+          print('Compact story polish applied safely')
+          PY
+
+      - name: Commit CSS-only polish
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add stories-v12.css
+          git diff --cached --quiet && exit 0
+          git commit -m "Polish story spacing and controls"
+          git push origin HEAD:story-compact-polish-20260920
