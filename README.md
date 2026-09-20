@@ -7,7 +7,8 @@
 المشروع الآن في مرحلة **Release Candidate** بعد اكتمال مراحل الاستقرار، القصة، الهوية والتنظيف التقني. إصدار Android الحالي داخل المشروع هو:
 
 - Package: `com.bubblesafari.tv`
-- Version: `0.9.1-tv4`
+- Version: `0.9.2-tv5`
+- versionCode: `5`
 - minSdk: 26
 - targetSdk / compileSdk: 36
 
@@ -92,14 +93,56 @@ Service Worker:
 
 التغييرات الأصلية الخاصة بالـAPK نفسه، مثل `MainActivity` أو Android Manifest أو App Icon/TV Banner، تحتاج APK أحدث يتم تثبيته فوق النسخة الحالية.
 
+## سياسة التوزيع عبر Zoryvo
+
+من الآن يوجد مساران منفصلان للتحديث:
+
+### 1. تحديث داخلي
+
+إذا كان التعديل يستطيع APK المثبت استقباله عبر آلية OTA الحالية بدون استبدال التطبيق:
+
+```text
+Bubble Safari internal update → المستخدم مباشرة
+```
+
+هذا المسار يبقى داخل Bubble Safari ولا يحتاج رفع `versionCode`.
+
+### 2. تحديث خارجي يحتاج APK جديدًا
+
+إذا كان التعديل يحتاج APK جديدًا:
+
+```text
+Bubble Safari repo → Build/Test APK → Zoryvo App Hub → المستخدم
+```
+
+مركز التوزيع الخارجي الرسمي:
+- Repository: `aseel90/zoryvo-app-hub`
+- App id: `bubble-safari-tv`
+- Package الثابت: `com.bubblesafari.tv`
+- Zoryvo asset: `Bubble-Safari-TV.apk`
+
+قواعد الإصدار الخارجي:
+- لا تغيّر `applicationId/packageName`.
+- ارفع `versionCode` في كل APK خارجي جديد.
+- حافظ على نفس signing certificate للنسخة الموزعة حاليًا.
+- ابنِ واختبر APK داخل Bubble Safari أولًا.
+- APK داخل Bubble Safari هو Source Candidate للبناء/الاختبار، وليس قناة التوزيع الرئيسية للمستخدمين.
+- Zoryvo يتحقق من package/version/signature/SHA-256 ثم يحدّث `apps-current` و`catalog/apps.json`.
+- لا تنشئ قناة تحديث APK مستقلة جديدة داخل Bubble Safari.
+- المستودع يبقى Public حاليًا.
+
+### Signing gate
+
+قبل أول إصدار خارجي جديد يجب أن تكون هوية توقيع Bubble Safari الدائمة متوفرة وقابلة لإعادة الاستخدام. أي اختلاف عن توقيع APK الحالي في Zoryvo يوقف الإصدار.
+
 ## بناء APK
 
 GitHub Actions يحتوي على:
-- **Android TV APK** لبناء وفحص `app-debug.apk`.
-- **Publish Latest Android TV APK** لنشر أحدث APK اختبار.
-- **Deploy Bubble Safari TV** لنشر نسخة GitHub Pages وحزمة OTA.
+- **Android TV APK** لبناء وفحص `app-debug.apk` للاختبارات.
+- **Prepare External Android TV APK Candidate** لتجهيز APK خارجي يدويًا فقط بعد رفع `versionCode` وتوفر signing identity ثابتة.
+- **Deploy Bubble Safari TV** لنشر نسخة GitHub Pages وحزمة OTA الداخلية.
 
-الـAPK المنشور حاليًا هو **Debug/Release Candidate للاختبار** وليس Final signed production release بعد.
+Workflow المرشح الخارجي لا يعمل تلقائيًا مع كل push إلى `main`، ولا يمثل قناة المستخدمين. بعد نجاح المرشح، يكون التوزيع النهائي عبر **Publish External App Update** في Zoryvo.
 
 للتثبيت عبر ADB:
 
