@@ -1,6 +1,6 @@
 const $=(selector,root=document)=>root.querySelector(selector);
 const STORY_AUDIO_BASE='./audio/stories/arin-fox/';
-const STORY_AUDIO_VERSION='v38-mp3-96k';
+const STORY_AUDIO_VERSION='v39-mp3-ota-blob';
 const STORY_AUTO_NOTE='تعمل القصة تلقائيًا من البداية إلى النهاية.';
 
 const STORY_IMAGE_BASE='./assets/stories/arin-fox/';
@@ -86,6 +86,21 @@ const ARIN_FOX_SEGMENTS=[
 const STORIES=[{id:'arin-fox',title:'أرين والثعلب',typeLabel:'استمع وشاهد',durationLabel:'8 دقائق',description:'حكاية مصورة بصوت راوية، تعمل تلقائيًا من البداية إلى النهاية.',segments:ARIN_FOX_SEGMENTS}];
 const player={story:null,index:0,partIndex:0,finished:false,token:0,partBoundaryHandled:false};
 const audio=new Audio();audio.preload='auto';
+const STORY_AUDIO_BLOB_MODE=location.hostname==='appassets.androidplatform.net'&&location.pathname.startsWith('/update/');
+const storyAudioBlobUrls=new Map();
+async function resolvedStoryAudioPath(item){
+  const direct=audioPath(item);
+  if(!STORY_AUDIO_BLOB_MODE)return direct;
+  const cached=storyAudioBlobUrls.get(direct);if(cached)return cached;
+  const pending=(async()=>{
+    const response=await fetch(direct,{cache:'no-store'});
+    if(!response.ok)throw new Error(`audio ${response.status}`);
+    const bytes=await response.arrayBuffer();if(!bytes.byteLength)throw new Error('empty audio');
+    return URL.createObjectURL(new Blob([bytes],{type:'audio/mpeg'}))
+  })();
+  storyAudioBlobUrls.set(direct,pending);
+  try{return await pending}catch(error){storyAudioBlobUrls.delete(direct);throw error}
+}
 let nextAudio=null;
 let autoAdvanceTimer=null;
 function storyIcon(name){
@@ -124,7 +139,7 @@ function wavChunk(view,name){for(let i=12;i<=view.byteLength-8;){const id=String
 async function stitchedAudioPath(segment){const key=segment.stitchParts.map(part=>`${part.file}:${part.startAt||0}:${part.endAt??''}`).join('|');if(stitchedAudioUrls.has(key))return stitchedAudioUrls.get(key);const chunks=[];let sampleRate=24000,channels=1,bits=16;for(const part of segment.stitchParts){const response=await fetch(audioPath(part),{cache:'force-cache'});if(!response.ok)throw new Error(`audio ${response.status}`);const bytes=await response.arrayBuffer(),view=new DataView(bytes),fmt=wavChunk(view,'fmt '),data=wavChunk(view,'data');if(!fmt||!data)throw new Error('Unsupported WAV');channels=view.getUint16(fmt.offset+2,true);sampleRate=view.getUint32(fmt.offset+4,true);bits=view.getUint16(fmt.offset+14,true);const blockAlign=channels*(bits/8),start=Math.max(0,Math.floor(Number(part.startAt||0)*sampleRate)*blockAlign),end=part.endAt==null?data.size:Math.min(data.size,Math.floor(Number(part.endAt)*sampleRate)*blockAlign);chunks.push(new Uint8Array(bytes,data.offset+start,Math.max(0,end-start)))}const dataSize=chunks.reduce((n,c)=>n+c.byteLength,0),buffer=new ArrayBuffer(44+dataSize),view=new DataView(buffer),out=new Uint8Array(buffer);const text=(o,t)=>[...t].forEach((c,i)=>view.setUint8(o+i,c.charCodeAt(0)));text(0,'RIFF');view.setUint32(4,36+dataSize,true);text(8,'WAVE');text(12,'fmt ');view.setUint32(16,16,true);view.setUint16(20,1,true);view.setUint16(22,channels,true);view.setUint32(24,sampleRate,true);const byteRate=sampleRate*channels*(bits/8);view.setUint32(28,byteRate,true);view.setUint16(32,channels*(bits/8),true);view.setUint16(34,bits,true);text(36,'data');view.setUint32(40,dataSize,true);let offset=44;for(const chunk of chunks){out.set(chunk,offset);offset+=chunk.byteLength}const url=URL.createObjectURL(new Blob([buffer],{type:'audio/wav'}));stitchedAudioUrls.set(key,url);return url}
 function clearAutoAdvanceTimer(){if(autoAdvanceTimer){clearTimeout(autoAdvanceTimer);autoAdvanceTimer=null}}
 function stopAudio(){clearAutoAdvanceTimer();player.token++;player.partIndex=0;player.partBoundaryHandled=false;audio.pause();audio.removeAttribute('src');audio.load();nextAudio=null;player.finished=false}
-function preloadNext(){const segment=player.story?.segments?.[player.index],parts=segmentAudioParts(segment);let next=parts[player.partIndex+1],nextSegment=null;if(!next){nextSegment=player.story?.segments?.[player.index+1];next=segmentAudioParts(nextSegment)[0]}if(nextSegment?.stitchParts?.length){nextAudio=null;void stitchedAudioPath(nextSegment).catch(()=>{});return}if(!next){nextAudio=null;return}nextAudio=new Audio();nextAudio.preload='auto';nextAudio.src=audioPath(next)}
+function preloadNext(){const segment=player.story?.segments?.[player.index],parts=segmentAudioParts(segment);let next=parts[player.partIndex+1],nextSegment=null;if(!next){nextSegment=player.story?.segments?.[player.index+1];next=segmentAudioParts(nextSegment)[0]}if(nextSegment?.stitchParts?.length){nextAudio=null;void stitchedAudioPath(nextSegment).catch(()=>{});return}if(!next){nextAudio=null;return}void resolvedStoryAudioPath(next).then(source=>{nextAudio=new Audio();nextAudio.preload='auto';nextAudio.src=source}).catch(()=>{nextAudio=null})}
 function setStoryPathNote(text=STORY_AUTO_NOTE){const note=$('#storyPathNote');if(note)note.textContent=text}
 function storyMuted(){return localStorage.getItem('bubbleSafariMuted')==='1'}
 function setStoryMuted(muted){const value=!!muted;localStorage.setItem('bubbleSafariMuted',value?'1':'0');audio.muted=value;try{window.dispatchEvent(new CustomEvent('bubbleSafari:setMuted',{detail:{muted:value}}))}catch{}}
@@ -189,6 +204,8 @@ async function playCurrentAudioPart({render=false,forceSeek=false}={}){
   let source=audioPath(part),start=Number(part.startAt||0);
   if(segment.stitchParts?.length&&player.partIndex===0){
     try{source=await stitchedAudioPath(segment);start=0}catch{source=audioPath(part)}
+  }else{
+    try{source=await resolvedStoryAudioPath(part)}catch{if(token===player.token){syncControls();setStoryPathNote('تعذر تحميل صوت هذا الجزء الآن. اختر إعادة الجزء للمحاولة.')}return}
   }
   if(token!==player.token)return;
   const target=source.startsWith('blob:')?source:new URL(source,location.href).href;
