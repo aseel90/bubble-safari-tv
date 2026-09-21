@@ -1,10 +1,14 @@
 const $=(selector,root=document)=>root.querySelector(selector);
-const STORY_AUDIO_BASE='./audio/stories/arin-fox/';
-const STORY_AUDIO_VERSION='v39-mp3-ota-blob';
 const STORY_AUTO_NOTE='تعمل القصة تلقائيًا من البداية إلى النهاية.';
 
-const STORY_IMAGE_BASE='./assets/stories/arin-fox/';
-const STORY_IMAGE_VERSION='v51-webp-q95';
+const ARIN_FOX_AUDIO_BASE='./audio/stories/arin-fox/';
+const ARIN_FOX_AUDIO_VERSION='v39-mp3-ota-blob';
+const ARIN_FOX_IMAGE_BASE='./assets/stories/arin-fox/';
+const ARIN_FOX_IMAGE_VERSION='v51-webp-q95';
+const USAYD_AUDIO_BASE='./audio/stories/usayd-three-bears/';
+const USAYD_AUDIO_VERSION='v1-leda-96k';
+const USAYD_IMAGE_BASE='./assets/stories/usayd-three-bears/';
+const USAYD_IMAGE_VERSION='v1-webp-1600x900';
 const ARIN_FOX_SCENE_IMAGES=[
   'arinfox_scene_01_2026-09-18T18-53-29-720Z.webp',
   'arinfox_scene_02_v02.webp',
@@ -34,11 +38,12 @@ const ARIN_FOX_SCENE_IMAGES=[
   'arinfox_scene_26_2026-09-18T18-02-46-671Z.webp',
   'arinfox_scene_27_2026-09-18T18-02-56-244Z.webp'
 ];
+const USAYD_SCENE_IMAGES=Array.from({length:17},(_,index)=>`usayd-three-bears-scene-${String(index+1).padStart(2,'0')}.webp`);
 const preloadedSceneImages=new Map();
 let storyVisualToken=0;
-function sceneImagePath(index){const file=ARIN_FOX_SCENE_IMAGES[index];return file?STORY_IMAGE_BASE+file+'?v='+STORY_IMAGE_VERSION:''}
-function preloadSceneImage(index,retry=false){
-  const baseSrc=sceneImagePath(index);if(!baseSrc)return Promise.resolve(null);
+function sceneImagePath(story,index){const file=story?.sceneImages?.[index];return file?story.imageBase+file+'?v='+story.imageVersion:''}
+function preloadSceneImage(story,index,retry=false){
+  const baseSrc=sceneImagePath(story,index);if(!baseSrc)return Promise.resolve(null);
   const cached=preloadedSceneImages.get(baseSrc);if(cached)return cached.ready;
   const image=new Image();image.decoding='async';image.alt='';image.setAttribute('aria-hidden','true');image.draggable=false;try{image.fetchPriority='low'}catch{}
   const requestSrc=retry?baseSrc+(baseSrc.includes('?')?'&':'?')+'retry='+Date.now():baseSrc;
@@ -46,7 +51,7 @@ function preloadSceneImage(index,retry=false){
     image.addEventListener('load',async()=>{try{if(image.decode)await image.decode()}catch{}resolve(image)},{once:true});
     image.addEventListener('error',()=>{
       preloadedSceneImages.delete(baseSrc);
-      if(!retry){preloadSceneImage(index,true).then(resolve,reject);return}
+      if(!retry){preloadSceneImage(story,index,true).then(resolve,reject);return}
       reject(new Error('scene image failed'))
     },{once:true});
   });
@@ -83,13 +88,36 @@ const ARIN_FOX_SEGMENTS=[
   {file:'arin-fox-27-ending.mp3',chapter:'النهاية',caption:'أما الثعلب، ففي المرة التالية لوّح من بعيد وقال: صباح الخير! ثم أكمل طريقه.',theme:'ending',actors:['arin','fox']}
 ];
 
-const STORIES=[{id:'arin-fox',title:'أرين والثعلب',typeLabel:'استمع وشاهد',durationLabel:'8 دقائق',description:'تذهب أرين لزيارة جدتها، فتقابل ثعلبًا فضوليًا وتتعلم أن تكون لطيفة وحذرة وتطلب المساعدة عند الحاجة.',segments:ARIN_FOX_SEGMENTS}];
+const USAYD_SEGMENTS=[
+  {file:'usayd-three-bears-01-walk.mp3',chapter:'نزهة جميلة',caption:'في صباحٍ جميل، خرج أُسيد مع أمه في نزهة قرب الغابة. كان يمشي بجانبها على الطريق الأخضر، ويستمع إلى أصوات الطيور، بينما تذكره أمه أن يبقى قريبًا منها.',theme:'forest',actors:['usayd','mother']},
+  {file:'usayd-three-bears-02-butterfly.mp3',chapter:'فراشة ملونة',caption:'وبينما كانا يسيران، ظهرت فراشة ملوّنة ترفرف بين الأزهار. أعجب بها أُسيد كثيرًا، فتبعها خطواتٍ قليلة، ثم خطواتٍ أخرى، حتى ابتعد عن أمه من غير أن ينتبه.',theme:'forest',actors:['usayd','mother']},
+  {file:'usayd-three-bears-03-lost.mp3',chapter:'أين أمي؟',caption:'توقّف أُسيد فجأة ونظر حوله. لم يرَ أمه بين الأشجار، وشعر بقلقٍ صغير في قلبه. ناداها بصوت واضح، ثم قرر ألا يبتعد أكثر.',theme:'forest',actors:['usayd']},
+  {file:'usayd-three-bears-04-rain.mp3',chapter:'المطر',caption:'بدأ مطر خفيف يتساقط، فبحث أُسيد عن مكان يحتمي فيه. سار بحذر على الطريق، وهو يتمنى أن يجد مأوى قريبًا حتى يتوقف المطر.',theme:'forest',actors:['usayd']},
+  {file:'usayd-three-bears-05-cottage.mp3',chapter:'بيت بين الأشجار',caption:'بين الأشجار لمح أُسيد بيتًا خشبيًا دافئًا، يخرج من نوافذه ضوء لطيف. اقترب من الباب، وطرق برفق، وانتظر قليلًا، لكن أحدًا لم يجب.',theme:'home',actors:['usayd']},
+  {file:'usayd-three-bears-06-enter.mp3',chapter:'دخول البيت',caption:'وجد أُسيد الباب مواربًا. تردد لحظة، ثم دخل البيت من غير أن يحصل على إذن. كان البيت هادئًا ودافئًا، لكنه لم يكن يعرف أن الدخول من دون استئذان خطأ.',theme:'home',actors:['usayd']},
+  {file:'usayd-three-bears-07-three-bowls.mp3',chapter:'ثلاثة أطباق',caption:'في الداخل رأى أُسيد مائدة عليها ثلاثة أطباق: طبق كبير، وطبق متوسط، وطبق صغير. كان جائعًا، فنظر إليها بفضول وفكر في تذوق الطعام.',theme:'home',actors:['usayd']},
+  {file:'usayd-three-bears-08-porridge.mp3',chapter:'ساخن وبارد ومناسب',caption:'تذوق أُسيد من الطبق الكبير فوجده ساخنًا، ومن المتوسط فوجده باردًا. ثم ذاق من الطبق الصغير فوجده مناسبًا، فأكله حتى فرغ، من غير أن يطلب الإذن.',theme:'home',actors:['usayd']},
+  {file:'usayd-three-bears-09-three-chairs.mp3',chapter:'ثلاثة كراسٍ',caption:'بعد ذلك رأى ثلاثة كراسٍ: كرسيًا كبيرًا، وكرسيًا متوسطًا، وكرسيًا صغيرًا. جرّب الجلوس عليها واحدًا بعد الآخر، حتى اختار الكرسي الصغير.',theme:'home',actors:['usayd']},
+  {file:'usayd-three-bears-10-broken-chair.mp3',chapter:'طَق!',caption:'وما إن جلس أُسيد على الكرسي الصغير حتى سمع صوتًا: طَق! انكسر الكرسي، فوقف سريعًا وهو سليم، ونظر إلى القطع بحزن لأنه عرف أنه أفسد شيئًا ليس له.',theme:'home',actors:['usayd']},
+  {file:'usayd-three-bears-11-three-beds.mp3',chapter:'ثلاثة أسرّة',caption:'شعر أُسيد بالتعب، فوجد غرفة فيها ثلاثة أسرّة بأحجام مختلفة. جرّبها، ثم استلقى على السرير الصغير المريح، وسرعان ما غلبه النوم.',theme:'home',actors:['usayd']},
+  {file:'usayd-three-bears-12-bears-return.mp3',chapter:'عودة الدببة',caption:'بعد قليل عادت عائلة الدببة الثلاثة إلى بيتها بعد أن خف المطر: الأب الدب، والأم الدبة، والدب الصغير. دخلوا البيت وهم يتوقعون أن يجدوا كل شيء كما تركوه.',theme:'forest',actors:['father-bear','mother-bear','baby-bear']},
+  {file:'usayd-three-bears-13-empty-bowl.mp3',chapter:'من أكل طعامي؟',caption:'اقتربت الدببة من المائدة. لاحظ الأب أن طعامه قد تذوق، ولاحظت الأم أن طعامها تغير، ثم رأى الدب الصغير أن طبقه الصغير قد أصبح فارغًا تمامًا.',theme:'home',actors:['father-bear','mother-bear','baby-bear']},
+  {file:'usayd-three-bears-14-chair-found.mp3',chapter:'والكرسي أيضًا!',caption:'انتقلت الدببة إلى الكراسي، فوجدت الكرسي الكبير في مكانه، والمتوسط في مكانه، أما الدب الصغير فوجد كرسيه مكسورًا. شعر بالحزن، وتساءل من الذي فعل ذلك.',theme:'home',actors:['father-bear','mother-bear','baby-bear']},
+  {file:'usayd-three-bears-15-found-usayd.mp3',chapter:'وجدوا أُسيد',caption:'صعدت الدببة إلى غرفة النوم، وهناك وجدت أُسيد نائمًا في السرير الصغير. استيقظ على أصواتهم، وفوجئ برؤيتهم، لكن الدببة بقيت هادئة ولم تؤذه.',theme:'home',actors:['usayd','father-bear','mother-bear','baby-bear']},
+  {file:'usayd-three-bears-16-apology.mp3',chapter:'الاعتذار',caption:'وقف أُسيد وقال الحقيقة من غير أن يخفي شيئًا. اعتذر لأنه دخل من دون إذن، وأكل الطعام، وكسر الكرسي. ووعد أن يساعد في إصلاح ما كسره وألا يكرر ذلك.',theme:'home',actors:['usayd','father-bear','mother-bear','baby-bear']},
+  {file:'usayd-three-bears-17-reunion.mp3',chapter:'العودة إلى أمي',caption:'في الخارج كانت أم أُسيد تبحث عنه، حتى وصلت إلى البيت ورأته بخير. ركض إليها وعانقها، ثم شكر الدببة واعتذر مرة أخرى. تعلم أُسيد أن يبقى قريبًا من أمه، وأن يطلب الإذن، ويقول الحقيقة، ويصلح خطأه.',theme:'ending',actors:['usayd','mother','father-bear','mother-bear','baby-bear'],autoAdvanceDelayMs:900}
+];
+
+const STORIES=[
+  {id:'arin-fox',title:'أرين والثعلب',typeLabel:'استمع وشاهد',durationLabel:'8 دقائق',description:'تذهب أرين لزيارة جدتها، فتقابل ثعلبًا فضوليًا وتتعلم أن تكون لطيفة وحذرة وتطلب المساعدة عند الحاجة.',audioBase:ARIN_FOX_AUDIO_BASE,audioVersion:ARIN_FOX_AUDIO_VERSION,imageBase:ARIN_FOX_IMAGE_BASE,imageVersion:ARIN_FOX_IMAGE_VERSION,sceneImages:ARIN_FOX_SCENE_IMAGES,segments:ARIN_FOX_SEGMENTS},
+  {id:'usayd-three-bears',title:'أُسيد وبيت الدببة الثلاثة',typeLabel:'استمع وشاهد',durationLabel:'5 دقائق',description:'يبتعد أُسيد عن أمه، فيجد بيت الدببة الثلاثة ويتعلم الاستئذان وقول الحقيقة وإصلاح الخطأ والبقاء قريبًا من والديه.',audioBase:USAYD_AUDIO_BASE,audioVersion:USAYD_AUDIO_VERSION,imageBase:USAYD_IMAGE_BASE,imageVersion:USAYD_IMAGE_VERSION,sceneImages:USAYD_SCENE_IMAGES,segments:USAYD_SEGMENTS}
+];
 const player={story:null,index:0,partIndex:0,finished:false,token:0,partBoundaryHandled:false};
 const audio=new Audio();audio.preload='auto';
 const STORY_AUDIO_BLOB_MODE=location.hostname==='appassets.androidplatform.net'&&location.pathname.startsWith('/update/');
 const storyAudioBlobUrls=new Map();
-async function resolvedStoryAudioPath(item){
-  const direct=audioPath(item);
+async function resolvedStoryAudioPath(item,story=player.story){
+  const direct=audioPath(item,story);
   if(!STORY_AUDIO_BLOB_MODE)return direct;
   const cached=storyAudioBlobUrls.get(direct);if(cached)return cached;
   const pending=(async()=>{
@@ -116,21 +144,21 @@ function storyIcon(name){
 
 function installScreens(){
   if($('#storyLibraryScreen'))return;
-  ($('.stage')||document.body).insertAdjacentHTML('beforeend',`<section id="storyLibraryScreen" class="screen story-library-screen" aria-hidden="true"><div class="story-library-shell"><div class="story-library-topbar"><button id="storyLibraryBackButton" class="back-button focusable story-library-back" data-focusable type="button" aria-label="العودة">${storyIcon('back')}</button><div class="story-library-heading"><span class="eyebrow">استمع وشاهد</span><h2>القصص</h2><p>اختر قصة لتعمل تلقائيًا من البداية حتى النهاية.</p></div><div class="story-library-count"><span id="storyLibraryCountValue">4</span><small id="storyLibraryCountLabel">1 متاحة • 3 قريبًا</small></div></div><div id="storyLibraryGrid" class="story-library-grid"></div></div></section><section id="storyNarratedScreen" class="screen story-screen" aria-hidden="true"><div class="story-player-shell"><div class="story-player-topbar"><button id="storyBackButton" class="back-button focusable story-back" data-focusable type="button" aria-label="العودة للقصص">${storyIcon('back')}</button><div class="story-player-heading"><span class="eyebrow">قصة مسموعة</span><h2 id="storyTitle">أرين والثعلب</h2><p id="storyChapterTitle">صباح جميل</p></div><div id="storyProgress" class="story-progress" role="progressbar" aria-valuemin="1" aria-valuemax="27" aria-valuenow="1"><strong id="storyProgressText">1 / 27</strong><span class="story-progress-track"><span id="storyProgressFill"></span></span></div></div><div class="story-stage-card"><div id="storyVisual" class="story-visual"></div><div class="story-caption-panel"><span class="story-kicker">الراوية</span><p id="storyNarration"></p><span id="storyPathNote" class="story-path-note">تعمل القصة تلقائيًا من البداية حتى النهاية.</span></div></div><div id="storyControls" class="story-controls"><button id="storyPlayPauseButton" class="story-control focusable" data-focusable data-autofocus type="button"><span id="storyPlayPauseIcon" class="story-control-icon">${storyIcon('pause')}</span><span id="storyPlayPauseText">إيقاف مؤقت</span></button><button id="storyReplaySegmentButton" class="story-control focusable" data-focusable type="button"><span class="story-control-icon">${storyIcon('replay')}</span><span>إعادة الجزء</span></button></div><div id="storyEnding" class="story-ending hidden" aria-hidden="true" aria-label="خيارات نهاية القصة"><div class="story-ending-actions"><button id="storyReplayStoryButton" class="story-control focusable" data-focusable type="button"><span class="story-control-icon">${storyIcon('replay')}</span><span>إعادة القصة</span></button><button id="storyChooseAnotherButton" class="story-control focusable" data-focusable type="button"><span class="story-control-icon">${storyIcon('library')}</span><span>العودة للقصص</span></button></div></div></div></section>`);
+  ($('.stage')||document.body).insertAdjacentHTML('beforeend',`<section id="storyLibraryScreen" class="screen story-library-screen" aria-hidden="true"><div class="story-library-shell"><div class="story-library-topbar"><button id="storyLibraryBackButton" class="back-button focusable story-library-back" data-focusable type="button" aria-label="العودة">${storyIcon('back')}</button><div class="story-library-heading"><span class="eyebrow">استمع وشاهد</span><h2>القصص</h2><p>اختر قصة لتعمل تلقائيًا من البداية حتى النهاية.</p></div><div class="story-library-count"><span id="storyLibraryCountValue">4</span><small id="storyLibraryCountLabel">2 متاحة • 2 قريبًا</small></div></div><div id="storyLibraryGrid" class="story-library-grid"></div></div></section><section id="storyNarratedScreen" class="screen story-screen" aria-hidden="true"><div class="story-player-shell"><div class="story-player-topbar"><button id="storyBackButton" class="back-button focusable story-back" data-focusable type="button" aria-label="العودة للقصص">${storyIcon('back')}</button><div class="story-player-heading"><span class="eyebrow">قصة مسموعة</span><h2 id="storyTitle">أرين والثعلب</h2><p id="storyChapterTitle">صباح جميل</p></div><div id="storyProgress" class="story-progress" role="progressbar" aria-valuemin="1" aria-valuemax="27" aria-valuenow="1"><strong id="storyProgressText">1 / 27</strong><span class="story-progress-track"><span id="storyProgressFill"></span></span></div></div><div class="story-stage-card"><div id="storyVisual" class="story-visual"></div><div class="story-caption-panel"><span class="story-kicker">الراوية</span><p id="storyNarration"></p><span id="storyPathNote" class="story-path-note">تعمل القصة تلقائيًا من البداية حتى النهاية.</span></div></div><div id="storyControls" class="story-controls"><button id="storyPlayPauseButton" class="story-control focusable" data-focusable data-autofocus type="button"><span id="storyPlayPauseIcon" class="story-control-icon">${storyIcon('pause')}</span><span id="storyPlayPauseText">إيقاف مؤقت</span></button><button id="storyReplaySegmentButton" class="story-control focusable" data-focusable type="button"><span class="story-control-icon">${storyIcon('replay')}</span><span>إعادة الجزء</span></button></div><div id="storyEnding" class="story-ending hidden" aria-hidden="true" aria-label="خيارات نهاية القصة"><div class="story-ending-actions"><button id="storyReplayStoryButton" class="story-control focusable" data-focusable type="button"><span class="story-control-icon">${storyIcon('replay')}</span><span>إعادة القصة</span></button><button id="storyChooseAnotherButton" class="story-control focusable" data-focusable type="button"><span class="story-control-icon">${storyIcon('library')}</span><span>العودة للقصص</span></button></div></div></div></section>`);
 }
 function renderLibrary(){
   const grid=$('#storyLibraryGrid');if(!grid)return;
-  preloadSceneImage(0);grid.innerHTML='';
+  grid.innerHTML='';
   STORIES.forEach((story,index)=>{
+    preloadSceneImage(story,0).catch(()=>{});
     const card=document.createElement('button');card.type='button';card.className='story-cover-card focusable';card.dataset.focusable='';if(index===0)card.dataset.autofocus='';
-    const coverSrc=sceneImagePath(0);
+    const coverSrc=sceneImagePath(story,0);
     card.innerHTML=`<span class="story-cover-art"><img class="story-cover-image" src="${coverSrc}" alt="" aria-hidden="true" draggable="false"><span class="story-cover-play">${storyIcon('play')}</span></span><span class="story-cover-copy"><span class="story-type-badge">${story.typeLabel}</span><strong>${story.title}</strong><small>${story.description}</small><span class="story-duration">◷ ${story.durationLabel}</span></span>`;
     card.addEventListener('click',()=>openStory(story.id));grid.appendChild(card)
   });
   const comingSoon=[
     {title:'مغامرة جديدة',copy:'قصة مصورة ومسموعة جديدة قيد الإعداد.'},
-    {title:'حكاية جديدة',copy:'شخصيات وأحداث جديدة ستنضم إلى مكتبة القصص.'},
-    {title:'قصة جديدة',copy:'مغامرة جديدة للأطفال ستتوفر في تحديث قادم.'}
+    {title:'حكاية جديدة',copy:'شخصيات وأحداث جديدة ستنضم إلى مكتبة القصص.'}
   ];
   comingSoon.forEach((item,index)=>{
     const coming=document.createElement('button');
@@ -149,13 +177,13 @@ function setActiveScreen(id){document.activeElement?.blur();$('#app')?.classList
 function returnHome(){stopAudio();document.activeElement?.blur();$('#app')?.classList.remove('story-mode');document.querySelectorAll('.screen').forEach(screen=>{const active=screen.id==='homeScreen';screen.classList.toggle('screen-active',active);screen.setAttribute('aria-hidden',active?'false':'true')});$('#settingsButton')?.classList.remove('hidden');$('#soundButton')?.classList.remove('hidden');setTimeout(()=>setFocus($('#startButton')),60)}
 function openLibrary(){stopAudio();renderLibrary();setActiveScreen('storyLibraryScreen')}
 function segmentAudioParts(segment){if(!segment)return[];return segment.audioParts?.length?segment.audioParts:[{file:segment.file,startAt:segment.startAt,endAt:segment.endAt}]}
-function audioPath(item){const file=typeof item==='string'?item:item?.file;return `${STORY_AUDIO_BASE}${file}?v=${STORY_AUDIO_VERSION}`}
+function audioPath(item,story=player.story){const file=typeof item==='string'?item:item?.file;const base=story?.audioBase||ARIN_FOX_AUDIO_BASE,version=story?.audioVersion||ARIN_FOX_AUDIO_VERSION;return `${base}${file}?v=${version}`}
 const stitchedAudioUrls=new Map();
 function wavChunk(view,name){for(let i=12;i<=view.byteLength-8;){const id=String.fromCharCode(view.getUint8(i),view.getUint8(i+1),view.getUint8(i+2),view.getUint8(i+3)),size=view.getUint32(i+4,true);if(id===name)return{offset:i+8,size};i+=8+size+(size&1)}return null}
-async function stitchedAudioPath(segment){const key=segment.stitchParts.map(part=>`${part.file}:${part.startAt||0}:${part.endAt??''}`).join('|');if(stitchedAudioUrls.has(key))return stitchedAudioUrls.get(key);const chunks=[];let sampleRate=24000,channels=1,bits=16;for(const part of segment.stitchParts){const response=await fetch(audioPath(part),{cache:'force-cache'});if(!response.ok)throw new Error(`audio ${response.status}`);const bytes=await response.arrayBuffer(),view=new DataView(bytes),fmt=wavChunk(view,'fmt '),data=wavChunk(view,'data');if(!fmt||!data)throw new Error('Unsupported WAV');channels=view.getUint16(fmt.offset+2,true);sampleRate=view.getUint32(fmt.offset+4,true);bits=view.getUint16(fmt.offset+14,true);const blockAlign=channels*(bits/8),start=Math.max(0,Math.floor(Number(part.startAt||0)*sampleRate)*blockAlign),end=part.endAt==null?data.size:Math.min(data.size,Math.floor(Number(part.endAt)*sampleRate)*blockAlign);chunks.push(new Uint8Array(bytes,data.offset+start,Math.max(0,end-start)))}const dataSize=chunks.reduce((n,c)=>n+c.byteLength,0),buffer=new ArrayBuffer(44+dataSize),view=new DataView(buffer),out=new Uint8Array(buffer);const text=(o,t)=>[...t].forEach((c,i)=>view.setUint8(o+i,c.charCodeAt(0)));text(0,'RIFF');view.setUint32(4,36+dataSize,true);text(8,'WAVE');text(12,'fmt ');view.setUint32(16,16,true);view.setUint16(20,1,true);view.setUint16(22,channels,true);view.setUint32(24,sampleRate,true);const byteRate=sampleRate*channels*(bits/8);view.setUint32(28,byteRate,true);view.setUint16(32,channels*(bits/8),true);view.setUint16(34,bits,true);text(36,'data');view.setUint32(40,dataSize,true);let offset=44;for(const chunk of chunks){out.set(chunk,offset);offset+=chunk.byteLength}const url=URL.createObjectURL(new Blob([buffer],{type:'audio/wav'}));stitchedAudioUrls.set(key,url);return url}
+async function stitchedAudioPath(segment,story=player.story){const key=(story?.id||'story')+'|'+segment.stitchParts.map(part=>`${part.file}:${part.startAt||0}:${part.endAt??''}`).join('|');if(stitchedAudioUrls.has(key))return stitchedAudioUrls.get(key);const chunks=[];let sampleRate=24000,channels=1,bits=16;for(const part of segment.stitchParts){const response=await fetch(audioPath(part,story),{cache:'force-cache'});if(!response.ok)throw new Error(`audio ${response.status}`);const bytes=await response.arrayBuffer(),view=new DataView(bytes),fmt=wavChunk(view,'fmt '),data=wavChunk(view,'data');if(!fmt||!data)throw new Error('Unsupported WAV');channels=view.getUint16(fmt.offset+2,true);sampleRate=view.getUint32(fmt.offset+4,true);bits=view.getUint16(fmt.offset+14,true);const blockAlign=channels*(bits/8),start=Math.max(0,Math.floor(Number(part.startAt||0)*sampleRate)*blockAlign),end=part.endAt==null?data.size:Math.min(data.size,Math.floor(Number(part.endAt)*sampleRate)*blockAlign);chunks.push(new Uint8Array(bytes,data.offset+start,Math.max(0,end-start)))}const dataSize=chunks.reduce((n,c)=>n+c.byteLength,0),buffer=new ArrayBuffer(44+dataSize),view=new DataView(buffer),out=new Uint8Array(buffer);const text=(o,t)=>[...t].forEach((c,i)=>view.setUint8(o+i,c.charCodeAt(0)));text(0,'RIFF');view.setUint32(4,36+dataSize,true);text(8,'WAVE');text(12,'fmt ');view.setUint32(16,16,true);view.setUint16(20,1,true);view.setUint16(22,channels,true);view.setUint32(24,sampleRate,true);const byteRate=sampleRate*channels*(bits/8);view.setUint32(28,byteRate,true);view.setUint16(32,channels*(bits/8),true);view.setUint16(34,bits,true);text(36,'data');view.setUint32(40,dataSize,true);let offset=44;for(const chunk of chunks){out.set(chunk,offset);offset+=chunk.byteLength}const url=URL.createObjectURL(new Blob([buffer],{type:'audio/wav'}));stitchedAudioUrls.set(key,url);return url}
 function clearAutoAdvanceTimer(){if(autoAdvanceTimer){clearTimeout(autoAdvanceTimer);autoAdvanceTimer=null}}
 function stopAudio(){clearAutoAdvanceTimer();player.token++;player.partIndex=0;player.partBoundaryHandled=false;audio.pause();audio.removeAttribute('src');audio.load();nextAudio=null;player.finished=false}
-function preloadNext(){const segment=player.story?.segments?.[player.index],parts=segmentAudioParts(segment);let next=parts[player.partIndex+1],nextSegment=null;if(!next){nextSegment=player.story?.segments?.[player.index+1];next=segmentAudioParts(nextSegment)[0]}if(nextSegment?.stitchParts?.length){nextAudio=null;void stitchedAudioPath(nextSegment).catch(()=>{});return}if(!next){nextAudio=null;return}void resolvedStoryAudioPath(next).then(source=>{nextAudio=new Audio();nextAudio.preload='auto';nextAudio.src=source}).catch(()=>{nextAudio=null})}
+function preloadNext(){const segment=player.story?.segments?.[player.index],parts=segmentAudioParts(segment);let next=parts[player.partIndex+1],nextSegment=null;if(!next){nextSegment=player.story?.segments?.[player.index+1];next=segmentAudioParts(nextSegment)[0]}if(nextSegment?.stitchParts?.length){nextAudio=null;void stitchedAudioPath(nextSegment,player.story).catch(()=>{});return}if(!next){nextAudio=null;return}void resolvedStoryAudioPath(next,player.story).then(source=>{nextAudio=new Audio();nextAudio.preload='auto';nextAudio.src=source}).catch(()=>{nextAudio=null})}
 function setStoryPathNote(text=STORY_AUTO_NOTE){const note=$('#storyPathNote');if(note)note.textContent=text}
 function storyMuted(){return localStorage.getItem('bubbleSafariMuted')==='1'}
 function setStoryMuted(muted){const value=!!muted;localStorage.setItem('bubbleSafariMuted',value?'1':'0');audio.muted=value;try{window.dispatchEvent(new CustomEvent('bubbleSafari:setMuted',{detail:{muted:value}}))}catch{}}
@@ -192,7 +220,7 @@ function renderSegment(){
     const firstFrame=oldFrames.length===0;
     let loadingFrame=null;
     if(firstFrame){loadingFrame=document.createElement('div');loadingFrame.className='story-static-scene story-scene-loading';loadingFrame.dataset.sceneIndex=String(sceneIndex);visual.appendChild(loadingFrame)}
-    void preloadSceneImage(sceneIndex).then(image=>{
+    void preloadSceneImage(story,sceneIndex).then(image=>{
       if(token!==storyVisualToken||player.index!==sceneIndex)return;
       const frame=loadingFrame||document.createElement('div');
       frame.className='story-static-scene story-scene-enter story-scene-ready';frame.dataset.sceneIndex=String(sceneIndex);
@@ -206,7 +234,7 @@ function renderSegment(){
       const error=document.createElement('div');error.className='story-scene-error-message';error.textContent='تعذر تحميل صورة المشهد.';frame.replaceChildren(error);if(!frame.isConnected)visual.appendChild(frame)
     })
   }
-  preloadSceneImage(sceneIndex+1).catch(()=>{});preloadSceneImage(sceneIndex+2).catch(()=>{});
+  preloadSceneImage(story,sceneIndex+1).catch(()=>{});preloadSceneImage(story,sceneIndex+2).catch(()=>{});
   const current=player.index+1,total=story.segments.length;$('#storyProgressText').textContent=current+' / '+total;$('#storyProgressFill').style.transform='scaleX('+(current/total)+')';$('#storyProgress').setAttribute('aria-valuenow',String(current));$('#storyEnding').classList.add('hidden');$('#storyEnding').setAttribute('aria-hidden','true');$('#storyControls').classList.remove('hidden');player.finished=false;syncControls()
 }
 async function playCurrentAudioPart({render=false,forceSeek=false}={}){
@@ -217,11 +245,11 @@ async function playCurrentAudioPart({render=false,forceSeek=false}={}){
   player.partBoundaryHandled=false;
   if(render)renderSegment();
   const visualIndex=player.index;
-  let source=audioPath(part),start=Number(part.startAt||0);
+  let source=audioPath(part,player.story),start=Number(part.startAt||0);
   if(segment.stitchParts?.length&&player.partIndex===0){
-    try{source=await stitchedAudioPath(segment);start=0}catch{source=audioPath(part)}
+    try{source=await stitchedAudioPath(segment,player.story);start=0}catch{source=audioPath(part,player.story)}
   }else{
-    try{source=await resolvedStoryAudioPath(part)}catch{if(token===player.token){syncControls();setStoryPathNote('تعذر تحميل صوت هذا الجزء الآن. اختر إعادة الجزء للمحاولة.')}return}
+    try{source=await resolvedStoryAudioPath(part,player.story)}catch{if(token===player.token){syncControls();setStoryPathNote('تعذر تحميل صوت هذا الجزء الآن. اختر إعادة الجزء للمحاولة.')}return}
   }
   if(token!==player.token)return;
   const target=source.startsWith('blob:')?source:new URL(source,location.href).href;
@@ -252,7 +280,7 @@ async function playSegment(restart=true,{forceSeek=false}={}){
   await playCurrentAudioPart({render:true,forceSeek})
 }
 function completeAudioPart(){if(player.finished||!player.story||player.partBoundaryHandled)return;player.partBoundaryHandled=true;const segment=player.story.segments[player.index],parts=segmentAudioParts(segment);if(player.partIndex<parts.length-1){player.partIndex++;playCurrentAudioPart({render:false});return}const delay=segment?.autoAdvanceDelayMs??350;clearAutoAdvanceTimer();autoAdvanceTimer=setTimeout(()=>{if(player.finished||!player.story)return;if(player.index>=player.story.segments.length-1){finishStory();return}player.index++;player.partIndex=0;playSegment(true)},delay)}
-function openStory(id){const story=STORIES.find(item=>item.id===id)||STORIES[0];stopAudio();player.story=story;player.index=0;player.finished=false;$('#storyTitle').textContent=story.title;setStoryPathNote();setActiveScreen('storyNarratedScreen');playSegment(true)}
+function openStory(id){const story=STORIES.find(item=>item.id===id)||STORIES[0];stopAudio();player.story=story;player.index=0;player.finished=false;$('#storyTitle').textContent=story.title;$('#storyProgress')?.setAttribute('aria-valuemax',String(story.segments.length));setStoryPathNote();setActiveScreen('storyNarratedScreen');playSegment(true)}
 function finishStory(){
   clearAutoAdvanceTimer();
   player.finished=true;

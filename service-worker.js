@@ -1,5 +1,5 @@
 const CACHE_PREFIX = 'bubble-safari-';
-const CACHE = 'bubble-safari-v51-final-cleanup';
+const CACHE = 'bubble-safari-v52-usayd-story';
 const CORE = [
   './', './index.html', './styles.css', './art.css', './worlds.css', './polish-v08.css', './stories-v12.css',
   './game-v3.js', './stories-v12.js', './game-data.js', './tv-nav.js', './voice.js', './art.js', './scene-art.js',
@@ -78,7 +78,7 @@ self.addEventListener('fetch', event => {
 
   event.respondWith((async () => {
     const isAudio = url.pathname.includes('/audio/');
-    const isStoryScene = url.pathname.includes('/assets/stories/arin-fox/') && /\.(?:png|jpe?g|webp)$/i.test(url.pathname);
+    const isStoryScene = url.pathname.includes('/assets/stories/') && /\.(?:png|jpe?g|webp)$/i.test(url.pathname);
     const isCoreAsset = CORE_NAMES.has(url.pathname);
 
     if (isStoryScene) return cacheFirst(request);
