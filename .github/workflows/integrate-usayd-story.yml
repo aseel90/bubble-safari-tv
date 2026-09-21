@@ -1,0 +1,155 @@
+name: Integrate Usayd story
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/integrate-usayd-story.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  integrate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Integrate story data
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 <<'PY'
+          from pathlib import Path
+
+          p=Path('stories-v12.js')
+          s=p.read_text()
+
+          s=s.replace(
+          """const STORY_AUDIO_BASE='./audio/stories/arin-fox/';
+          const STORY_AUDIO_VERSION='v39-mp3-ota-blob';
+          const STORY_AUTO_NOTE='تعمل القصة تلقائيًا من البداية إلى النهاية.';
+
+          const STORY_IMAGE_BASE='./assets/stories/arin-fox/';
+          const STORY_IMAGE_VERSION='v51-webp-q95';
+          """,
+          """const STORY_AUTO_NOTE='تعمل القصة تلقائيًا من البداية إلى النهاية.';
+
+          const ARIN_FOX_AUDIO_BASE='./audio/stories/arin-fox/';
+          const ARIN_FOX_AUDIO_VERSION='v39-mp3-ota-blob';
+          const ARIN_FOX_IMAGE_BASE='./assets/stories/arin-fox/';
+          const ARIN_FOX_IMAGE_VERSION='v51-webp-q95';
+          const USAYD_AUDIO_BASE='./audio/stories/usayd-three-bears/';
+          const USAYD_AUDIO_VERSION='v1-leda-96k';
+          const USAYD_IMAGE_BASE='./assets/stories/usayd-three-bears/';
+          const USAYD_IMAGE_VERSION='v1-webp-1600x900';
+          """)
+
+          old="""const preloadedSceneImages=new Map();
+          let storyVisualToken=0;
+          function sceneImagePath(index){const file=ARIN_FOX_SCENE_IMAGES[index];return file?STORY_IMAGE_BASE+file+'?v='+STORY_IMAGE_VERSION:''}
+          function preloadSceneImage(index,retry=false){
+            const baseSrc=sceneImagePath(index);if(!baseSrc)return Promise.resolve(null);
+          """
+          new="""const USAYD_SCENE_IMAGES=Array.from({length:17},(_,index)=>`usayd-three-bears-scene-${String(index+1).padStart(2,'0')}.webp`);
+          const preloadedSceneImages=new Map();
+          let storyVisualToken=0;
+          function sceneImagePath(story,index){const file=story?.sceneImages?.[index];return file?story.imageBase+file+'?v='+story.imageVersion:''}
+          function preloadSceneImage(story,index,retry=false){
+            const baseSrc=sceneImagePath(story,index);if(!baseSrc)return Promise.resolve(null);
+          """
+          if old not in s:
+              raise SystemExit('scene image block not found')
+          s=s.replace(old,new)
+          s=s.replace("if(!retry){preloadSceneImage(index,true).then(resolve,reject);return}","if(!retry){preloadSceneImage(story,index,true).then(resolve,reject);return}")
+
+          marker="const STORIES=[{id:'arin-fox',title:'أرين والثعلب',typeLabel:'استمع وشاهد',durationLabel:'8 دقائق',description:'تذهب أرين لزيارة جدتها، فتقابل ثعلبًا فضوليًا وتتعلم أن تكون لطيفة وحذرة وتطلب المساعدة عند الحاجة.',segments:ARIN_FOX_SEGMENTS}];"
+          if marker not in s:
+              raise SystemExit('stories marker not found')
+
+          usayd="""const USAYD_SEGMENTS=[
+            {file:'usayd-three-bears-01-walk.mp3',chapter:'نزهة جميلة',caption:'في صباحٍ جميل، خرج أُسيد مع أمه في نزهة قرب الغابة. كان يمشي بجانبها على الطريق الأخضر، ويستمع إلى أصوات الطيور، بينما تذكره أمه أن يبقى قريبًا منها.',theme:'forest',actors:['usayd','mother']},
+            {file:'usayd-three-bears-02-butterfly.mp3',chapter:'فراشة ملونة',caption:'وبينما كانا يسيران، ظهرت فراشة ملوّنة ترفرف بين الأزهار. أعجب بها أُسيد كثيرًا، فتبعها خطواتٍ قليلة، ثم خطواتٍ أخرى، حتى ابتعد عن أمه من غير أن ينتبه.',theme:'forest',actors:['usayd','mother']},
+            {file:'usayd-three-bears-03-lost.mp3',chapter:'أين أمي؟',caption:'توقّف أُسيد فجأة ونظر حوله. لم يرَ أمه بين الأشجار، وشعر بقلقٍ صغير في قلبه. ناداها بصوت واضح، ثم قرر ألا يبتعد أكثر.',theme:'forest',actors:['usayd']},
+            {file:'usayd-three-bears-04-rain.mp3',chapter:'المطر',caption:'بدأ مطر خفيف يتساقط، فبحث أُسيد عن مكان يحتمي فيه. سار بحذر على الطريق، وهو يتمنى أن يجد مأوى قريبًا حتى يتوقف المطر.',theme:'forest',actors:['usayd']},
+            {file:'usayd-three-bears-05-cottage.mp3',chapter:'بيت بين الأشجار',caption:'بين الأشجار لمح أُسيد بيتًا خشبيًا دافئًا، يخرج من نوافذه ضوء لطيف. اقترب من الباب، وطرق برفق، وانتظر قليلًا، لكن أحدًا لم يجب.',theme:'home',actors:['usayd']},
+            {file:'usayd-three-bears-06-enter.mp3',chapter:'دخول البيت',caption:'وجد أُسيد الباب مواربًا. تردد لحظة، ثم دخل البيت من غير أن يحصل على إذن. كان البيت هادئًا ودافئًا، لكنه لم يكن يعرف أن الدخول من دون استئذان خطأ.',theme:'home',actors:['usayd']},
+            {file:'usayd-three-bears-07-three-bowls.mp3',chapter:'ثلاثة أطباق',caption:'في الداخل رأى أُسيد مائدة عليها ثلاثة أطباق: طبق كبير، وطبق متوسط، وطبق صغير. كان جائعًا، فنظر إليها بفضول وفكر في تذوق الطعام.',theme:'home',actors:['usayd']},
+            {file:'usayd-three-bears-08-porridge.mp3',chapter:'ساخن وبارد ومناسب',caption:'تذوق أُسيد من الطبق الكبير فوجده ساخنًا، ومن المتوسط فوجده باردًا. ثم ذاق من الطبق الصغير فوجده مناسبًا، فأكله حتى فرغ، من غير أن يطلب الإذن.',theme:'home',actors:['usayd']},
+            {file:'usayd-three-bears-09-three-chairs.mp3',chapter:'ثلاثة كراسٍ',caption:'بعد ذلك رأى ثلاثة كراسٍ: كرسيًا كبيرًا، وكرسيًا متوسطًا، وكرسيًا صغيرًا. جرّب الجلوس عليها واحدًا بعد الآخر، حتى اختار الكرسي الصغير.',theme:'home',actors:['usayd']},
+            {file:'usayd-three-bears-10-broken-chair.mp3',chapter:'طَق!',caption:'وما إن جلس أُسيد على الكرسي الصغير حتى سمع صوتًا: طَق! انكسر الكرسي، فوقف سريعًا وهو سليم، ونظر إلى القطع بحزن لأنه عرف أنه أفسد شيئًا ليس له.',theme:'home',actors:['usayd']},
+            {file:'usayd-three-bears-11-three-beds.mp3',chapter:'ثلاثة أسرّة',caption:'شعر أُسيد بالتعب، فوجد غرفة فيها ثلاثة أسرّة بأحجام مختلفة. جرّبها، ثم استلقى على السرير الصغير المريح، وسرعان ما غلبه النوم.',theme:'home',actors:['usayd']},
+            {file:'usayd-three-bears-12-bears-return.mp3',chapter:'عودة الدببة',caption:'بعد قليل عادت عائلة الدببة الثلاثة إلى بيتها بعد أن خف المطر: الأب الدب، والأم الدبة، والدب الصغير. دخلوا البيت وهم يتوقعون أن يجدوا كل شيء كما تركوه.',theme:'forest',actors:['father-bear','mother-bear','baby-bear']},
+            {file:'usayd-three-bears-13-empty-bowl.mp3',chapter:'من أكل طعامي؟',caption:'اقتربت الدببة من المائدة. لاحظ الأب أن طعامه قد تذوق، ولاحظت الأم أن طعامها تغير، ثم رأى الدب الصغير أن طبقه الصغير قد أصبح فارغًا تمامًا.',theme:'home',actors:['father-bear','mother-bear','baby-bear']},
+            {file:'usayd-three-bears-14-chair-found.mp3',chapter:'والكرسي أيضًا!',caption:'انتقلت الدببة إلى الكراسي، فوجدت الكرسي الكبير في مكانه، والمتوسط في مكانه، أما الدب الصغير فوجد كرسيه مكسورًا. شعر بالحزن، وتساءل من الذي فعل ذلك.',theme:'home',actors:['father-bear','mother-bear','baby-bear']},
+            {file:'usayd-three-bears-15-found-usayd.mp3',chapter:'وجدوا أُسيد',caption:'صعدت الدببة إلى غرفة النوم، وهناك وجدت أُسيد نائمًا في السرير الصغير. استيقظ على أصواتهم، وفوجئ برؤيتهم، لكن الدببة بقيت هادئة ولم تؤذه.',theme:'home',actors:['usayd','father-bear','mother-bear','baby-bear']},
+            {file:'usayd-three-bears-16-apology.mp3',chapter:'الاعتذار',caption:'وقف أُسيد وقال الحقيقة من غير أن يخفي شيئًا. اعتذر لأنه دخل من دون إذن، وأكل الطعام، وكسر الكرسي. ووعد أن يساعد في إصلاح ما كسره وألا يكرر ذلك.',theme:'home',actors:['usayd','father-bear','mother-bear','baby-bear']},
+            {file:'usayd-three-bears-17-reunion.mp3',chapter:'العودة إلى أمي',caption:'في الخارج كانت أم أُسيد تبحث عنه، حتى وصلت إلى البيت ورأته بخير. ركض إليها وعانقها، ثم شكر الدببة واعتذر مرة أخرى. تعلم أُسيد أن يبقى قريبًا من أمه، وأن يطلب الإذن، ويقول الحقيقة، ويصلح خطأه.',theme:'ending',actors:['usayd','mother','father-bear','mother-bear','baby-bear'],autoAdvanceDelayMs:900}
+          ];
+
+          const STORIES=[
+            {id:'arin-fox',title:'أرين والثعلب',typeLabel:'استمع وشاهد',durationLabel:'8 دقائق',description:'تذهب أرين لزيارة جدتها، فتقابل ثعلبًا فضوليًا وتتعلم أن تكون لطيفة وحذرة وتطلب المساعدة عند الحاجة.',audioBase:ARIN_FOX_AUDIO_BASE,audioVersion:ARIN_FOX_AUDIO_VERSION,imageBase:ARIN_FOX_IMAGE_BASE,imageVersion:ARIN_FOX_IMAGE_VERSION,sceneImages:ARIN_FOX_SCENE_IMAGES,segments:ARIN_FOX_SEGMENTS},
+            {id:'usayd-three-bears',title:'أُسيد وبيت الدببة الثلاثة',typeLabel:'استمع وشاهد',durationLabel:'5 دقائق',description:'يبتعد أُسيد عن أمه، فيجد بيت الدببة الثلاثة ويتعلم الاستئذان وقول الحقيقة وإصلاح الخطأ والبقاء قريبًا من والديه.',audioBase:USAYD_AUDIO_BASE,audioVersion:USAYD_AUDIO_VERSION,imageBase:USAYD_IMAGE_BASE,imageVersion:USAYD_IMAGE_VERSION,sceneImages:USAYD_SCENE_IMAGES,segments:USAYD_SEGMENTS}
+          ];"""
+          s=s.replace(marker,usayd)
+
+          s=s.replace("async function resolvedStoryAudioPath(item){\n  const direct=audioPath(item);","async function resolvedStoryAudioPath(item,story=player.story){\n  const direct=audioPath(item,story);")
+          s=s.replace("  preloadSceneImage(0);grid.innerHTML='';\n  STORIES.forEach((story,index)=>{","  grid.innerHTML='';\n  STORIES.forEach((story,index)=>{\n    preloadSceneImage(story,0).catch(()=>{});")
+          s=s.replace("    const coverSrc=sceneImagePath(0);","    const coverSrc=sceneImagePath(story,0);")
+          s=s.replace("    {title:'حكاية جديدة',copy:'شخصيات وأحداث جديدة ستنضم إلى مكتبة القصص.'},\n    {title:'قصة جديدة',copy:'مغامرة جديدة للأطفال ستتوفر في تحديث قادم.'}","    {title:'حكاية جديدة',copy:'شخصيات وأحداث جديدة ستنضم إلى مكتبة القصص.'}")
+          s=s.replace("function audioPath(item){const file=typeof item==='string'?item:item?.file;return `${STORY_AUDIO_BASE}${file}?v=${STORY_AUDIO_VERSION}`}","function audioPath(item,story=player.story){const file=typeof item==='string'?item:item?.file;const base=story?.audioBase||ARIN_FOX_AUDIO_BASE,version=story?.audioVersion||ARIN_FOX_AUDIO_VERSION;return `${base}${file}?v=${version}`}")
+          s=s.replace("async function stitchedAudioPath(segment){const key=segment.stitchParts.map(part=>`${part.file}:${part.startAt||0}:${part.endAt??''}`).join('|');","async function stitchedAudioPath(segment,story=player.story){const key=(story?.id||'story')+'|'+segment.stitchParts.map(part=>`${part.file}:${part.startAt||0}:${part.endAt??''}`).join('|');")
+          s=s.replace("fetch(audioPath(part),{cache:'force-cache'})","fetch(audioPath(part,story),{cache:'force-cache'})")
+          s=s.replace("void stitchedAudioPath(nextSegment).catch(()=>{});","void stitchedAudioPath(nextSegment,player.story).catch(()=>{});")
+          s=s.replace("void resolvedStoryAudioPath(next).then","void resolvedStoryAudioPath(next,player.story).then")
+          s=s.replace("void preloadSceneImage(sceneIndex).then(image=>{","void preloadSceneImage(story,sceneIndex).then(image=>{")
+          s=s.replace("  preloadSceneImage(sceneIndex+1).catch(()=>{});preloadSceneImage(sceneIndex+2).catch(()=>{});","  preloadSceneImage(story,sceneIndex+1).catch(()=>{});preloadSceneImage(story,sceneIndex+2).catch(()=>{});")
+          s=s.replace("  let source=audioPath(part),start=Number(part.startAt||0);","  let source=audioPath(part,player.story),start=Number(part.startAt||0);")
+          s=s.replace("    try{source=await stitchedAudioPath(segment);start=0}catch{source=audioPath(part)}","    try{source=await stitchedAudioPath(segment,player.story);start=0}catch{source=audioPath(part,player.story)}")
+          s=s.replace("    try{source=await resolvedStoryAudioPath(part)}","    try{source=await resolvedStoryAudioPath(part,player.story)}")
+          s=s.replace("function openStory(id){const story=STORIES.find(item=>item.id===id)||STORIES[0];stopAudio();player.story=story;player.index=0;player.finished=false;$('#storyTitle').textContent=story.title;setStoryPathNote();setActiveScreen('storyNarratedScreen');playSegment(true)}","function openStory(id){const story=STORIES.find(item=>item.id===id)||STORIES[0];stopAudio();player.story=story;player.index=0;player.finished=false;$('#storyTitle').textContent=story.title;$('#storyProgress')?.setAttribute('aria-valuemax',String(story.segments.length));setStoryPathNote();setActiveScreen('storyNarratedScreen');playSegment(true)}")
+          s=s.replace("<small id=\"storyLibraryCountLabel\">1 متاحة • 3 قريبًا</small>","<small id=\"storyLibraryCountLabel\">2 متاحة • 2 قريبًا</small>")
+
+          p.write_text(s)
+
+          sw=Path('service-worker.js')
+          w=sw.read_text()
+          w=w.replace("const CACHE = 'bubble-safari-v51-final-cleanup';","const CACHE = 'bubble-safari-v52-usayd-story';")
+          w=w.replace("const isStoryScene = url.pathname.includes('/assets/stories/arin-fox/') && /\\.(?:png|jpe?g|webp)$/i.test(url.pathname);","const isStoryScene = url.pathname.includes('/assets/stories/') && /\\.(?:png|jpe?g|webp)$/i.test(url.pathname);")
+          sw.write_text(w)
+
+          if "const USAYD_SEGMENTS=[" not in s or "id:'usayd-three-bears'" not in s:
+              raise SystemExit('Usayd story data missing after patch')
+          if "preloadSceneImage(story,sceneIndex)" not in s:
+              raise SystemExit('story-aware image loader missing')
+          if "audioPath(part,player.story)" not in s:
+              raise SystemExit('story-aware audio loader missing')
+          PY
+
+      - name: Validate JavaScript and assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check stories-v12.js
+          node --check service-worker.js
+          test "$(find assets/stories/usayd-three-bears -maxdepth 1 -name 'usayd-three-bears-scene-*.webp' | wc -l)" -eq 17
+          test "$(find audio/stories/usayd-three-bears -maxdepth 1 -name 'usayd-three-bears-*.mp3' | wc -l)" -eq 17
+          ! find audio/stories/usayd-three-bears -maxdepth 1 -name '*.wav' | grep -q .
+
+      - name: Commit integration
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add stories-v12.js service-worker.js
+          if git diff --cached --quiet; then
+            echo "No integration changes."
+            exit 0
+          fi
+          git commit -m "Integrate Usayd story in player"
+          git push
