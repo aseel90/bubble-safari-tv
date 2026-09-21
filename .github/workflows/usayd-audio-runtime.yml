@@ -1,0 +1,86 @@
+name: Build Usayd runtime audio
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'audio/stories/usayd-three-bears/*.wav'
+      - '.github/workflows/usayd-audio-runtime.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: usayd-audio-runtime
+  cancel-in-progress: false
+
+jobs:
+  encode:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install ffmpeg
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+
+      - name: Encode and validate
+        shell: bash
+        run: |
+          set -euo pipefail
+          dir="audio/stories/usayd-three-bears"
+          shopt -s nullglob
+          wavs=("$dir"/*.wav)
+
+          if [ "${#wavs[@]}" -eq 0 ]; then
+            echo "No WAV masters to encode."
+            exit 0
+          fi
+
+          printf '# Usayd audio QA\n\n' > "$dir/QA.md"
+          printf 'Generated automatically from the approved WAV masters. Runtime contract: MP3, 96 kbps, 24 kHz, mono.\n\n' >> "$dir/QA.md"
+          printf '| File | Duration | Codec | Rate | Channels | Bitrate | Peak |\n' >> "$dir/QA.md"
+          printf '|---|---:|---|---:|---:|---:|---:|\n' >> "$dir/QA.md"
+
+          for wav in "${wavs[@]}"; do
+            mp3="${wav%.wav}.mp3"
+            ffmpeg -hide_banner -loglevel error -y -i "$wav" -vn -ac 1 -ar 24000 -b:a 96k "$mp3"
+
+            codec="$(ffprobe -v error -select_streams a:0 -show_entries stream=codec_name -of default=nw=1:nk=1 "$mp3")"
+            rate="$(ffprobe -v error -select_streams a:0 -show_entries stream=sample_rate -of default=nw=1:nk=1 "$mp3")"
+            channels="$(ffprobe -v error -select_streams a:0 -show_entries stream=channels -of default=nw=1:nk=1 "$mp3")"
+            bitrate="$(ffprobe -v error -select_streams a:0 -show_entries format=bit_rate -of default=nw=1:nk=1 "$mp3")"
+            duration="$(ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 "$mp3")"
+            peak="$(ffmpeg -hide_banner -i "$wav" -af volumedetect -f null - 2>&1 | awk '/max_volume:/ {print $5}' | tail -1)"
+
+            test "$codec" = "mp3"
+            test "$rate" = "24000"
+            test "$channels" = "1"
+            test -s "$mp3"
+
+            printf '| %s | %.2fs | %s | %s Hz | %s | %s | %s dB |\n'               "$(basename "$mp3")" "$duration" "$codec" "$rate" "$channels" "$bitrate" "${peak:-n/a}" >> "$dir/QA.md"
+          done
+
+          count="$(find "$dir" -maxdepth 1 -type f -name 'usayd-three-bears-*.mp3' | wc -l)"
+          test "$count" -eq 17
+
+          git rm "$dir"/*.wav
+
+      - name: Commit runtime audio
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet && [ -z "$(git status --porcelain)" ]; then
+            echo "No audio changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add audio/stories/usayd-three-bears
+          git commit -m "Encode Usayd runtime audio"
+          git push
