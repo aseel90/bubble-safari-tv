@@ -21,8 +21,8 @@ on:
       - 'manifest.webmanifest'
       - 'favicon.svg'
       - 'audio/*.wav'
-      - 'audio/stories/arin-fox/*.mp3'
-      - 'assets/stories/arin-fox/**/*.webp'
+      - 'audio/stories/**/*.mp3'
+      - 'assets/stories/**/*.webp'
       - '.github/workflows/pages.yml'
   workflow_dispatch:
 
@@ -61,8 +61,8 @@ jobs:
           ]
           paths = [root / name for name in runtime]
           paths += sorted((root / 'audio').glob('*.wav'))
-          paths += sorted((root / 'audio' / 'stories' / 'arin-fox').glob('*.mp3'))
-          paths += sorted((root / 'assets' / 'stories' / 'arin-fox').glob('*.webp'))
+          paths += sorted((root / 'audio' / 'stories').glob('*/*.mp3'))
+          paths += sorted((root / 'assets' / 'stories').glob('*/*.webp'))
           h = hashlib.sha256()
           for path in sorted(paths, key=lambda p: p.as_posix()):
               if not path.is_file():
@@ -84,23 +84,33 @@ jobs:
         run: |
           set -euo pipefail
           rm -rf _site
-          mkdir -p _site/audio/stories/arin-fox _site/updates _site/assets/stories/arin-fox
+          mkdir -p _site/audio/stories _site/updates _site/assets/stories
           cp index.html styles.css art.css worlds.css polish-v08.css stories-v12.css game-v3.js stories-v12.js game-data.js tv-nav.js voice.js art.js scene-art.js service-worker.js manifest.webmanifest favicon.svg _site/
           cp audio/*.wav _site/audio/
-          cp audio/stories/arin-fox/*.mp3 _site/audio/stories/arin-fox/
-          cp assets/stories/arin-fox/*.webp _site/assets/stories/arin-fox/
+          cp -R audio/stories/* _site/audio/stories/
+          find _site/audio/stories -type f ! -name '*.mp3' -delete
+          cp -R assets/stories/* _site/assets/stories/
+          find _site/assets/stories -type f ! -name '*.webp' -delete
           python3 - <<'PY'
           from pathlib import Path
-          mp3=list(Path('_site/audio/stories/arin-fox').glob('*.mp3'))
-          wav=list(Path('_site/audio/stories/arin-fox').glob('*.wav'))
-          webp=list(Path('_site/assets/stories/arin-fox').glob('*.webp'))
-          assert len(mp3)==27, len(mp3)
-          assert len(wav)==0, wav
-          assert len(webp)==27, len(webp)
+          arin_mp3=list(Path('_site/audio/stories/arin-fox').glob('*.mp3'))
+          usayd_mp3=list(Path('_site/audio/stories/usayd-three-bears').glob('*.mp3'))
+          story_wav=list(Path('_site/audio/stories').glob('*/*.wav'))
+          arin_webp=list(Path('_site/assets/stories/arin-fox').glob('*.webp'))
+          usayd_webp=list(Path('_site/assets/stories/usayd-three-bears').glob('*.webp'))
+          assert len(arin_mp3)==27, len(arin_mp3)
+          assert len(usayd_mp3)==17, len(usayd_mp3)
+          assert len(story_wav)==0, story_wav
+          assert len(arin_webp)==27, len(arin_webp)
+          assert len(usayd_webp)==17, len(usayd_webp)
           assert Path('_site/audio/stories/arin-fox/arin-fox-01-intro.mp3').is_file()
           assert Path('_site/audio/stories/arin-fox/arin-fox-23-fox-apology-v2.mp3').is_file()
           assert Path('_site/audio/stories/arin-fox/arin-fox-27-ending.mp3').is_file()
-          print('Verified OTA runtime: 27 MP3, 0 story WAV, 27 WebP')
+          assert Path('_site/audio/stories/usayd-three-bears/usayd-three-bears-01-walk.mp3').is_file()
+          assert Path('_site/audio/stories/usayd-three-bears/usayd-three-bears-17-reunion.mp3').is_file()
+          assert Path('_site/assets/stories/usayd-three-bears/usayd-three-bears-scene-01.webp').is_file()
+          assert Path('_site/assets/stories/usayd-three-bears/usayd-three-bears-scene-17.webp').is_file()
+          print('Verified OTA runtime: 44 MP3, 0 story WAV, 44 WebP across 2 stories')
           PY
           (
             cd _site
