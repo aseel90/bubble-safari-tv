@@ -89,23 +89,23 @@ const ARIN_FOX_SEGMENTS=[
 ];
 
 const USAYD_SEGMENTS=[
-  {file:'usayd-three-bears-01-walk.mp3',chapter:'نزهة جميلة',caption:'في صباحٍ جميل، خرج أُسيد مع أمه في نزهة قرب الغابة. كان يمشي بجانبها على الطريق الأخضر، ويستمع إلى أصوات الطيور، بينما تذكره أمه أن يبقى قريبًا منها.',theme:'forest',actors:['usayd','mother']},
-  {file:'usayd-three-bears-02-butterfly.mp3',chapter:'فراشة ملونة',caption:'وبينما كانا يسيران، ظهرت فراشة ملوّنة ترفرف بين الأزهار. أعجب بها أُسيد كثيرًا، فتبعها خطواتٍ قليلة، ثم خطواتٍ أخرى، حتى ابتعد عن أمه من غير أن ينتبه.',theme:'forest',actors:['usayd','mother']},
-  {file:'usayd-three-bears-03-lost.mp3',chapter:'أين أمي؟',caption:'توقّف أُسيد فجأة ونظر حوله. لم يرَ أمه بين الأشجار، وشعر بقلقٍ صغير في قلبه. ناداها بصوت واضح، ثم قرر ألا يبتعد أكثر.',theme:'forest',actors:['usayd']},
-  {file:'usayd-three-bears-04-rain.mp3',chapter:'المطر',caption:'بدأ مطر خفيف يتساقط، فبحث أُسيد عن مكان يحتمي فيه. سار بحذر على الطريق، وهو يتمنى أن يجد مأوى قريبًا حتى يتوقف المطر.',theme:'forest',actors:['usayd']},
-  {file:'usayd-three-bears-05-cottage.mp3',chapter:'بيت بين الأشجار',caption:'بين الأشجار لمح أُسيد بيتًا خشبيًا دافئًا، يخرج من نوافذه ضوء لطيف. اقترب من الباب، وطرق برفق، وانتظر قليلًا، لكن أحدًا لم يجب.',theme:'home',actors:['usayd']},
-  {file:'usayd-three-bears-06-enter.mp3',chapter:'دخول البيت',caption:'وجد أُسيد الباب مواربًا. تردد لحظة، ثم دخل البيت من غير أن يحصل على إذن. كان البيت هادئًا ودافئًا، لكنه لم يكن يعرف أن الدخول من دون استئذان خطأ.',theme:'home',actors:['usayd']},
-  {file:'usayd-three-bears-07-three-bowls.mp3',chapter:'ثلاثة أطباق',caption:'في الداخل رأى أُسيد مائدة عليها ثلاثة أطباق: طبق كبير، وطبق متوسط، وطبق صغير. كان جائعًا، فنظر إليها بفضول وفكر في تذوق الطعام.',theme:'home',actors:['usayd']},
-  {file:'usayd-three-bears-08-porridge.mp3',chapter:'ساخن وبارد ومناسب',caption:'تذوق أُسيد من الطبق الكبير فوجده ساخنًا، ومن المتوسط فوجده باردًا. ثم ذاق من الطبق الصغير فوجده مناسبًا، فأكله حتى فرغ، من غير أن يطلب الإذن.',theme:'home',actors:['usayd']},
-  {file:'usayd-three-bears-09-three-chairs.mp3',chapter:'ثلاثة كراسٍ',caption:'بعد ذلك رأى ثلاثة كراسٍ: كرسيًا كبيرًا، وكرسيًا متوسطًا، وكرسيًا صغيرًا. جرّب الجلوس عليها واحدًا بعد الآخر، حتى اختار الكرسي الصغير.',theme:'home',actors:['usayd']},
-  {file:'usayd-three-bears-10-broken-chair.mp3',chapter:'طَق!',caption:'وما إن جلس أُسيد على الكرسي الصغير حتى سمع صوتًا: طَق! انكسر الكرسي، فوقف سريعًا وهو سليم، ونظر إلى القطع بحزن لأنه عرف أنه أفسد شيئًا ليس له.',theme:'home',actors:['usayd']},
-  {file:'usayd-three-bears-11-three-beds.mp3',chapter:'ثلاثة أسرّة',caption:'شعر أُسيد بالتعب، فوجد غرفة فيها ثلاثة أسرّة بأحجام مختلفة. جرّبها، ثم استلقى على السرير الصغير المريح، وسرعان ما غلبه النوم.',theme:'home',actors:['usayd']},
-  {file:'usayd-three-bears-12-bears-return.mp3',chapter:'عودة الدببة',caption:'بعد قليل عادت عائلة الدببة الثلاثة إلى بيتها بعد أن خف المطر: الأب الدب، والأم الدبة، والدب الصغير. دخلوا البيت وهم يتوقعون أن يجدوا كل شيء كما تركوه.',theme:'forest',actors:['father-bear','mother-bear','baby-bear']},
-  {file:'usayd-three-bears-13-empty-bowl.mp3',chapter:'من أكل طعامي؟',caption:'اقتربت الدببة من المائدة. لاحظ الأب أن طعامه قد تذوق، ولاحظت الأم أن طعامها تغير، ثم رأى الدب الصغير أن طبقه الصغير قد أصبح فارغًا تمامًا.',theme:'home',actors:['father-bear','mother-bear','baby-bear']},
-  {file:'usayd-three-bears-14-chair-found.mp3',chapter:'والكرسي أيضًا!',caption:'انتقلت الدببة إلى الكراسي، فوجدت الكرسي الكبير في مكانه، والمتوسط في مكانه، أما الدب الصغير فوجد كرسيه مكسورًا. شعر بالحزن، وتساءل من الذي فعل ذلك.',theme:'home',actors:['father-bear','mother-bear','baby-bear']},
-  {file:'usayd-three-bears-15-found-usayd.mp3',chapter:'وجدوا أُسيد',caption:'صعدت الدببة إلى غرفة النوم، وهناك وجدت أُسيد نائمًا في السرير الصغير. استيقظ على أصواتهم، وفوجئ برؤيتهم، لكن الدببة بقيت هادئة ولم تؤذه.',theme:'home',actors:['usayd','father-bear','mother-bear','baby-bear']},
-  {file:'usayd-three-bears-16-apology.mp3',chapter:'الاعتذار',caption:'وقف أُسيد وقال الحقيقة من غير أن يخفي شيئًا. اعتذر لأنه دخل من دون إذن، وأكل الطعام، وكسر الكرسي. ووعد أن يساعد في إصلاح ما كسره وألا يكرر ذلك.',theme:'home',actors:['usayd','father-bear','mother-bear','baby-bear']},
-  {file:'usayd-three-bears-17-reunion.mp3',chapter:'العودة إلى أمي',caption:'في الخارج كانت أم أُسيد تبحث عنه، حتى وصلت إلى البيت ورأته بخير. ركض إليها وعانقها، ثم شكر الدببة واعتذر مرة أخرى. تعلم أُسيد أن يبقى قريبًا من أمه، وأن يطلب الإذن، ويقول الحقيقة، ويصلح خطأه.',theme:'ending',actors:['usayd','mother','father-bear','mother-bear','baby-bear'],autoAdvanceDelayMs:900}
+  {file:'usayd-three-bears-01-walk.mp3',chapter:'نزهة جميلة',caption:'خرج أُسيد مع أمه في نزهة قرب الغابة.',theme:'forest',actors:['usayd','mother']},
+  {file:'usayd-three-bears-02-butterfly.mp3',chapter:'فراشة ملونة',caption:'تبع أُسيد فراشةً ملوّنة وابتعد قليلًا.',theme:'forest',actors:['usayd','mother']},
+  {file:'usayd-three-bears-03-lost.mp3',chapter:'أين أمي؟',caption:'نظر أُسيد حوله ولم يجد أمه.',theme:'forest',actors:['usayd']},
+  {file:'usayd-three-bears-04-rain.mp3',chapter:'المطر',caption:'بدأ المطر، فبحث أُسيد عن مأوى.',theme:'forest',actors:['usayd']},
+  {file:'usayd-three-bears-05-cottage.mp3',chapter:'بيت بين الأشجار',caption:'وجد أُسيد بيتًا دافئًا بين الأشجار.',theme:'home',actors:['usayd']},
+  {file:'usayd-three-bears-06-enter.mp3',chapter:'دخول البيت',caption:'دخل أُسيد البيت من دون إذن.',theme:'home',actors:['usayd']},
+  {file:'usayd-three-bears-07-three-bowls.mp3',chapter:'ثلاثة أطباق',caption:'رأى أُسيد ثلاثة أطباق بأحجام مختلفة.',theme:'home',actors:['usayd']},
+  {file:'usayd-three-bears-08-porridge.mp3',chapter:'ساخن وبارد ومناسب',caption:'جرّب الأطباق حتى وجد الصغير مناسبًا.',theme:'home',actors:['usayd']},
+  {file:'usayd-three-bears-09-three-chairs.mp3',chapter:'ثلاثة كراسٍ',caption:'رأى أُسيد ثلاثة كراسٍ بأحجام مختلفة.',theme:'home',actors:['usayd']},
+  {file:'usayd-three-bears-10-broken-chair.mp3',chapter:'طَق!',caption:'انكسر الكرسي الصغير، فحزن أُسيد.',theme:'home',actors:['usayd']},
+  {file:'usayd-three-bears-11-three-beds.mp3',chapter:'ثلاثة أسرّة',caption:'نام أُسيد في السرير الصغير.',theme:'home',actors:['usayd']},
+  {file:'usayd-three-bears-12-bears-return.mp3',chapter:'عودة الدببة',caption:'عادت عائلة الدببة الثلاثة إلى البيت.',theme:'forest',actors:['father-bear','mother-bear','baby-bear']},
+  {file:'usayd-three-bears-13-empty-bowl.mp3',chapter:'من أكل طعامي؟',caption:'وجد الدب الصغير طبقه فارغًا.',theme:'home',actors:['father-bear','mother-bear','baby-bear']},
+  {file:'usayd-three-bears-14-chair-found.mp3',chapter:'والكرسي أيضًا!',caption:'وجد الدب الصغير كرسيه مكسورًا.',theme:'home',actors:['father-bear','mother-bear','baby-bear']},
+  {file:'usayd-three-bears-15-found-usayd.mp3',chapter:'وجدوا أُسيد',caption:'وجدت الدببة أُسيد نائمًا في السرير.',theme:'home',actors:['usayd','father-bear','mother-bear','baby-bear']},
+  {file:'usayd-three-bears-16-apology.mp3',chapter:'الاعتذار',caption:'قال أُسيد الحقيقة واعتذر عن أخطائه.',theme:'home',actors:['usayd','father-bear','mother-bear','baby-bear']},
+  {file:'usayd-three-bears-17-reunion.mp3',chapter:'العودة إلى أمي',caption:'عاد أُسيد إلى أمه وتعلّم درسًا مهمًا.',theme:'ending',actors:['usayd','mother','father-bear','mother-bear','baby-bear'],autoAdvanceDelayMs:900}
 ];
 
 const STORIES=[
