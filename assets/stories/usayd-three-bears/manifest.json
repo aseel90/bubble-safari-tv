@@ -1,0 +1,99 @@
+{
+  "storyId": "usayd-three-bears",
+  "title": "أُسيد وبيت الدببة الثلاثة",
+  "status": "visuals-approved",
+  "imageFormat": "webp",
+  "runtimeSize": {
+    "width": 1600,
+    "height": 900,
+    "aspectRatio": "16:9"
+  },
+  "qa": "PASS 17/17",
+  "scenes": [
+    {
+      "scene": 1,
+      "title": "نزهة جميلة",
+      "image": "usayd-three-bears-scene-01.webp"
+    },
+    {
+      "scene": 2,
+      "title": "فراشة ملونة",
+      "image": "usayd-three-bears-scene-02.webp"
+    },
+    {
+      "scene": 3,
+      "title": "أين أمي؟",
+      "image": "usayd-three-bears-scene-03.webp"
+    },
+    {
+      "scene": 4,
+      "title": "المطر",
+      "image": "usayd-three-bears-scene-04.webp"
+    },
+    {
+      "scene": 5,
+      "title": "بيت بين الأشجار",
+      "image": "usayd-three-bears-scene-05.webp"
+    },
+    {
+      "scene": 6,
+      "title": "دخول البيت",
+      "image": "usayd-three-bears-scene-06.webp"
+    },
+    {
+      "scene": 7,
+      "title": "ثلاثة أطباق",
+      "image": "usayd-three-bears-scene-07.webp"
+    },
+    {
+      "scene": 8,
+      "title": "ساخن وبارد ومناسب",
+      "image": "usayd-three-bears-scene-08.webp"
+    },
+    {
+      "scene": 9,
+      "title": "ثلاثة كراسٍ",
+      "image": "usayd-three-bears-scene-09.webp"
+    },
+    {
+      "scene": 10,
+      "title": "طَق!",
+      "image": "usayd-three-bears-scene-10.webp"
+    },
+    {
+      "scene": 11,
+      "title": "ثلاثة أسرّة",
+      "image": "usayd-three-bears-scene-11.webp"
+    },
+    {
+      "scene": 12,
+      "title": "عودة الدببة",
+      "image": "usayd-three-bears-scene-12.webp"
+    },
+    {
+      "scene": 13,
+      "title": "من أكل طعامي؟",
+      "image": "usayd-three-bears-scene-13.webp"
+    },
+    {
+      "scene": 14,
+      "title": "والكرسي أيضًا!",
+      "image": "usayd-three-bears-scene-14.webp"
+    },
+    {
+      "scene": 15,
+      "title": "وجدوا أُسيد",
+      "image": "usayd-three-bears-scene-15.webp"
+    },
+    {
+      "scene": 16,
+      "title": "الاعتذار",
+      "image": "usayd-three-bears-scene-16.webp"
+    },
+    {
+      "scene": 17,
+      "title": "العودة إلى أمي",
+      "image": "usayd-three-bears-scene-17.webp"
+    }
+  ]
+}
