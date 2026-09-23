@@ -2,14 +2,8 @@ plugins {
     id 'com.android.application'
 }
 
-
-
-
-def webRoot = <redacted_jwt>
+def webRoot = rootProject.projectDir.parentFile
 def generatedWebAssets = layout.buildDirectory.dir('generated/web-assets')
-
-
-
 
 tasks.register('syncWebAssets', Sync) {
     from(webRoot) {
@@ -33,12 +27,49 @@ tasks.register('syncWebAssets', Sync) {
         include 'audio/stories/**/*.mp3'
         include 'assets/stories/**/*.webp'
     }
-    def awwabRuntimeBundle = new File(webRoot, 'story-bundles/awwab-lost-duck-runtime-assets.zip')\n    from({ zipTree(awwabRuntimeBundle) }) {\n        include 'audio/stories/awwab-lost-duck/*.mp3'\n        include 'assets/stories/awwab-lost-duck/*.webp'\n    }\n    into(generatedWebAssets)
+    def awwabRuntimeBundle = new File(webRoot, 'story-bundles/awwab-lost-duck-runtime-assets.zip')
+    from({ zipTree(awwabRuntimeBundle) }) {
+        include 'audio/stories/awwab-lost-duck/*.mp3'
+        include 'assets/stories/awwab-lost-duck/*.webp'
+    }
+    into(generatedWebAssets)
     doLast {
         def marker = new File(generatedWebAssets.get().asFile, "bubble-safari-version.txt")
         marker.text = (System.getenv("BUBBLE_SAFARI_GAME_VERSION") ?: System.getenv("GITHUB_SHA") ?: "bundled").trim()
     }
 }
 
+android {
+    namespace 'com.bubblesafari.tv'
+    compileSdk 36
 
+    defaultConfig {
+        applicationId 'com.bubblesafari.tv'
+        minSdk 26
+        targetSdk 36
+        versionCode 5
+        versionName '0.9.2-tv5'
+    }
 
+    sourceSets.getByName('main').assets.directories.add(
+            generatedWebAssets.get().asFile.absolutePath
+    )
+
+    buildTypes {
+        debug { minifyEnabled false }
+        release { minifyEnabled false }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+tasks.named('preBuild').configure {
+    dependsOn(tasks.named('syncWebAssets'))
+}
+
+dependencies {
+    implementation 'androidx.webkit:webkit:1.17.0'
+}
