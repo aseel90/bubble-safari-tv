@@ -23,13 +23,14 @@ on:
       - 'audio/*.wav'
       - 'audio/stories/**/*.mp3'
       - 'assets/stories/**/*.webp'
+      - 'story-bundles/*.zip'
       - '.github/workflows/pages.yml'
   workflow_dispatch:
 
 permissions:
   contents: read
   pages: write
-  id-token: write
+  id-token=<redacted>
 
 concurrency:
   group: pages
@@ -63,6 +64,7 @@ jobs:
           paths += sorted((root / 'audio').glob('*.wav'))
           paths += sorted((root / 'audio' / 'stories').glob('*/*.mp3'))
           paths += sorted((root / 'assets' / 'stories').glob('*/*.webp'))
+          paths += sorted((root / 'story-bundles').glob('*.zip'))
           h = hashlib.sha256()
           for path in sorted(paths, key=lambda p: p.as_posix()):
               if not path.is_file():
@@ -91,18 +93,28 @@ jobs:
           find _site/audio/stories -type f ! -name '*.mp3' -delete
           cp -R assets/stories/* _site/assets/stories/
           find _site/assets/stories -type f ! -name '*.webp' -delete
+          AWWAB_TMP="$RUNNER_TEMP/awwab-runtime"
+          rm -rf "$AWWAB_TMP"
+          mkdir -p "$AWWAB_TMP"
+          unzip -q story-bundles/awwab-lost-duck-runtime-assets.zip -d "$AWWAB_TMP"
+          cp -R "$AWWAB_TMP/audio/stories/awwab-lost-duck" _site/audio/stories/
+          cp -R "$AWWAB_TMP/assets/stories/awwab-lost-duck" _site/assets/stories/
           python3 - <<'PY'
           from pathlib import Path
           arin_mp3=list(Path('_site/audio/stories/arin-fox').glob('*.mp3'))
           usayd_mp3=list(Path('_site/audio/stories/usayd-three-bears').glob('*.mp3'))
+          awwab_mp3=list(Path('_site/audio/stories/awwab-lost-duck').glob('*.mp3'))
           story_wav=list(Path('_site/audio/stories').glob('*/*.wav'))
           arin_webp=list(Path('_site/assets/stories/arin-fox').glob('*.webp'))
           usayd_webp=list(Path('_site/assets/stories/usayd-three-bears').glob('*.webp'))
+          awwab_webp=list(Path('_site/assets/stories/awwab-lost-duck').glob('*.webp'))
           assert len(arin_mp3)==27, len(arin_mp3)
           assert len(usayd_mp3)==17, len(usayd_mp3)
+          assert len(awwab_mp3)==27, len(awwab_mp3)
           assert len(story_wav)==0, story_wav
           assert len(arin_webp)==27, len(arin_webp)
           assert len(usayd_webp)==17, len(usayd_webp)
+          assert len(awwab_webp)==27, len(awwab_webp)
           assert Path('_site/audio/stories/arin-fox/arin-fox-01-intro.mp3').is_file()
           assert Path('_site/audio/stories/arin-fox/arin-fox-23-fox-apology-v2.mp3').is_file()
           assert Path('_site/audio/stories/arin-fox/arin-fox-27-ending.mp3').is_file()
@@ -110,7 +122,13 @@ jobs:
           assert Path('_site/audio/stories/usayd-three-bears/usayd-three-bears-17-reunion.mp3').is_file()
           assert Path('_site/assets/stories/usayd-three-bears/usayd-three-bears-scene-01.webp').is_file()
           assert Path('_site/assets/stories/usayd-three-bears/usayd-three-bears-scene-17.webp').is_file()
-          print('Verified OTA runtime: 44 MP3, 0 story WAV, 44 WebP across 2 stories')
+          assert Path('_site/audio/stories/awwab-lost-duck/awwab-lost-duck-01-morning.mp3').is_file()
+          assert Path('_site/audio/stories/awwab-lost-duck/awwab-lost-duck-23-mother-recognizes.mp3').is_file()
+          assert Path('_site/audio/stories/awwab-lost-duck/awwab-lost-duck-27-home.mp3').is_file()
+          assert Path('_site/assets/stories/awwab-lost-duck/awwab-lost-duck-01-morning.webp').is_file()
+          assert Path('_site/assets/stories/awwab-lost-duck/awwab-lost-duck-17-safe-crossing.webp').is_file()
+          assert Path('_site/assets/stories/awwab-lost-duck/awwab-lost-duck-27-home.webp').is_file()
+          print('Verified OTA runtime: 71 MP3, 0 story WAV, 71 WebP across 3 stories')
           PY
           (
             cd _site
