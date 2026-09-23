@@ -24,13 +24,8 @@ tasks.register('syncWebAssets', Sync) {
         include 'manifest.webmanifest'
         include 'favicon.svg'
         include 'audio/*.wav'
-        include 'audio/stories/**/*.mp3'
-        include 'assets/stories/**/*.webp'
-    }
-    def awwabRuntimeBundle = new File(webRoot, 'story-bundles/awwab-lost-duck-runtime-assets.zip')
-    from({ zipTree(awwabRuntimeBundle) }) {
-        include 'audio/stories/awwab-lost-duck/*.mp3'
-        include 'assets/stories/awwab-lost-duck/*.webp'
+        include 'audio/stories/arin-fox/*.mp3'
+        include 'assets/stories/arin-fox/*.webp'
     }
     into(generatedWebAssets)
     doLast {

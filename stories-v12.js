@@ -9,10 +9,6 @@ const USAYD_AUDIO_BASE='./audio/stories/usayd-three-bears/';
 const USAYD_AUDIO_VERSION='v1-leda-96k';
 const USAYD_IMAGE_BASE='./assets/stories/usayd-three-bears/';
 const USAYD_IMAGE_VERSION='v1-webp-1600x900';
-const AWWAB_AUDIO_BASE='./audio/stories/awwab-lost-duck/';
-const AWWAB_AUDIO_VERSION='v1-leda-96k';
-const AWWAB_IMAGE_BASE='./assets/stories/awwab-lost-duck/';
-const AWWAB_IMAGE_VERSION='v1-webp-q95';
 const ARIN_FOX_SCENE_IMAGES=[
   'arinfox_scene_01_2026-09-18T18-53-29-720Z.webp',
   'arinfox_scene_02_v02.webp',
@@ -43,35 +39,6 @@ const ARIN_FOX_SCENE_IMAGES=[
   'arinfox_scene_27_2026-09-18T18-02-56-244Z.webp'
 ];
 const USAYD_SCENE_IMAGES=Array.from({length:17},(_,index)=>`usayd-three-bears-scene-${String(index+1).padStart(2,'0')}.webp`);
-const AWWAB_SCENE_IMAGES=[
-  'awwab-lost-duck-01-morning.webp',
-  'awwab-lost-duck-02-park-path.webp',
-  'awwab-lost-duck-03-small-sound.webp',
-  'awwab-lost-duck-04-lost-duckling.webp',
-  'awwab-lost-duck-05-promise-help.webp',
-  'awwab-lost-duck-06-looking-for-clue.webp',
-  'awwab-lost-duck-07-footprints.webp',
-  'awwab-lost-duck-08-following-trail.webp',
-  'awwab-lost-duck-09-flowers.webp',
-  'awwab-lost-duck-10-crossroads.webp',
-  'awwab-lost-duck-11-new-tracks.webp',
-  'awwab-lost-duck-12-tracks-fade.webp',
-  'awwab-lost-duck-13-tracks-disappear.webp',
-  'awwab-lost-duck-14-stream.webp',
-  'awwab-lost-duck-15-along-bank.webp',
-  'awwab-lost-duck-16-small-bridge.webp',
-  'awwab-lost-duck-17-safe-crossing.webp',
-  'awwab-lost-duck-18-distant-call.webp',
-  'awwab-lost-duck-19-follow-sound.webp',
-  'awwab-lost-duck-20-short-rest.webp',
-  'awwab-lost-duck-21-clearer-call.webp',
-  'awwab-lost-duck-22-pond-family.webp',
-  'awwab-lost-duck-23-mother-recognizes.webp',
-  'awwab-lost-duck-24-reunion.webp',
-  'awwab-lost-duck-25-thank-you.webp',
-  'awwab-lost-duck-26-family-together.webp',
-  'awwab-lost-duck-27-home.webp'
-];
 const preloadedSceneImages=new Map();
 let storyVisualToken=0;
 function sceneImagePath(story,index){const file=story?.sceneImages?.[index];return file?story.imageBase+file+'?v='+story.imageVersion:''}
@@ -141,40 +108,9 @@ const USAYD_SEGMENTS=[
   {file:'usayd-three-bears-17-reunion.mp3',chapter:'العودة إلى أمي',caption:'عاد أُسيد إلى أمه وتعلّم درسًا مهمًا.',theme:'ending',actors:['usayd','mother','father-bear','mother-bear','baby-bear'],autoAdvanceDelayMs:900}
 ];
 
-const AWWAB_SEGMENTS=[
-  {file:"awwab-lost-duck-01-morning.mp3",chapter:"صباح جميل",caption:"في صباحٍ جميل، خرج أَوّابْ من بيته ليستمتع بنزهةٍ هادئة في الحديقة.",theme:"home",actors:['awwab']},
-  {file:"awwab-lost-duck-02-park-path.mp3",chapter:"طريق الحديقة",caption:"سار أَوّابْ بين الأشجار والزهور، متجهًا نحو البركة.",theme:"garden",actors:['awwab']},
-  {file:"awwab-lost-duck-03-small-sound.mp3",chapter:"صوت صغير",caption:"فجأة، سمع أَوّابْ صوتًا صغيرًا يأتي من بين الأعشاب.",theme:"garden",actors:['awwab']},
-  {file:"awwab-lost-duck-04-lost-duckling.mp3",chapter:"البطّة الضائعة",caption:"اقترب أَوّابْ بحذر، فوجد بطّةً صغيرةً ضائعةً تبدو قلقة.",theme:"garden",actors:['awwab','duckling']},
-  {file:"awwab-lost-duck-05-promise-help.mp3",chapter:"لا تخف",caption:"قال أَوّابْ بلطف: لا تقلقي، سأساعدكِ في العثور على عائلتكِ.",theme:"garden",actors:['awwab','duckling']},
-  {file:"awwab-lost-duck-06-looking-for-clue.mp3",chapter:"أين أمك؟",caption:"نظر أَوّابْ حوله يبحث عن أثرٍ يقودهما إلى الطريق الصحيح.",theme:"garden",actors:['awwab','duckling']},
-  {file:"awwab-lost-duck-07-footprints.mp3",chapter:"سنبحث معًا",caption:"ظهرت آثار أقدامٍ صغيرة في التراب، فتبعها أَوّابْ والبطّة.",theme:"garden",actors:['awwab','duckling']},
-  {file:"awwab-lost-duck-08-following-trail.mp3",chapter:"بين الزهور",caption:"قادتهما الآثار بين الأشجار، والبطّة تسير قريبةً منه.",theme:"garden",actors:['awwab','duckling']},
-  {file:"awwab-lost-duck-09-flowers.mp3",chapter:"عند البركة الصغيرة",caption:"مرّا بجانب أزهارٍ كثيرة، لكن عائلة البط لم تكن هناك.",theme:"garden",actors:['awwab','duckling']},
-  {file:"awwab-lost-duck-10-crossroads.mp3",chapter:"الجسر الخشبي",caption:"وصلا إلى مفترقٍ صغير، فتوقف أَوّابْ ليفكر أين يذهبان.",theme:"forest",actors:['awwab','duckling']},
-  {file:"awwab-lost-duck-11-new-tracks.mp3",chapter:"آثار صغيرة",caption:"لاحظ أَوّابْ آثارًا جديدة قرب الصخور، فعادا إلى تتبّعها.",theme:"forest",actors:['awwab','duckling']},
-  {file:"awwab-lost-duck-12-tracks-fade.mp3",chapter:"نتبع الآثار",caption:"استمرا في السير حتى بدأت الآثار تضعف شيئًا فشيئًا.",theme:"forest",actors:['awwab','duckling']},
-  {file:"awwab-lost-duck-13-tracks-disappear.mp3",chapter:"اختفت الآثار",caption:"عند بقعةٍ من الحصى الجاف، اختفت الآثار تمامًا.",theme:"forest",actors:['awwab','duckling']},
-  {file:"awwab-lost-duck-14-stream.mp3",chapter:"عند الماء",caption:"وصل أَوّابْ والبطّة إلى جدولٍ صغير، وبدآ يبحثان على ضفتيه.",theme:"forest",actors:['awwab','duckling']},
-  {file:"awwab-lost-duck-15-along-bank.mp3",chapter:"على طول الضفة",caption:"سار أَوّابْ والبطّة بمحاذاة ضفة الجدول، يبحثان عن أثرٍ جديد.",theme:"forest",actors:['awwab','duckling']},
-  {file:"awwab-lost-duck-16-small-bridge.mp3",chapter:"الجسر الصغير",caption:"لمح أَوّابْ جسرًا خشبيًا صغيرًا، ورأى قربه آثار أقدام البط من جديد.",theme:"forest",actors:['awwab','duckling']},
-  {file:"awwab-lost-duck-17-safe-crossing.mp3",chapter:"عبور آمن",caption:"عبر أَوّابْ الجسر بحذر، وبقيت البطّة الصغيرة قريبةً منه.",theme:"forest",actors:['awwab','duckling']},
-  {file:"awwab-lost-duck-18-distant-call.mp3",chapter:"صوت بعيد",caption:"على الضفة الأخرى، سمعا نداء بطٍّ بعيد، فامتلأ قلبهما بالأمل.",theme:"forest",actors:['awwab','duckling']},
-  {file:"awwab-lost-duck-19-follow-sound.mp3",chapter:"نتبع الصوت",caption:"تبع أَوّابْ والبطّة الصغيرة اتجاه الصوت عبر الممر الأخضر.",theme:"forest",actors:['awwab','duckling']},
-  {file:"awwab-lost-duck-20-short-rest.mp3",chapter:"استراحة قصيرة",caption:"تعبت البطّة قليلًا، فتوقف أَوّابْ معها ليستريحا لحظةً قصيرة.",theme:"forest",actors:['awwab','duckling']},
-  {file:"awwab-lost-duck-21-clearer-call.mp3",chapter:"الصوت أوضح",caption:"ثم سمعا نداءً أوضح، فنهضت البطّة بحماس، وعرف أَوّابْ أنهما اقتربا.",theme:"forest",actors:['awwab','duckling']},
-  {file:"awwab-lost-duck-22-pond-family.mp3",chapter:"ظهرت البحيرة",caption:"خرج أَوّابْ والبطّة من بين الأشجار، فرأيا البركة وعائلة البط في الجهة المقابلة.",theme:"garden",actors:['awwab','duckling','mother-duck','duck-siblings']},
-  {file:"awwab-lost-duck-23-mother-recognizes.mp3",chapter:"عرفتها أمّها",caption:"تعرفت الأم إلى صغيرتها، فأسرعت البطّة نحو عائلتها بسعادة.",theme:"garden",actors:['awwab','duckling','mother-duck','duck-siblings']},
-  {file:"awwab-lost-duck-24-reunion.mp3",chapter:"لمّ الشمل",caption:"اجتمعت البطّة الصغيرة بأمّها وإخوتها، وامتلأ المكان بالفرح.",theme:"garden",actors:['awwab','duckling','mother-duck','duck-siblings']},
-  {file:"awwab-lost-duck-25-thank-you.mp3",chapter:"شكرًا يا أَوّابْ",caption:"نظرت الأم إلى أَوّابْ بامتنان، فابتسم ولوّح لها بلطف.",theme:"garden",actors:['awwab','duckling','mother-duck','duck-siblings']},
-  {file:"awwab-lost-duck-26-family-together.mp3",chapter:"العائلة معًا",caption:"سبحت عائلة البط معًا في البركة، بينما وقف أَوّابْ على الضفة يلوّح لهم مودعًا.",theme:"garden",actors:['awwab','duckling','mother-duck','duck-siblings']},
-  {file:"awwab-lost-duck-27-home.mp3",chapter:"العودة إلى البيت",caption:"ومع غروب الشمس، عاد أَوّابْ إلى بيته سعيدًا وفخورًا لأنه ساعد البطّة الضائعة على العودة إلى عائلتها.",theme:"ending",actors:['awwab'],autoAdvanceDelayMs:900}
-];
-
 const STORIES=[
   {id:'arin-fox',title:'أرين والثعلب',typeLabel:'استمع وشاهد',durationLabel:'8 دقائق',description:'تذهب أرين لزيارة جدتها، فتقابل ثعلبًا فضوليًا وتتعلم أن تكون لطيفة وحذرة وتطلب المساعدة عند الحاجة.',audioBase:ARIN_FOX_AUDIO_BASE,audioVersion:ARIN_FOX_AUDIO_VERSION,imageBase:ARIN_FOX_IMAGE_BASE,imageVersion:ARIN_FOX_IMAGE_VERSION,sceneImages:ARIN_FOX_SCENE_IMAGES,segments:ARIN_FOX_SEGMENTS},
-  {id:'usayd-three-bears',title:'أُسيد وبيت الدببة الثلاثة',typeLabel:'استمع وشاهد',durationLabel:'5 دقائق',description:'يبتعد أُسيد عن أمه، فيجد بيت الدببة الثلاثة ويتعلم الاستئذان وقول الحقيقة وإصلاح الخطأ والبقاء قريبًا من والديه.',audioBase:USAYD_AUDIO_BASE,audioVersion:USAYD_AUDIO_VERSION,imageBase:USAYD_IMAGE_BASE,imageVersion:USAYD_IMAGE_VERSION,sceneImages:USAYD_SCENE_IMAGES,segments:USAYD_SEGMENTS},
-  {id:'awwab-lost-duck',title:'أَوّابْ والبطّة الضائعة',typeLabel:'استمع وشاهد',durationLabel:'4 دقائق',description:'يساعد أَوّابْ بطّةً صغيرةً ضائعة على تتبّع الطريق والعودة بأمان إلى أمّها وإخوتها.',audioBase:AWWAB_AUDIO_BASE,audioVersion:AWWAB_AUDIO_VERSION,imageBase:AWWAB_IMAGE_BASE,imageVersion:AWWAB_IMAGE_VERSION,sceneImages:AWWAB_SCENE_IMAGES,segments:AWWAB_SEGMENTS}
+  {id:'usayd-three-bears',title:'أُسيد وبيت الدببة الثلاثة',typeLabel:'استمع وشاهد',durationLabel:'5 دقائق',description:'يبتعد أُسيد عن أمه، فيجد بيت الدببة الثلاثة ويتعلم الاستئذان وقول الحقيقة وإصلاح الخطأ والبقاء قريبًا من والديه.',audioBase:USAYD_AUDIO_BASE,audioVersion:USAYD_AUDIO_VERSION,imageBase:USAYD_IMAGE_BASE,imageVersion:USAYD_IMAGE_VERSION,sceneImages:USAYD_SCENE_IMAGES,segments:USAYD_SEGMENTS}
 ];
 const player={story:null,index:0,partIndex:0,finished:false,token:0,partBoundaryHandled:false};
 const audio=new Audio();audio.preload='auto';

@@ -23,9 +23,8 @@ on:
       - 'manifest.webmanifest'
       - 'favicon.svg'
       - 'audio/*.wav'
-      - 'audio/stories/**/*.mp3'
-      - 'assets/stories/**/*.webp'
-      - 'story-bundles/*.zip'
+      - 'audio/stories/arin-fox/*.mp3'
+      - 'assets/stories/arin-fox/**/*.webp'
       - '.github/workflows/android-tv-apk.yml'
 
 jobs:
@@ -52,9 +51,8 @@ jobs:
           ]
           paths = [root / name for name in runtime]
           paths += sorted((root / 'audio').glob('*.wav'))
-          paths += sorted((root / 'audio' / 'stories').glob('*/*.mp3'))
-          paths += sorted((root / 'assets' / 'stories').glob('*/*.webp'))
-          paths += sorted((root / 'story-bundles').glob('*.zip'))
+          paths += sorted((root / 'audio' / 'stories' / 'arin-fox').glob('*.mp3'))
+          paths += sorted((root / 'assets' / 'stories' / 'arin-fox').glob('*.webp'))
           h = hashlib.sha256()
           for path in sorted(paths, key=lambda p: p.as_posix()):
               if not path.is_file():
@@ -128,16 +126,6 @@ jobs:
               'assets/audio/stories/arin-fox/arin-fox-27-ending.mp3',
               'assets/assets/stories/arin-fox/arinfox_scene_01_2026-09-18T18-53-29-720Z.webp',
               'assets/assets/stories/arin-fox/arinfox_scene_27_2026-09-18T18-02-56-244Z.webp',
-              'assets/audio/stories/usayd-three-bears/usayd-three-bears-01-walk.mp3',
-              'assets/audio/stories/usayd-three-bears/usayd-three-bears-17-reunion.mp3',
-              'assets/assets/stories/usayd-three-bears/usayd-three-bears-scene-01.webp',
-              'assets/assets/stories/usayd-three-bears/usayd-three-bears-scene-17.webp',
-              'assets/audio/stories/awwab-lost-duck/awwab-lost-duck-01-morning.mp3',
-              'assets/audio/stories/awwab-lost-duck/awwab-lost-duck-23-mother-recognizes.mp3',
-              'assets/audio/stories/awwab-lost-duck/awwab-lost-duck-27-home.mp3',
-              'assets/assets/stories/awwab-lost-duck/awwab-lost-duck-01-morning.webp',
-              'assets/assets/stories/awwab-lost-duck/awwab-lost-duck-17-safe-crossing.webp',
-              'assets/assets/stories/awwab-lost-duck/awwab-lost-duck-27-home.webp',
           }
           with zipfile.ZipFile(apk) as zf:
               names = set(zf.namelist())
@@ -145,20 +133,18 @@ jobs:
           with open(listing_path, 'w', encoding='utf-8') as f:
               for name in sorted(names):
                   f.write(name + '\n')
-          expected_counts = {'arin-fox':27,'usayd-three-bears':17,'awwab-lost-duck':27}
-          story_wav = sorted(name for name in names if name.startswith('assets/audio/stories/') and name.endswith('.wav'))
+          story_mp3 = sorted(name for name in names if name.startswith('assets/audio/stories/arin-fox/') and name.endswith('.mp3'))
+          story_wav = sorted(name for name in names if name.startswith('assets/audio/stories/arin-fox/') and name.endswith('.wav'))
+          story_webp = sorted(name for name in names if name.startswith('assets/assets/stories/arin-fox/') and name.endswith('.webp'))
+          if len(story_mp3) != 27:
+              print('Expected 27 story MP3 files, found', len(story_mp3))
+              raise SystemExit(1)
           if story_wav:
               print('Story WAV masters must not be packaged:', *story_wav, sep='\n - ')
               raise SystemExit(1)
-          for story_id, expected in expected_counts.items():
-              mp3 = sorted(name for name in names if name.startswith(f'assets/audio/stories/{story_id}/') and name.endswith('.mp3'))
-              webp = sorted(name for name in names if name.startswith(f'assets/assets/stories/{story_id}/') and name.endswith('.webp'))
-              if len(mp3) != expected:
-                  print(f'Expected {expected} MP3 files for {story_id}, found', len(mp3))
-                  raise SystemExit(1)
-              if len(webp) != expected:
-                  print(f'Expected {expected} WebP files for {story_id}, found', len(webp))
-                  raise SystemExit(1)
+          if len(story_webp) != 27:
+              print('Expected 27 story WebP files, found', len(story_webp))
+              raise SystemExit(1)
           missing = sorted(required - names)
           if missing:
               print('Missing required APK assets:', *missing, sep='\n - ')
