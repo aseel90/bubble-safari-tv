@@ -23,6 +23,7 @@ on:
       - 'audio/*.wav'
       - 'audio/stories/**/*.mp3'
       - 'assets/stories/**/*.webp'
+      - 'videos/**/*.mp4'
       - '.github/workflows/pages.yml'
   workflow_dispatch:
 
@@ -63,6 +64,7 @@ jobs:
           paths += sorted((root / 'audio').glob('*.wav'))
           paths += sorted((root / 'audio' / 'stories').glob('*/*.mp3'))
           paths += sorted((root / 'assets' / 'stories').glob('*/*.webp'))
+          paths += sorted((root / 'videos').glob('*.mp4'))
           h = hashlib.sha256()
           for path in sorted(paths, key=lambda p: p.as_posix()):
               if not path.is_file():
@@ -84,13 +86,15 @@ jobs:
         run: |
           set -euo pipefail
           rm -rf _site
-          mkdir -p _site/audio/stories _site/updates _site/assets/stories
+          mkdir -p _site/audio/stories _site/updates _site/assets/stories _site/videos
           cp index.html styles.css art.css worlds.css polish-v08.css stories-v12.css game-v3.js stories-v12.js game-data.js tv-nav.js voice.js art.js scene-art.js service-worker.js manifest.webmanifest favicon.svg _site/
           cp audio/*.wav _site/audio/
           cp -R audio/stories/* _site/audio/stories/
           find _site/audio/stories -type f ! -name '*.mp3' -delete
           cp -R assets/stories/* _site/assets/stories/
           find _site/assets/stories -type f ! -name '*.webp' -delete
+          cp videos/awwab-lost-duckling.mp4 _site/videos/
+          cp assets/stories/awwab-video-cover.webp _site/assets/stories/
           python3 - <<'PY'
           from pathlib import Path
           arin_mp3=list(Path('_site/audio/stories/arin-fox').glob('*.mp3'))
@@ -110,11 +114,14 @@ jobs:
           assert Path('_site/audio/stories/usayd-three-bears/usayd-three-bears-17-reunion.mp3').is_file()
           assert Path('_site/assets/stories/usayd-three-bears/usayd-three-bears-scene-01.webp').is_file()
           assert Path('_site/assets/stories/usayd-three-bears/usayd-three-bears-scene-17.webp').is_file()
-          print('Verified OTA runtime: 44 MP3, 0 story WAV, 44 WebP across 2 stories')
+          movie=Path('_site/videos/awwab-lost-duckling.mp4')
+          assert movie.is_file() and 5_000_000 < movie.stat().st_size < 90_000_000, 'Missing/invalid MP4'
+          assert Path('_site/assets/stories/awwab-video-cover.webp').is_file()
+          print('Verified OTA runtime: 44 MP3, 44+1 WebP, 1 MP4, 3 stories')
           PY
           (
             cd _site
-            zip -qr updates/game-bundle.zip index.html styles.css art.css worlds.css polish-v08.css stories-v12.css game-v3.js stories-v12.js game-data.js tv-nav.js voice.js art.js scene-art.js service-worker.js manifest.webmanifest favicon.svg audio assets
+            zip -qr updates/game-bundle.zip index.html styles.css art.css worlds.css polish-v08.css stories-v12.css game-v3.js stories-v12.js game-data.js tv-nav.js voice.js art.js scene-art.js service-worker.js manifest.webmanifest favicon.svg audio assets videos
           )
           HASH="$(sha256sum _site/updates/game-bundle.zip | awk '{print $1}')"
           SIZE="$(stat -c '%s' _site/updates/game-bundle.zip)"
