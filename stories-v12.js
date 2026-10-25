@@ -110,10 +110,12 @@ const USAYD_SEGMENTS=[
 
 const STORIES=[
   {id:'arin-fox',title:'أرين والثعلب',typeLabel:'استمع وشاهد',durationLabel:'8 دقائق',description:'تذهب أرين لزيارة جدتها، فتقابل ثعلبًا فضوليًا وتتعلم أن تكون لطيفة وحذرة وتطلب المساعدة عند الحاجة.',audioBase:ARIN_FOX_AUDIO_BASE,audioVersion:ARIN_FOX_AUDIO_VERSION,imageBase:ARIN_FOX_IMAGE_BASE,imageVersion:ARIN_FOX_IMAGE_VERSION,sceneImages:ARIN_FOX_SCENE_IMAGES,segments:ARIN_FOX_SEGMENTS},
-  {id:'usayd-three-bears',title:'أُسيد وبيت الدببة الثلاثة',typeLabel:'استمع وشاهد',durationLabel:'5 دقائق',description:'يبتعد أُسيد عن أمه، فيجد بيت الدببة الثلاثة ويتعلم الاستئذان وقول الحقيقة وإصلاح الخطأ والبقاء قريبًا من والديه.',audioBase:USAYD_AUDIO_BASE,audioVersion:USAYD_AUDIO_VERSION,imageBase:USAYD_IMAGE_BASE,imageVersion:USAYD_IMAGE_VERSION,sceneImages:USAYD_SCENE_IMAGES,segments:USAYD_SEGMENTS}
+  {id:'usayd-three-bears',title:'أُسيد وبيت الدببة الثلاثة',typeLabel:'استمع وشاهد',durationLabel:'5 دقائق',description:'يبتعد أُسيد عن أمه، فيجد بيت الدببة الثلاثة ويتعلم الاستئذان وقول الحقيقة وإصلاح الخطأ والبقاء قريبًا من والديه.',audioBase:USAYD_AUDIO_BASE,audioVersion:USAYD_AUDIO_VERSION,imageBase:USAYD_IMAGE_BASE,imageVersion:USAYD_IMAGE_VERSION,sceneImages:USAYD_SCENE_IMAGES,segments:USAYD_SEGMENTS},
+  {id:'awwab-lost-duckling',title:'أَوّابْ والبطّة الضائعة',typeLabel:'فيلم مصوّر',durationLabel:'دقيقتان و46 ثانية',description:'يساعد أَوّابْ بطّةً صغيرة على العودة إلى عائلتها قرب البحيرة. فيلم واحد بالرسومات الأصلية وصوت الراوي.',videoSrc:'./videos/awwab-lost-duckling.mp4',coverSrc:'./assets/stories/awwab-video-cover.webp'}
 ];
 const player={story:null,index:0,partIndex:0,finished:false,token:0,partBoundaryHandled:false};
 const audio=new Audio();audio.preload='auto';
+let storyMovie=null,storyMovieBlobUrl=null;
 const STORY_AUDIO_BLOB_MODE=location.hostname==='appassets.androidplatform.net'&&location.pathname.startsWith('/update/');
 const storyAudioBlobUrls=new Map();
 async function resolvedStoryAudioPath(item,story=player.story){
@@ -150,15 +152,14 @@ function renderLibrary(){
   const grid=$('#storyLibraryGrid');if(!grid)return;
   grid.innerHTML='';
   STORIES.forEach((story,index)=>{
-    preloadSceneImage(story,0).catch(()=>{});
+    if(!story.videoSrc)preloadSceneImage(story,0).catch(()=>{});
     const card=document.createElement('button');card.type='button';card.className='story-cover-card focusable';card.dataset.focusable='';if(index===0)card.dataset.autofocus='';
-    const coverSrc=sceneImagePath(story,0);
+    const coverSrc=story.videoSrc?story.coverSrc:sceneImagePath(story,0);
     card.innerHTML=`<span class="story-cover-art"><img class="story-cover-image" src="${coverSrc}" alt="" aria-hidden="true" draggable="false"><span class="story-cover-play">${storyIcon('play')}</span></span><span class="story-cover-copy"><span class="story-type-badge">${story.typeLabel}</span><strong>${story.title}</strong><small>${story.description}</small><span class="story-duration">◷ ${story.durationLabel}</span></span>`;
     card.addEventListener('click',()=>openStory(story.id));grid.appendChild(card)
   });
   const comingSoon=[
-    {title:'مغامرة جديدة',copy:'قصة مصورة ومسموعة جديدة قيد الإعداد.'},
-    {title:'حكاية جديدة',copy:'شخصيات وأحداث جديدة ستنضم إلى مكتبة القصص.'}
+    {title:'مغامرة جديدة',copy:'قصة مصورة ومسموعة جديدة قيد الإعداد.'}
   ];
   comingSoon.forEach((item,index)=>{
     const coming=document.createElement('button');
@@ -182,13 +183,13 @@ const stitchedAudioUrls=new Map();
 function wavChunk(view,name){for(let i=12;i<=view.byteLength-8;){const id=String.fromCharCode(view.getUint8(i),view.getUint8(i+1),view.getUint8(i+2),view.getUint8(i+3)),size=view.getUint32(i+4,true);if(id===name)return{offset:i+8,size};i+=8+size+(size&1)}return null}
 async function stitchedAudioPath(segment,story=player.story){const key=(story?.id||'story')+'|'+segment.stitchParts.map(part=>`${part.file}:${part.startAt||0}:${part.endAt??''}`).join('|');if(stitchedAudioUrls.has(key))return stitchedAudioUrls.get(key);const chunks=[];let sampleRate=24000,channels=1,bits=16;for(const part of segment.stitchParts){const response=await fetch(audioPath(part,story),{cache:'force-cache'});if(!response.ok)throw new Error(`audio ${response.status}`);const bytes=await response.arrayBuffer(),view=new DataView(bytes),fmt=wavChunk(view,'fmt '),data=wavChunk(view,'data');if(!fmt||!data)throw new Error('Unsupported WAV');channels=view.getUint16(fmt.offset+2,true);sampleRate=view.getUint32(fmt.offset+4,true);bits=view.getUint16(fmt.offset+14,true);const blockAlign=channels*(bits/8),start=Math.max(0,Math.floor(Number(part.startAt||0)*sampleRate)*blockAlign),end=part.endAt==null?data.size:Math.min(data.size,Math.floor(Number(part.endAt)*sampleRate)*blockAlign);chunks.push(new Uint8Array(bytes,data.offset+start,Math.max(0,end-start)))}const dataSize=chunks.reduce((n,c)=>n+c.byteLength,0),buffer=new ArrayBuffer(44+dataSize),view=new DataView(buffer),out=new Uint8Array(buffer);const text=(o,t)=>[...t].forEach((c,i)=>view.setUint8(o+i,c.charCodeAt(0)));text(0,'RIFF');view.setUint32(4,36+dataSize,true);text(8,'WAVE');text(12,'fmt ');view.setUint32(16,16,true);view.setUint16(20,1,true);view.setUint16(22,channels,true);view.setUint32(24,sampleRate,true);const byteRate=sampleRate*channels*(bits/8);view.setUint32(28,byteRate,true);view.setUint16(32,channels*(bits/8),true);view.setUint16(34,bits,true);text(36,'data');view.setUint32(40,dataSize,true);let offset=44;for(const chunk of chunks){out.set(chunk,offset);offset+=chunk.byteLength}const url=URL.createObjectURL(new Blob([buffer],{type:'audio/wav'}));stitchedAudioUrls.set(key,url);return url}
 function clearAutoAdvanceTimer(){if(autoAdvanceTimer){clearTimeout(autoAdvanceTimer);autoAdvanceTimer=null}}
-function stopAudio(){clearAutoAdvanceTimer();player.token++;player.partIndex=0;player.partBoundaryHandled=false;audio.pause();audio.removeAttribute('src');audio.load();nextAudio=null;player.finished=false}
+function stopAudio(){stopMovie();clearAutoAdvanceTimer();player.token++;player.partIndex=0;player.partBoundaryHandled=false;audio.pause();audio.removeAttribute('src');audio.load();nextAudio=null;player.finished=false}
 function preloadNext(){const segment=player.story?.segments?.[player.index],parts=segmentAudioParts(segment);let next=parts[player.partIndex+1],nextSegment=null;if(!next){nextSegment=player.story?.segments?.[player.index+1];next=segmentAudioParts(nextSegment)[0]}if(nextSegment?.stitchParts?.length){nextAudio=null;void stitchedAudioPath(nextSegment,player.story).catch(()=>{});return}if(!next){nextAudio=null;return}void resolvedStoryAudioPath(next,player.story).then(source=>{nextAudio=new Audio();nextAudio.preload='auto';nextAudio.src=source}).catch(()=>{nextAudio=null})}
 function setStoryPathNote(text=STORY_AUTO_NOTE){const note=$('#storyPathNote');if(note)note.textContent=text}
 function storyMuted(){return localStorage.getItem('bubbleSafariMuted')==='1'}
-function setStoryMuted(muted){const value=!!muted;localStorage.setItem('bubbleSafariMuted',value?'1':'0');audio.muted=value;try{window.dispatchEvent(new CustomEvent('bubbleSafari:setMuted',{detail:{muted:value}}))}catch{}}
+function setStoryMuted(muted){const value=!!muted;localStorage.setItem('bubbleSafariMuted',value?'1':'0');audio.muted=value;if(storyMovie)storyMovie.muted=value;try{window.dispatchEvent(new CustomEvent('bubbleSafari:setMuted',{detail:{muted:value}}))}catch{}}
 function syncControls(){
-  const paused=audio.paused||player.finished,muted=storyMuted();
+  const paused=(player.story?.videoSrc?storyMovie?.paused!==false:audio.paused)||player.finished,muted=storyMuted();
   const text=$('#storyPlayPauseText'),icon=$('#storyPlayPauseIcon'),button=$('#storyPlayPauseButton');
   if(!button)return;
   button.disabled=player.finished;
@@ -280,11 +281,81 @@ async function playSegment(restart=true,{forceSeek=false}={}){
   await playCurrentAudioPart({render:true,forceSeek})
 }
 function completeAudioPart(){if(player.finished||!player.story||player.partBoundaryHandled)return;player.partBoundaryHandled=true;const segment=player.story.segments[player.index],parts=segmentAudioParts(segment);if(player.partIndex<parts.length-1){player.partIndex++;playCurrentAudioPart({render:false});return}const delay=segment?.autoAdvanceDelayMs??350;clearAutoAdvanceTimer();autoAdvanceTimer=setTimeout(()=>{if(player.finished||!player.story)return;if(player.index>=player.story.segments.length-1){finishStory();return}player.index++;player.partIndex=0;playSegment(true)},delay)}
-function openStory(id){const story=STORIES.find(item=>item.id===id)||STORIES[0];stopAudio();player.story=story;player.index=0;player.finished=false;$('#storyTitle').textContent=story.title;$('#storyProgress')?.setAttribute('aria-valuemax',String(story.segments.length));setStoryPathNote();setActiveScreen('storyNarratedScreen');playSegment(true)}
+// The finished Awwab story is ONE MP4; older stories continue using separate audio/image scenes.
+function stopMovie(){
+  if(storyMovie){storyMovie.pause();storyMovie.removeAttribute('src');storyMovie.remove();storyMovie=null}
+  if(storyMovieBlobUrl){URL.revokeObjectURL(storyMovieBlobUrl);storyMovieBlobUrl=null}
+}
+function movieTime(seconds){const n=Math.max(0,Math.floor(Number(seconds)||0));return String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0')}
+function updateMovieProgress(){
+  if(!storyMovie||!player.story?.videoSrc)return;
+  const duration=Number.isFinite(storyMovie.duration)?storyMovie.duration:165.567;
+  const ratio=Math.max(0,Math.min(1,(storyMovie.currentTime||0)/duration));
+  $('#storyProgressText').textContent=movieTime(storyMovie.currentTime)+' / '+movieTime(duration);
+  $('#storyProgressFill').style.transform='scaleX('+ratio+')';
+  $('#storyProgress').setAttribute('aria-valuenow',String(Math.round(ratio*100)));
+}
+async function startStoryMovie(story){
+  const token=++player.token;
+  const visual=$('#storyVisual');visual.className='story-visual';visual.replaceChildren();
+  const movie=document.createElement('video');storyMovie=movie;
+  movie.id='storyMovie';movie.className='story-movie';movie.preload='auto';movie.playsInline=true;
+  movie.setAttribute('playsinline','');movie.setAttribute('aria-label',story.title);
+  movie.controls=false;movie.poster=story.coverSrc;movie.muted=storyMuted();
+  movie.addEventListener('timeupdate',updateMovieProgress);
+  movie.addEventListener('loadedmetadata',updateMovieProgress);
+  movie.addEventListener('play',()=>{if(storyMovie!==movie)return;setStoryPathNote();syncControls()});
+  movie.addEventListener('pause',()=>{if(storyMovie===movie)syncControls()});
+  movie.addEventListener('ended',()=>{if(storyMovie===movie&&player.story===story)finishStory()});
+  movie.addEventListener('error',()=>{if(storyMovie===movie){setStoryPathNote('تعذّر تشغيل الفيديو. اختر إعادة الفيديو للمحاولة.');syncControls()}});
+  visual.appendChild(movie);
+  $('#storyChapterTitle').textContent='فيلم مصوّر مع الراوي';
+  $('#storyNarration').textContent='';
+  $('#storyProgress').setAttribute('aria-valuemax','100');
+  $('#storyProgress').setAttribute('aria-valuenow','0');
+  $('#storyProgressText').textContent='00:00 / 02:46';
+  $('#storyProgressFill').style.transform='scaleX(0)';
+  $('#storyReplaySegmentButton span:last-child').textContent='إعادة الفيديو';
+  $('#storyEnding').classList.add('hidden');$('#storyEnding').setAttribute('aria-hidden','true');
+  $('#storyControls').classList.remove('hidden');player.finished=false;
+  setStoryPathNote('جاري تجهيز الفيديو…');syncControls();
+  let source=story.videoSrc;
+  // Android WebViewAssetLoader's internal-storage handler may not support seeking
+  // in MP4 byte ranges. A blob URL supplies a seekable local media source after OTA.
+  if(STORY_AUDIO_BLOB_MODE){
+    try{
+      const response=await fetch(source,{cache:'force-cache'});
+      if(!response.ok)throw new Error('Video HTTP '+response.status);
+      const bytes=await response.blob();
+      if(!bytes.size||bytes.size>90*1024*1024)throw new Error('Invalid video payload');
+      if(token!==player.token||storyMovie!==movie)return;
+      storyMovieBlobUrl=URL.createObjectURL(new Blob([bytes],{type:'video/mp4'}));
+      source=storyMovieBlobUrl;
+    }catch(error){
+      if(token===player.token&&storyMovie===movie){setStoryPathNote('تعذّر تحميل الفيلم. تأكّد من اكتمال التحديث ثم اختر إعادة الفيديو.');syncControls()}
+      return;
+    }
+  }
+  if(token!==player.token||storyMovie!==movie)return;
+  movie.src=source;movie.load();
+  if(movie.muted){setStoryPathNote('الصوت مكتوم. اختر متابعة لتشغيل صوت الفيلم.');return}
+  try{await movie.play();if(token===player.token)syncControls()}
+  catch{if(token===player.token)setStoryPathNote('اضغط متابعة لبدء الفيلم.');syncControls()}
+}
+function openStory(id){
+  const story=STORIES.find(item=>item.id===id)||STORIES[0];stopAudio();
+  player.story=story;player.index=0;player.finished=false;
+  $('#storyTitle').textContent=story.title;
+  $('#storyNarratedScreen').classList.toggle('story-video-mode',!!story.videoSrc);
+  $('#storyReplaySegmentButton span:last-child').textContent=story.videoSrc?'إعادة الفيديو':'إعادة الجزء';
+  setStoryPathNote();setActiveScreen('storyNarratedScreen');
+  if(story.videoSrc){void startStoryMovie(story);return}
+  $('#storyProgress')?.setAttribute('aria-valuemax',String(story.segments.length));playSegment(true);
+}
 function finishStory(){
   clearAutoAdvanceTimer();
   player.finished=true;
-  audio.pause();
+  audio.pause();if(storyMovie)storyMovie.pause();
   syncControls();
   $('#storyControls').classList.add('hidden');
   $('#storyEnding').classList.remove('hidden');
@@ -292,9 +363,20 @@ function finishStory(){
   setStoryPathNote('');
   setTimeout(()=>setFocus($('#storyReplayStoryButton')),70)
 }
-function togglePlayback(){if(player.finished)return;if(audio.paused){if(storyMuted())setStoryMuted(false);audio.muted=false;audio.play().then(()=>{setStoryPathNote();syncControls()}).catch(()=>{syncControls();setStoryPathNote('اضغط متابعة لبدء صوت الراوية.')})}else{audio.pause();syncControls()}}
+function togglePlayback(){
+  if(player.finished)return;
+  if(player.story?.videoSrc){
+    if(!storyMovie)return;
+    if(storyMovie.paused){if(storyMuted())setStoryMuted(false);storyMovie.muted=false;
+      if(!storyMovie.src){void startStoryMovie(player.story);return}
+      storyMovie.play().then(()=>{setStoryPathNote();syncControls()}).catch(()=>{setStoryPathNote('تعذّر استكمال الفيديو.');syncControls()});
+    }else{storyMovie.pause();syncControls()}
+    return;
+  }
+  if(audio.paused){if(storyMuted())setStoryMuted(false);audio.muted=false;audio.play().then(()=>{setStoryPathNote();syncControls()}).catch(()=>{syncControls();setStoryPathNote('اضغط متابعة لبدء صوت الراوية.')})}else{audio.pause();syncControls()}}
 function replaySegment(){
   if(!player.story)return;
+  if(player.story.videoSrc){if(storyMovie?.src){storyMovie.currentTime=0;storyMovie.play().catch(()=>setStoryPathNote('تعذّر إعادة الفيديو.'));syncControls()}else void startStoryMovie(player.story);return}
   clearAutoAdvanceTimer();
   audio.pause();
   player.partIndex=0;
@@ -302,6 +384,11 @@ function replaySegment(){
   void playSegment(true,{forceSeek:true})
 }
 function replayStory(){
+  if(player.story?.videoSrc){
+    player.finished=false;$('#storyEnding').classList.add('hidden');$('#storyEnding').setAttribute('aria-hidden','true');$('#storyControls').classList.remove('hidden');
+    if(storyMovie?.src){storyMovie.currentTime=0;storyMovie.play().catch(()=>setStoryPathNote('تعذّر إعادة الفيلم.'))}else void startStoryMovie(player.story);
+    setTimeout(()=>setFocus($('#storyPlayPauseButton')),70);return;
+  }
   player.index=0;
   player.partIndex=0;
   player.finished=false;

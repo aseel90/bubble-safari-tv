@@ -155,3 +155,12 @@
   #storyNarratedScreen .story-static-scene,#storyNarratedScreen .story-scene-image,#storyNarratedScreen #storyProgressFill{transition:none!important}
   #storyNarratedScreen .story-scene-loading::after{animation:none!important}
 }
+/* Single-MP4 story player (existing narrated scene players remain unchanged). */
+#storyNarratedScreen.story-video-mode .story-stage-card{display:block;grid-template-columns:none;aspect-ratio:16/9;width:min(100%,1120px);height:auto;max-height:100%;margin-inline:auto;background:#11231f}
+#storyNarratedScreen.story-video-mode .story-visual{display:block;width:100%;height:100%;background:#11231f}
+#storyNarratedScreen.story-video-mode .story-caption-panel{display:none!important}
+#storyNarratedScreen.story-video-mode .story-movie{display:block;width:100%;height:100%;object-fit:contain;object-position:center;background:#11231f;outline:none}
+#storyNarratedScreen.story-video-mode .story-movie::-webkit-media-controls{display:none!important}
+#storyNarratedScreen.story-video-mode .story-progress{width:min(290px,28vw)}
+#storyNarratedScreen.story-video-mode .story-progress strong{min-width:102px;font-size:12px}
+@media(max-height:700px){#storyNarratedScreen.story-video-mode .story-stage-card{height:100%;max-width:calc(100% - 6px);width:auto;aspect-ratio:16/9}}
